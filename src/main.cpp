@@ -1,6 +1,8 @@
 #include <iostream>
 #include <getopt.h>
+
 #include "utils/Opciones.h"
+#include "procesos/main_process.h"
 
 #define CANTIDAD_MINIMA_DE_JUGADORES 10
 
@@ -42,6 +44,9 @@ int main(int argc, char *argv[]) {
     std::cout << opciones.debug << std::endl;
     std::cout << opciones.logName << std::endl;
     std::cout << opciones.sleep << std::endl;
+
+    MainProcess mp(opciones);
+    mp.run();
 
     return 0;
 }
