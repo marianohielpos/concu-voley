@@ -8,6 +8,7 @@
 #include "torneo.h"
 #include "../modelo/jugador.h"
 
+
 MainProcess::MainProcess(Opciones opts) : opts_(opts) {
 }
 
@@ -20,14 +21,18 @@ void MainProcess::run() {
     v.push_back(Jugador(i));
   }
 
-  pid_t pidTorneo = fork();
-  if (pidTorneo == 0) {
-    Torneo t(v);
-    t.run();
-    exit(0);
-  } else {
-    int status = 0;
-    wait(&status);
+  // Si hay jugadores suficientes, lanzar torneo
+  // TODO: si no, esperar a que haya suficientes
+  if (v.size() >= JUGADORES_PARA_TORNEO) {
+    pid_t pidTorneo = fork();
+    if (pidTorneo == 0) {
+      Torneo t(v);
+      t.run();
+      exit(0);
+    } else {
+      int status = 0;
+      wait(&status);
+    }
   }
 
 }
