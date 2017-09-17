@@ -2,7 +2,7 @@
 #include <getopt.h>
 
 #include "utils/Opciones.h"
-#include "procesos/main_process.h"
+#include "procesos/principal.h"
 
 #define CANTIDAD_MINIMA_DE_JUGADORES 10
 
@@ -10,7 +10,7 @@ Opciones parsearParametros (int argc, char *argv[]) {
     Opciones opciones;
 
     int opt;
-    while ((opt = getopt(argc, argv, "hdj:s:")) != -1) {
+    while ((opt = getopt(argc, argv, "hdj:s:p:")) != -1) {
         switch (opt) {
             case 'd':
                 opciones.debug = true;
@@ -21,8 +21,12 @@ Opciones parsearParametros (int argc, char *argv[]) {
             case 's':
                 opciones.sleep = (unsigned int) std::stoul(optarg);
                 break;
+            case 'p':
+                opciones.partidos = (unsigned int) std::stoul(optarg);
+                break;
             case 'h':
-                std::cout << "Uso: [-d] [-j cantidadDeJugadores] [-s sleepTime]\n";
+                std::cout << "Uso: [-d] [-j cantidadDeJugadores] [-s sleepTime]"
+                          << "[-p partidosPorJugador]" << std::endl;
                 exit(0);
 
         }

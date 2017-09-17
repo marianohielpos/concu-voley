@@ -4,11 +4,15 @@
 
 #ifndef TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
 #define TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
+
 #include <unistd.h>
 #include <string>
 #include <cstring>
+
 #define JUGADORES_POR_EQUIPO 2
 #define NUMERO_MAX_SETS 5
+
+
 typedef struct CanchaSerializada{
     unsigned int fila=0;
     unsigned int columna=0;
