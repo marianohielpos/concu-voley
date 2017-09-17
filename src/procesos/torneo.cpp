@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <sys/wait.h>
 #include "torneo.h"
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales) : jugadores(jugadoresIniciales) {
