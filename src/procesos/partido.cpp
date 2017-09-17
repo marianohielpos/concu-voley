@@ -8,6 +8,10 @@
 Partido::Partido(participantes p) : p_(p) {
 }
 
+participantes Partido::getParticipantes() {
+  return p_;
+};
+
 void Partido::run() {
   std::cout << "Partido corriendo! " << getpid() << std::endl;
   struct timespec tim;

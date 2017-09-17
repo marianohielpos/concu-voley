@@ -26,7 +26,7 @@ void MainProcess::run() {
   if (v.size() >= JUGADORES_PARA_TORNEO) {
     pid_t pidTorneo = fork();
     if (pidTorneo == 0) {
-      Torneo t(v);
+      Torneo t(v, opts_);
       t.run();
       exit(0);
     } else {

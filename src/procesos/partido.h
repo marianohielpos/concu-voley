@@ -15,6 +15,8 @@ public:
   Partido(participantes p);
 
   void run();
+
+  participantes getParticipantes();
 };
 
 #endif

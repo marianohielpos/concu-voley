@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include "../utils/Opciones.h"
 #include "../modelo/jugador.h"
 #include "partido.h"
 
@@ -13,6 +14,7 @@
 
 class Torneo {
 
+  Opciones opts_;
   std::vector<Jugador> jugadores_;
   std::map<pid_t, Partido> partidos_;
 
@@ -20,9 +22,10 @@ class Torneo {
   bool partidosCorriendo();
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
+  void finalizarPartido(pid_t pidPartido);
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales);
+  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
 
   void run();
   //~Torneo();

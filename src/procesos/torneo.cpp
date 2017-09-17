@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include "torneo.h"
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales) : jugadores_(jugadoresIniciales) {
+Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
+  : jugadores_(jugadoresIniciales), opts_(opts) {
 }
 
 void Torneo::run() {
@@ -16,8 +17,25 @@ void Torneo::run() {
       int status = 0;
       pid_t pidPartido = wait(&status);
 
-      partidos_.erase(pidPartido);
+      finalizarPartido(pidPartido);
   }
+}
+
+
+void Torneo::finalizarPartido(pid_t pidPartido) {
+  Partido p = partidos_.at(pidPartido);
+  participantes parts = p.getParticipantes();
+
+  for (int i = 0; i < 4; ++i) {
+    Jugador& j = jugadores_.at(parts[i]);
+    int offset = (i % 2 == 0) ? 1 : -1;
+    j.agregarPartido(parts[i + offset]);
+    if (j.getPartidosJugados() <= opts_.partidos) {
+      j.setDisponible(true);
+    }
+  }
+
+  partidos_.erase(pidPartido);
 }
 
 
