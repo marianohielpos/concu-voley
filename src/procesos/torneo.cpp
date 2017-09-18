@@ -17,12 +17,17 @@ void Torneo::run() {
       int status = 0;
       pid_t pidPartido = wait(&status);
 
-      finalizarPartido(pidPartido);
+      if (WIFEXITED(status)) {
+        finalizarPartido(pidPartido, status);
+      }
+
   }
 }
 
 
-void Torneo::finalizarPartido(pid_t pidPartido) {
+void Torneo::finalizarPartido(pid_t pidPartido, int status) {
+  imprimirResultado(pidPartido, status);
+
   Partido p = partidos_.at(pidPartido);
   participantes parts = p.getParticipantes();
 
@@ -37,6 +42,25 @@ void Torneo::finalizarPartido(pid_t pidPartido) {
 
   partidos_.erase(pidPartido);
 }
+
+
+void Torneo::imprimirResultado(pid_t pidPartido, int status) {
+
+  Partido p = partidos_.at(pidPartido);
+  participantes parts = p.getParticipantes();
+  int resultadoPareja1 = 0, resultadoPareja2 = 0;
+
+  switch (WEXITSTATUS(status)) {
+      case PRIMER_PAREJA_3: resultadoPareja1 = 3; break;
+      case PRIMER_PAREJA_2: resultadoPareja1 = 2; resultadoPareja2 = 1; break;
+      case SEGUNDA_PAREJA_2: resultadoPareja1 = 1; resultadoPareja2 = 2; break;
+      case SEGUNDA_PAREJA_3: resultadoPareja2 = 3; break;
+  }
+
+  std::cout << "[Resultados del partido " << pidPartido << "] Jugadores "
+            << parts[0] << " y " << parts[1] << ": " << resultadoPareja1 << " puntos; "
+            << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;\n";
+};
 
 
 bool Torneo::siguientesParticipantes(participantes& p) {

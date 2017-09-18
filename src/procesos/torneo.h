@@ -22,7 +22,8 @@ class Torneo {
   bool partidosCorriendo();
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
-  void finalizarPartido(pid_t pidPartido);
+  void finalizarPartido(pid_t pidPartido, int status);
+  void imprimirResultado(pid_t pidPartido, int status);
 
 public:
   Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
