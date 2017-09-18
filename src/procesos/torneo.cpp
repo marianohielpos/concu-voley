@@ -1,8 +1,10 @@
 
 #include <iostream>
+#include <assert.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "torneo.h"
+#include "../ipc/SignalHandler.h"
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
   : jugadores_(jugadoresIniciales), opts_(opts) {
@@ -10,6 +12,8 @@ Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
 
 void Torneo::run() {
   std::cout << "Torneo corriendo!" << std::endl;
+  ReceptorDeJugadores sigusr_handler(*this);
+  SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
   while(sePuedeArmarPartido() || partidosCorriendo()) {
       if (lanzarPartido()) {
@@ -18,8 +22,10 @@ void Torneo::run() {
       int status = 0;
       pid_t pidPartido = wait(&status);
 
-      if (WIFEXITED(status)) {
+      if (pidPartido != -1 && WIFEXITED(status)) {
         finalizarPartido(pidPartido, status);
+      } else {
+        std::cout << "Wait terminó sin exit!" << std::endl;
       }
 
   }
@@ -135,3 +141,22 @@ bool Torneo::lanzarPartido() {
   }
   return true;
 };
+
+void Torneo::agregarJugador() {
+  Jugador j(jugadores_.size());
+  jugadores_.push_back(j);
+};
+
+
+
+ReceptorDeJugadores::ReceptorDeJugadores(Torneo& t) : t_(t) {
+};
+
+ReceptorDeJugadores::~ReceptorDeJugadores() {
+};
+
+int ReceptorDeJugadores::handleSignal (int signum) {
+  assert(signum == SIGUSR1);
+  t_.agregarJugador();
+  return 0;
+}

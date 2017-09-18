@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "../utils/Opciones.h"
+#include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
 #include "partido.h"
 
@@ -25,12 +26,27 @@ class Torneo {
   void finalizarPartido(pid_t pidPartido, int status);
   void imprimirResultado(pid_t pidPartido, int status);
 
+
 public:
   Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
+  void agregarJugador();
 
   void run();
   //~Torneo();
 
+};
+
+
+class ReceptorDeJugadores : public EventHandler {
+
+Torneo& t_;
+
+public:
+  ReceptorDeJugadores(Torneo& t);
+
+  virtual int handleSignal (int signum);
+
+  ~ReceptorDeJugadores();
 };
 
 #endif

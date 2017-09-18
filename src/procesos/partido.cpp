@@ -1,9 +1,10 @@
 
 #include <iostream>
-#include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include "partido.h"
+#include "../utils/sleep.h"
+
 
 
 Partido::Partido(participantes p) : p_(p) {
@@ -38,10 +39,6 @@ void Partido::run() {
 }
 
 bool Partido::jugarSet() {
-  struct timespec tim;
-  tim.tv_sec = 0;
-  tim.tv_nsec = 100 * 1000000L;
-  nanosleep(&tim, NULL);
-
+  milisleep(100);
   return rand() % 2 == 0;
 };
