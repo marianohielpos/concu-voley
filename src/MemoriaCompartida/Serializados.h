@@ -51,12 +51,14 @@ typedef struct CanchaSerializada{
     }
 } TCanchaSerializada;
 
+struct ResultadoSerializado;
+
 typedef struct ResultadoSerializado{
     unsigned int fila=0;
     unsigned int columna=0;
     pid_t equipo1[JUGADORES_POR_EQUIPO]={0,0};
     pid_t equipo2[JUGADORES_POR_EQUIPO]={0,0};
-    unsigned int cantidadSets=0;
+    unsigned int cantidadSets=1;
     unsigned int resultadoSetsEquipo1[NUMERO_MAX_SETS]={0,0,0,0,0};
     unsigned int resultadoSetsEquipo2[NUMERO_MAX_SETS]={0,0,0,0,0};
 
@@ -96,5 +98,8 @@ typedef struct ResultadoSerializado{
         retorno+=")";
         return retorno;
     }
+
 } TResultadoSerializado;
+
+
 #endif //TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
