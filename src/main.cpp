@@ -1,5 +1,6 @@
 #include <iostream>
 #include <getopt.h>
+#include <Logger.h>
 
 #include "utils/Opciones.h"
 #include "procesos/principal.h"
@@ -49,8 +50,15 @@ int main(int argc, char *argv[]) {
     std::cout << opciones.logName << std::endl;
     std::cout << opciones.sleep << std::endl;
 
-    MainProcess mp(opciones);
-    mp.run();
+    Logger logger = Logger("log.txt");
+
+    logger.log(std::string("es una prueba"));
+    logger.log(std::string("es una prueba"));
+    logger.log(std::string("es una prueba"));
+    logger.log(std::string("es una prueba"));
+
+    //MainProcess mp(opciones);
+    //mp.run();
 
     return 0;
 }

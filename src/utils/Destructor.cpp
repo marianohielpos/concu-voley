@@ -3,8 +3,3 @@
 //
 
 #include "Destructor.h"
-
-
-static void Destructor::destruir() {
-
-}
