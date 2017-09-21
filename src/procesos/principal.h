@@ -9,6 +9,7 @@ class MainProcess {
 
 Opciones opts_;
 
+
 public:
   MainProcess(Opciones opts);
   ~MainProcess();

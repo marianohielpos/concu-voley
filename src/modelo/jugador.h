@@ -14,11 +14,13 @@ std::set<int> parejas_;
 
 public:
   Jugador(int id);
-  void agregarPartido(int idJugador);
-  bool puedeJugarCon(int idJugador);
-  int getPartidosJugados();
+  int getId() const;
 
-  bool disponible();
+  void agregarPartido(int idJugador);
+  bool puedeJugarCon(int idJugador) const;
+  int getPartidosJugados() const;
+
+  bool disponible() const;
   void setDisponible(bool disponible);
 
 };
