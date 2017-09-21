@@ -1,6 +1,7 @@
 #include <iostream>
 #include <getopt.h>
 #include <Logger.h>
+#include <Opciones.h>
 
 #include "utils/Opciones.h"
 #include "procesos/principal.h"
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]) {
     std::cout << opciones.logName << std::endl;
     std::cout << opciones.sleep << std::endl;
 
-    Logger logger = Logger("log.txt");
+    Logger logger = Logger(opciones.logName);
 
     logger.log(std::string("es una prueba"));
     logger.log(std::string("es una prueba"));
