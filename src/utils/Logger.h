@@ -14,17 +14,17 @@ class Logger {
 
 private:
 
-    LockFile *lock;
+    LockFile *lock = NULL;
 
     bool timestamp = true;
 
     bool pid = true;
 
-    std::string Logger::generarMensaje(std::string mensaje);
+    std::string generarMensaje(std::string mensaje);
 
-    void escribirAArcivo(std::string mensaje);
+    void escribirAArchivo(std::string mensaje);
 
-    void escribirASalidaEstandard(std::string mensaje);
+    void escribirAConsola(std::string mensaje);
 
 public:
 

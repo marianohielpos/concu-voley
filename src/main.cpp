@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     Logger logger = Logger(opciones.logName);
 
     logger.log(std::string("es una prueba"));
-    logger.log(std::string("es una prueba"));
+    logger.log(std::string("es una dfgsdg"));
     logger.log(std::string("es una prueba"));
     logger.log(std::string("es una prueba"));
 

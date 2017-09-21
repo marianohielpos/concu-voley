@@ -6,19 +6,22 @@
 #include "../ipc/LockFile.h"
 #include <unistd.h>
 #include <sys/types.h>
+#include <time.h>
+#include <iostream>
+#include <sstream>
 
 Logger::Logger(std::string nombre) {
 
-    if(nombre.size() != 0)
-        this->lock = new LockFile(nombre);
+    if(nombre.empty())
+        return;
 
-    this->lock = NULL;
+    this->lock = new LockFile(nombre);
+
 }
 
 Logger::~Logger() {
     delete this->lock;
 }
-
 
 std::string Logger::generarMensaje(std::string mensaje){
 
@@ -36,7 +39,7 @@ std::string Logger::generarMensaje(std::string mensaje){
     {
         mensajeFormateado << " TS: ";
 
-        mensajeFormateado << std::to_string(1);
+        mensajeFormateado << std::to_string(time(nullptr));
     }
 
     mensajeFormateado << " Mensaje: ";
@@ -48,7 +51,7 @@ std::string Logger::generarMensaje(std::string mensaje){
     return mensajeFormateado.str();
 }
 
-void Logger::escribirAArcivo(std::string mensaje) {
+void Logger::escribirAArchivo(std::string mensaje) {
     this->lock->tomarLock();
 
     this->lock->escribir(mensaje.c_str(), mensaje.size());
@@ -56,17 +59,16 @@ void Logger::escribirAArcivo(std::string mensaje) {
     this->lock->liberarLock();
 }
 
-void Logger::escribirASalidaEstandard(std::string mensaje) {
-    std::cout << mensaje.c_str;
+void Logger::escribirAConsola(std::string mensaje) {
+    std::cout << mensaje;
 }
 
 void Logger::log(std::string mensaje) {
 
     std::string mensajeFormateado = this->generarMensaje(mensaje);
 
-    if( this->lock != NULL)
-        return this->escribirAArcivo(mensajeFormateado);
+    if( this->lock == NULL)
+        return this->escribirAConsola(mensajeFormateado);
 
-    return this->escribirASalidaEstandard(mensajeFormateado);
-
+    return this->escribirAArchivo(mensajeFormateado);
 }
