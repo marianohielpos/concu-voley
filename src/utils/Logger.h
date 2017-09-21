@@ -16,6 +16,16 @@ private:
 
     LockFile *lock;
 
+    bool timestamp = true;
+
+    bool pid = true;
+
+    std::string Logger::generarMensaje(std::string mensaje);
+
+    void escribirAArcivo(std::string mensaje);
+
+    void escribirASalidaEstandard(std::string mensaje);
+
 public:
 
     Logger ( std::string nombre );
