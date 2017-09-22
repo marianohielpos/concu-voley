@@ -72,9 +72,9 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
 
   std::stringstream ss;
 
-  ss << "[Resultados del partido "; ss << pidPartido; ss << "] Jugadores ";
-  ss << parts[0]; ss << " y "; ss << parts[1]; ss << ": "; ss << resultadoPareja1; ss << " puntos; ";
-  ss << parts[2]; ss << " y "; ss << parts[3]; ss << ": "; ss << resultadoPareja2; ss << " puntos;\n";
+  ss << "[Resultados del partido " << pidPartido << "] Jugadores "
+     << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
+     << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
   this->logger->log(ss.str());
 
