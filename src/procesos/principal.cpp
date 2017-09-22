@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <Logger.h>
 
 #include "principal.h"
 #include "torneo.h"
@@ -11,14 +12,15 @@
 #include "../utils/sleep.h"
 
 
-MainProcess::MainProcess(Opciones opts) : opts_(opts) {
+MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
+  this->logger = logger;
 }
 
 
 void MainProcess::run() {
 
+  this->logger->log("Comienzo del programa");
 
-  std::cout << "Proceso main corriendo" << std::endl;
 
   std::vector<Jugador> v;
   for (int i = 0; i < JUGADORES_PARA_TORNEO; ++i) {
@@ -30,7 +32,7 @@ void MainProcess::run() {
   if (v.size() >= JUGADORES_PARA_TORNEO) {
     pid_t pidTorneo = fork();
     if (pidTorneo == 0) {
-      Torneo t(v, opts_);
+      Torneo t(v, opts_, this->logger);
       t.run();
       exit(0);
     } else {
@@ -38,7 +40,7 @@ void MainProcess::run() {
       int i = v.size();
       while (i <= opts_.jugadores) {
         milisleep(150);
-        std::cout << "[Principal] enviando señal SIGUSR1 al torneo: " << i << std::endl;
+        this->logger->log("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
         kill(pidTorneo, SIGUSR1);
         i++;
       }

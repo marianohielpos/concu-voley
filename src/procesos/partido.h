@@ -3,6 +3,7 @@
 
 
 #include <array>
+#include <Logger.h>
 
 typedef std::array<int, 4> participantes;
 
@@ -17,8 +18,12 @@ participantes p_;
 
 bool jugarSet();
 
+protected:
+
+    Logger* logger;
+
 public:
-  Partido(participantes p);
+  Partido(participantes p, Logger* logger);
 
   void run();
 

@@ -3,15 +3,21 @@
 #include <assert.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <Logger.h>
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
+#include <sstream>
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
+Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
   : jugadores_(jugadoresIniciales), opts_(opts) {
+
+  this->logger = logger;
 }
 
 void Torneo::run() {
-  std::cout << "Torneo corriendo!" << std::endl;
+
+  this->logger->log("Torneo corriendo!");
+
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
@@ -25,7 +31,7 @@ void Torneo::run() {
       if (pidPartido != -1 && WIFEXITED(status)) {
         finalizarPartido(pidPartido, status);
       } else {
-        std::cout << "Wait terminó sin exit!" << std::endl;
+        this->logger->log("Wait terminó sin exit!");
       }
 
   }
@@ -64,9 +70,14 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
       case SEGUNDA_PAREJA_3: resultadoPareja2 = 3; break;
   }
 
-  std::cout << "[Resultados del partido " << pidPartido << "] Jugadores "
-            << parts[0] << " y " << parts[1] << ": " << resultadoPareja1 << " puntos; "
-            << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;\n";
+  std::stringstream ss;
+
+  ss << "[Resultados del partido "; ss << pidPartido; ss << "] Jugadores ";
+  ss << parts[0]; ss << " y "; ss << parts[1]; ss << ": "; ss << resultadoPareja1; ss << " puntos; ";
+  ss << parts[2]; ss << " y "; ss << parts[3]; ss << ": "; ss << resultadoPareja2; ss << " puntos;\n";
+
+  this->logger->log(ss.str());
+
 };
 
 
@@ -132,7 +143,7 @@ bool Torneo::lanzarPartido() {
     j.setDisponible(false);
   }
 
-  Partido partido(p);
+  Partido partido(p, logger);
   pid_t pidPartido = fork();
   if (pidPartido == 0) {
     partido.run();

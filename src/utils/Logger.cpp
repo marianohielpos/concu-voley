@@ -46,7 +46,7 @@ std::string Logger::generarMensaje(std::string mensaje){
 
     mensajeFormateado <<  mensaje;
 
-    mensajeFormateado <<  "\n";
+    mensajeFormateado <<  std::endl;
 
     return mensajeFormateado.str();
 }

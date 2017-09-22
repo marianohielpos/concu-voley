@@ -28,12 +28,13 @@ class Torneo {
 
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
+  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger);
   void agregarJugador();
 
   void run();
   //~Torneo();
 
+    Logger *logger;
 };
 
 

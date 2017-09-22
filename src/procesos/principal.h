@@ -4,18 +4,20 @@
 
 
 #include "../utils/Opciones.h"
+#include "Logger.h"
 
 class MainProcess {
 
 Opciones opts_;
 
+protected:
+    Logger* logger = NULL;
 
 public:
-  MainProcess(Opciones opts);
-  ~MainProcess();
+    MainProcess(Opciones opts, Logger* logger);
+    ~MainProcess();
 
-  void run();
-
+    void run();
 };
 
 

@@ -46,20 +46,11 @@ int main(int argc, char *argv[]) {
 
     Opciones opciones = parsearParametros(argc, argv);
 
-    std::cout << opciones.jugadores << std::endl;
-    std::cout << opciones.debug << std::endl;
-    std::cout << opciones.logName << std::endl;
-    std::cout << opciones.sleep << std::endl;
+    Logger* logger = new Logger(opciones.logName);
 
-    Logger logger = Logger(opciones.logName);
+    MainProcess mp(opciones, logger);
 
-    logger.log(std::string("es una prueba"));
-    logger.log(std::string("es una dfgsdg"));
-    logger.log(std::string("es una prueba"));
-    logger.log(std::string("es una prueba"));
-
-    //MainProcess mp(opciones);
-    //mp.run();
+    mp.run();
 
     return 0;
 }
