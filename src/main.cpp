@@ -46,9 +46,9 @@ int main(int argc, char *argv[]) {
 
     Opciones opciones = parsearParametros(argc, argv);
 
-    Logger* logger = new Logger(opciones.logName);
+    Logger logger = Logger(opciones.logName);
 
-    MainProcess mp(opciones, logger);
+    MainProcess mp(opciones, &logger);
 
     mp.run();
 
