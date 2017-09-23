@@ -1,5 +1,7 @@
 #include <iostream>
 #include <getopt.h>
+#include <Logger.h>
+#include <Opciones.h>
 
 #include "utils/Opciones.h"
 #include "procesos/principal.h"
@@ -44,12 +46,10 @@ int main(int argc, char *argv[]) {
 
     Opciones opciones = parsearParametros(argc, argv);
 
-    std::cout << opciones.jugadores << std::endl;
-    std::cout << opciones.debug << std::endl;
-    std::cout << opciones.logName << std::endl;
-    std::cout << opciones.sleep << std::endl;
+    Logger logger = Logger(opciones.logName);
 
-    MainProcess mp(opciones);
+    MainProcess mp(opciones, &logger);
+
     mp.run();
 
     return 0;

@@ -7,7 +7,8 @@
 
 
 
-Partido::Partido(participantes p) : p_(p) {
+Partido::Partido(participantes p, Logger* logger) : p_(p) {
+  this->logger = logger;
 }
 
 participantes Partido::getParticipantes() {
@@ -15,7 +16,8 @@ participantes Partido::getParticipantes() {
 };
 
 void Partido::run() {
-  std::cout << "Partido corriendo! " << getpid() << std::endl;
+  this->logger->log("Partido corriendo!");
+
   srand(getpid());
 
   int i = 0, j = 0;
@@ -27,7 +29,7 @@ void Partido::run() {
     }
   }
 
-  std::cout << "Partido terminando! " << getpid() << std::endl;
+  this->logger->log("Partido terminando!" );
 
   int retCode;
   if (i == 3) {
