@@ -4,14 +4,12 @@
 
 #ifndef TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
 #define TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
-
 #include <unistd.h>
 #include <string>
 #include <cstring>
 
 #define JUGADORES_POR_EQUIPO 2
 #define NUMERO_MAX_SETS 5
-
 
 typedef struct CanchaSerializada{
     unsigned int fila=0;
@@ -56,11 +54,11 @@ struct ResultadoSerializado;
 typedef struct ResultadoSerializado{
     unsigned int fila=0;
     unsigned int columna=0;
-    pid_t equipo1[JUGADORES_POR_EQUIPO]={0,0};
-    pid_t equipo2[JUGADORES_POR_EQUIPO]={0,0};
+    pid_t equipo1[JUGADORES_POR_EQUIPO];
+    pid_t equipo2[JUGADORES_POR_EQUIPO];
     unsigned int cantidadSets=1;
-    unsigned int resultadoSetsEquipo1[NUMERO_MAX_SETS]={0,0,0,0,0};
-    unsigned int resultadoSetsEquipo2[NUMERO_MAX_SETS]={0,0,0,0,0};
+    unsigned int resultadoSetsEquipo1[NUMERO_MAX_SETS];
+    unsigned int resultadoSetsEquipo2[NUMERO_MAX_SETS];
 
     void init(const unsigned int fila,const unsigned int columna,pid_t* equipo1,pid_t* equipo2,
               const unsigned int cantidadSets,

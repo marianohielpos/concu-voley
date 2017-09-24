@@ -15,8 +15,10 @@
 class MemoriaCompartidaCanchas{
 
 private:
+
     MemoriaCompartida<TCanchaSerializada> memoria;
     int filas,columnas;
+
 public:
 
     /**

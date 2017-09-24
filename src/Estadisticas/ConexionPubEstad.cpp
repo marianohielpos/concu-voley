@@ -6,17 +6,17 @@
 #include "ConexionPubEstad.h"
 #include "PublicadorDeEstadisticas.h"
 
-ConexionPubEstad::ConexionPubEstad() {
-    fifo = new FifoEscritura(ARCHIVO_FIFO_ESTADISTICAS);
-    fifo->abrir();
-}
-
-void ConexionPubEstad::add(TResultadoSerializado &resultadoSerializado) {
-    fifo->escribir(&resultadoSerializado,sizeof(TResultadoSerializado));
+ConexionPubEstad::ConexionPubEstad(unsigned int maxCantidadResultados) throw(std::exception){
+    memoria=new MemoriaCompartidaResultados(maxCantidadResultados);
+  //  this->memoria->cleanMemoria();
 }
 
 ConexionPubEstad::~ConexionPubEstad() {
-    fifo->cerrar();
-    delete(fifo);
-    fifo=NULL;
+    delete(this->memoria);
+    memoria=NULL;
 }
+
+bool ConexionPubEstad::add(TResultadoSerializado &resultadoSerializado) {
+    return this->memoria->push(resultadoSerializado);
+}
+

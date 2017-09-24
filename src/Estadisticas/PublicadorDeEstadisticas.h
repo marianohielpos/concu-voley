@@ -5,21 +5,20 @@
 #ifndef CONCU_VOLEY_STATISTICSMANAGER_H
 #define CONCU_VOLEY_STATISTICSMANAGER_H
 #include <FifoLectura.h>
+#include <MemoriaCompartidaResultados.h>
 #include "PublicadorWeb.h"
 #define ARCHIVO_FIFO_ESTADISTICAS "/tmp/fifoEstadisticas"
 class PublicadorDeEstadisticas {
 
 private:
 
-    FifoLectura* fifo=NULL;
+    MemoriaCompartidaResultados* memoriaResultados;
 
     PublicadorWeb publicador;
 
-    static const size_t bufferSize = 100;
-
 public:
 
-    PublicadorDeEstadisticas();
+    PublicadorDeEstadisticas(const unsigned maxCantidadResultados) throw(std::exception);
 
     void update();
 

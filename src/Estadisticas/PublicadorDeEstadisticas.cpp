@@ -6,25 +6,20 @@
 #include "PublicadorDeEstadisticas.h"
 #include "Serializados.h"
 
-PublicadorDeEstadisticas::PublicadorDeEstadisticas() {
-    fifo=new FifoLectura(ARCHIVO_FIFO_ESTADISTICAS);
-    fifo->abrir();
+PublicadorDeEstadisticas::PublicadorDeEstadisticas(const unsigned maxCantidadResultados) throw(std::exception){
+    this->memoriaResultados=new MemoriaCompartidaResultados(maxCantidadResultados);
 }
 
 PublicadorDeEstadisticas::~PublicadorDeEstadisticas() {
-    fifo->cerrar();
-    delete(fifo);
-    fifo=NULL;
+    delete(memoriaResultados);
+    memoriaResultados=NULL;
 }
 
 void PublicadorDeEstadisticas::update() {
-    ResultadoSerializado resultados[bufferSize];
-    ssize_t bytesLeidos=fifo->leer(resultados,sizeof(resultados));
-    if(bytesLeidos>0) {
-        unsigned int cantidadResLeidos=bytesLeidos/sizeof(TResultadoSerializado);
-        for (int i = 0; i < cantidadResLeidos; i++) {
-            publicador.add(resultados[i]);
-        }
+    std::list<TResultadoSerializado>* lista=this->memoriaResultados->readAll();
+    for(std::list<TResultadoSerializado>::iterator it = lista->begin();it!=lista->end();it++){
+        publicador.add(*it);
     }
+    delete(lista);
     publicador.update();
 }

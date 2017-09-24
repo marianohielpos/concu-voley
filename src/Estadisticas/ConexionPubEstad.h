@@ -4,23 +4,23 @@
 
 #ifndef CONCU_VOLEY_CONEXIONPUBESTAD_H
 #define CONCU_VOLEY_CONEXIONPUBESTAD_H
-
-
-#include <FifoEscritura.h>
 #include <Serializados.h>
+#include "MemoriaCompartidaResultados.h"
 
 class ConexionPubEstad {
 
 private:
 
-    FifoEscritura* fifo=NULL;
+    MemoriaCompartidaResultados* memoria=NULL;
 
 public:
-    ConexionPubEstad();
+
+    ConexionPubEstad(unsigned int maxCantidadResultados) throw(std::exception);
 
     ~ConexionPubEstad();
 
-    void add(TResultadoSerializado &resultadoSerializado);
+    bool add(TResultadoSerializado &resultadoSerializado);
+
 };
 
 

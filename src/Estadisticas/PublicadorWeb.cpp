@@ -15,7 +15,7 @@ void PublicadorWeb::add(TResultadoSerializado &resultado) {
 }
 
 void PublicadorWeb::update() {
-    fd=open(ARCHIVO_HTML,O_WRONLY|O_CREAT|O_TRUNC);
+    fd=open(ARCHIVO_HTML,O_WRONLY|O_CREAT|O_TRUNC,0644);
     this->escribirHeader();
     this->escribirBody();
     this->escribirFooter();
