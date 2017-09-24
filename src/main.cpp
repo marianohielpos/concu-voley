@@ -12,8 +12,14 @@ Opciones parsearParametros (int argc, char *argv[]) {
     Opciones opciones;
 
     int opt;
-    while ((opt = getopt(argc, argv, "hdj:s:p:")) != -1) {
+    while ((opt = getopt(argc, argv, "hdj:s:p:l:k:")) != -1) {
         switch (opt) {
+            case 'l':
+                opciones.logName = std::string(optarg);
+                break;
+            case 'k':
+                opciones.logName = std::string(optarg);
+                break;
             case 'd':
                 opciones.debug = true;
                 break;
@@ -28,7 +34,10 @@ Opciones parsearParametros (int argc, char *argv[]) {
                 break;
             case 'h':
                 std::cout << "Uso: [-d] [-j cantidadDeJugadores] [-s sleepTime]"
-                          << "[-p partidosPorJugador]" << std::endl;
+                          << "[-p partidosPorJugador]"
+                          << "[-l nombreDelLog]"
+                          << "[-k nivelDelLog [debug, info]]"
+                          << std::endl;
                 exit(0);
 
         }

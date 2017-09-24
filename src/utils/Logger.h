@@ -20,6 +20,8 @@ private:
 
     bool pid = true;
 
+    std::string logLevel = "info";
+
     std::string generarMensaje(std::string mensaje);
 
     void escribirAArchivo(std::string mensaje);
@@ -32,8 +34,9 @@ public:
 
     ~Logger();
 
-    void log(std::string texto);
+    void info(std::string mensaje);
 
+    void debug(std::string mensaje);
 };
 
 

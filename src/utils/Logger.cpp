@@ -27,7 +27,7 @@ std::string Logger::generarMensaje(std::string mensaje){
 
     std::stringstream mensajeFormateado;
 
-    if (this->timestamp) {
+    if (this->pid) {
 
         mensajeFormateado << " PID: ";
 
@@ -63,7 +63,19 @@ void Logger::escribirAConsola(std::string mensaje) {
     std::cout << mensaje;
 }
 
-void Logger::log(std::string mensaje) {
+void Logger::info(std::string mensaje) {
+
+    std::string mensajeFormateado = this->generarMensaje(mensaje);
+
+    if( this->lock == NULL)
+        return this->escribirAConsola(mensajeFormateado);
+
+    return this->escribirAArchivo(mensajeFormateado);
+}
+
+void Logger::debug(std::string mensaje) {
+
+    if( this->logLevel.compare("debug") ) return;
 
     std::string mensajeFormateado = this->generarMensaje(mensaje);
 

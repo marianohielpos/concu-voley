@@ -10,6 +10,7 @@
 #include "torneo.h"
 #include "../modelo/jugador.h"
 #include "../utils/sleep.h"
+#include "Marea.h"
 
 
 MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
@@ -19,10 +20,18 @@ MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
 
 void MainProcess::run() {
 
-  this->logger->log("Comienzo del programa");
+  this->logger->info("Comienzo del programa");
 
 
-  std::vector<Jugador> v;
+  pid_t marea = fork();
+  if (marea == 0) {
+    Marea marea = Marea(this->logger);
+    marea.run();
+    exit(0);
+  }
+
+
+    std::vector<Jugador> v;
   for (int i = 0; i < JUGADORES_PARA_TORNEO; ++i) {
     v.push_back(Jugador(i));
   }
@@ -40,7 +49,7 @@ void MainProcess::run() {
       int i = v.size();
       while (i <= opts_.jugadores) {
         milisleep(150);
-        this->logger->log("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
+        this->logger->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
         kill(pidTorneo, SIGUSR1);
         i++;
       }
@@ -48,6 +57,8 @@ void MainProcess::run() {
       wait(&status);
     }
   }
+
+  kill(marea, SIGINT);
 
 }
 

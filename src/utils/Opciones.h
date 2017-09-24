@@ -9,6 +9,7 @@ typedef struct {
     unsigned int jugadores = 15;
     unsigned int partidos = 3;
     string logName = "";
+    string logLevel = "info";
     unsigned int sleep = 5;
 } Opciones;
 

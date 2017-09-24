@@ -16,7 +16,7 @@ Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* l
 
 void Torneo::run() {
 
-  this->logger->log("Torneo corriendo!");
+  this->logger->info("Torneo corriendo!");
 
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
@@ -31,7 +31,7 @@ void Torneo::run() {
       if (pidPartido != -1 && WIFEXITED(status)) {
         finalizarPartido(pidPartido, status);
       } else {
-        this->logger->log("Wait terminó sin exit!");
+        this->logger->info("Wait terminó sin exit!");
       }
 
   }
@@ -76,7 +76,7 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
-  this->logger->log(ss.str());
+  this->logger->info(ss.str());
 
 };
 
