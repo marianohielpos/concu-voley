@@ -69,8 +69,6 @@ template<class T> void MemoriaCompartida<T>::escribir(const T& dato,int offset){
     memcpy(&this->ptrDatos[offset],&dato,sizeof(T));
 }
 
-
-
 template<class T> void MemoriaCompartida<T>::leer(T &buffer,int offset) const{
     memcpy(&buffer,&ptrDatos[offset],sizeof(buffer));
 }
