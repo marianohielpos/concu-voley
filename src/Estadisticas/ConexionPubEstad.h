@@ -6,11 +6,13 @@
 #define CONCU_VOLEY_CONEXIONPUBESTAD_H
 #include <Serializados.h>
 #include "MemoriaCompartidaResultados.h"
+#include "LockMemoriaCompartidaResultados.h"
 
 class ConexionPubEstad {
 
 private:
 
+    LockMemoriaCompartidaResultados* lock=NULL;
     MemoriaCompartidaResultados* memoria=NULL;
 
 public:

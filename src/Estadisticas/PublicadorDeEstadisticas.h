@@ -7,14 +7,16 @@
 #include <FifoLectura.h>
 #include <MemoriaCompartidaResultados.h>
 #include "PublicadorWeb.h"
-#define ARCHIVO_FIFO_ESTADISTICAS "/tmp/fifoEstadisticas"
+#include "LockMemoriaCompartidaResultados.h"
+
 class PublicadorDeEstadisticas {
 
 private:
 
-    MemoriaCompartidaResultados* memoriaResultados;
-
+    MemoriaCompartidaResultados* memoriaResultados=NULL;
+    LockMemoriaCompartidaResultados* lock=NULL;
     PublicadorWeb publicador;
+
 
 public:
 
