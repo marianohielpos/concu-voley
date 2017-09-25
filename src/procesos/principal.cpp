@@ -25,7 +25,7 @@ void MainProcess::run() {
 
   pid_t marea = fork();
   if (marea == 0) {
-    Marea marea = Marea(this->logger);
+    Marea marea = Marea(this->logger, nullptr);
     marea.run();
     exit(0);
   }

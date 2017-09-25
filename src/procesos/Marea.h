@@ -16,6 +16,12 @@ private:
 
     bool gracefulQuit = false;
 
+    bool mareaSubio();
+
+    pid_t* leerProcesosEnCancha();
+
+    void enviarSIGINTAproceso(pid_t pid);
+
 public:
     Marea(Logger* logger, MemoriaCompartidaCanchas* canchas);
 
