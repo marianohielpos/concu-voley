@@ -5,17 +5,23 @@
 #ifndef CONCU_VOLEY_MAREA_H
 #define CONCU_VOLEY_MAREA_H
 #include "Logger.h"
+#include "MemoriaCompartidaCanchas.h"
 
 class Marea {
 
 private:
-    Logger* logger;
+    Logger* logger = NULL;
+
+    MemoriaCompartidaCanchas* canchas = NULL;
+
+    bool gracefulQuit = false;
 
 public:
-    Marea(Logger* logger);
+    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas);
+
+    void handleSignal(int signum);
 
     void run();
-
 };
 
 
