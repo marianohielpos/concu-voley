@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <Logger.h>
+#include <Opciones.h>
 
 #include "principal.h"
 #include "torneo.h"
@@ -48,7 +49,7 @@ void MainProcess::run() {
 
       int i = v.size();
       while (i <= opts_.jugadores) {
-        milisleep(150);
+        milisleep(this->opts_.sleep);
         this->logger->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
         kill(pidTorneo, SIGUSR1);
         i++;

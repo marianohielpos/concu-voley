@@ -143,7 +143,7 @@ bool Torneo::lanzarPartido() {
     j.setDisponible(false);
   }
 
-  Partido partido(p, logger);
+  Partido partido(p, logger, this->opts_);
   pid_t pidPartido = fork();
   if (pidPartido == 0) {
     partido.run();

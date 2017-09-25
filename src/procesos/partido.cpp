@@ -2,13 +2,15 @@
 #include <iostream>
 #include <unistd.h>
 #include <stdlib.h>
+#include <Opciones.h>
 #include "partido.h"
 #include "../utils/sleep.h"
 
 
 
-Partido::Partido(participantes p, Logger* logger) : p_(p) {
+Partido::Partido(participantes p, Logger* logger, Opciones opts_) : p_(p) {
   this->logger = logger;
+  this->opts_ = opts_;
 }
 
 participantes Partido::getParticipantes() {
@@ -41,6 +43,6 @@ void Partido::run() {
 }
 
 bool Partido::jugarSet() {
-  milisleep(100);
+  milisleep(this->opts_.sleep);
   return rand() % 2 == 0;
 };
