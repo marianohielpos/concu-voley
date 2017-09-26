@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 LockMemoriaCompartidaResultados ::LockMemoriaCompartidaResultados(MemoriaCompartidaResultados* memoriaCompartidaResultados) throw(std::exception) {
-    this->nombre=ARCHIVO_MEMORIA_COMPARTIDA_RESULTADOS;
+    this->nombre=ARCHIVO_LOCK_MEMORIA_COMPARTIDA_RESULTADOS;
     if(memoriaCompartidaResultados == NULL){
         throw(std::exception());
     }

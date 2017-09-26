@@ -4,7 +4,7 @@
 
 #ifndef CONCU_VOLEY_LOCKMEMORIACOMPARTIDARESULTADOS_H
 #define CONCU_VOLEY_LOCKMEMORIACOMPARTIDARESULTADOS_H
-#define ARCHIVO_MEMORIA_COMPARTIDA_RESULTADOS "/tmp/memoriaCompartidaResultados.tmp"
+#define ARCHIVO_LOCK_MEMORIA_COMPARTIDA_RESULTADOS "/tmp/lockMemoriaCompartidaResultados.tmp"
 #include <fcntl.h>
 #include <iostream>
 #include "MemoriaCompartidaResultados.h"

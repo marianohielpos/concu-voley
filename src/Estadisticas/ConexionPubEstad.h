@@ -6,22 +6,33 @@
 #define CONCU_VOLEY_CONEXIONPUBESTAD_H
 #include <Serializados.h>
 #include "MemoriaCompartidaResultados.h"
+#include "MemoriaCompartidaJugadores.h"
 #include "LockMemoriaCompartidaResultados.h"
+#include "LockMemoriaCompartidaJugadores.h"
 
 class ConexionPubEstad {
 
 private:
 
-    LockMemoriaCompartidaResultados* lock=NULL;
-    MemoriaCompartidaResultados* memoria=NULL;
+    LockMemoriaCompartidaResultados* lockMemoriaCompartidaResultados=NULL;
+
+    MemoriaCompartidaResultados* memoriaCompartidaResultados=NULL;
+
+    LockMemoriaCompartidaJugadores* lockMemoriaCompartidaJugadores=NULL;
+
+    MemoriaCompartidaJugadores* memoriaCompartidaJugadores=NULL;
 
 public:
 
-    ConexionPubEstad(unsigned int maxCantidadResultados) throw(std::exception);
+    ConexionPubEstad(unsigned int maxCantidadResultados,
+                     unsigned int maxCantidadJugadoresPuntaje)
+                    throw(std::exception);
 
     ~ConexionPubEstad();
 
-    bool add(TResultadoSerializado &resultadoSerializado);
+    bool addResultado(TResultadoSerializado &resultadoSerializado);
+
+    bool addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje);
 
 };
 

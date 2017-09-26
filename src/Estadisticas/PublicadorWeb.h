@@ -15,32 +15,27 @@ private:
 
     int fd=-1;
 
-    std::list<TResultadoSerializado> resultados;
-
 public:
 
-    PublicadorWeb();
-
-    void add(TResultadoSerializado &resultado);
-
-    void update();
-
-    ~PublicadorWeb();
+    void update(std::list<TResultadoSerializado>* resultadosPartidos,
+                std::list<TJugadorPuntaje>* jugadoresPuntajes);
 
 protected:
 
-    void escribirTabla();
+    void escribirTablaResultados(std::list<TResultadoSerializado> *resultadosPartidos);
 
     void escribirHeader();
 
     void escribirFooter();
 
-    void escribirBody();
+    void escribirBody(std::list<TResultadoSerializado>* resultadosPartidos,
+                      std::list<TJugadorPuntaje>* jugadoresPuntajes);
 
     void escribirEnWeb(const char *cadena);
 
     void escribirEnWeb(std::string &cadena);
 
+    void escribirTablaPuntajeJugadores(std::list<TJugadorPuntaje>* jugadoresPuntajes);
 };
 
 
