@@ -18,6 +18,8 @@ private:
 
     bool mareaSubio();
 
+    bool mareaBajo();
+
     pid_t* leerProcesosEnCancha();
 
     void enviarSIGINTAproceso(pid_t pid);

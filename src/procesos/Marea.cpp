@@ -23,13 +23,26 @@ void Marea::run() {
 
     this->logger->info("Marea incializada");
 
+    srand(getpid());
+
     SIGINT_Handler sigint_handler;
 
     SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
     while ( sigint_handler.getGracefulQuit() == 0 ) {
         this->logger->info("Proceso de marea corriendo");
-        sleep ( 2 );
+
+        if (this->mareaSubio()) {
+            this->logger->info("Marea subió");
+        }
+        else if (this->mareaBajo()) {
+            this->logger->info("Marea bajó");
+        }
+        else {
+            this->logger->info("Marea se quedó en el mismo nivel");
+        }
+
+        sleep ( 1 );
     }
 
     SignalHandler :: destruir ();
@@ -39,19 +52,9 @@ void Marea::run() {
 
 
 bool Marea::mareaSubio() {
+    return (rand() % 5) == 1 ;
+}
 
-    time_t seconds = time(NULL);
-
-    if( seconds == -1)
-    {
-        this->logger->info("Error desconocido");
-
-        perror("Ocurrió un error ");
-
-        exit(1);
-    }
-
-    srand(seconds);
-
-    return (random() % 2) == 1 ;
+bool Marea::mareaBajo() {
+    return (rand() % 4) == 1 ;
 }
