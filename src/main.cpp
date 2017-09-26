@@ -18,7 +18,7 @@ Opciones parsearParametros (int argc, char *argv[]) {
                 opciones.logName = std::string(optarg);
                 break;
             case 'k':
-                opciones.logName = std::string(optarg);
+                opciones.logLevel = std::string(optarg);
                 break;
             case 'd':
                 opciones.debug = true;
@@ -55,8 +55,9 @@ int main(int argc, char *argv[]) {
 
     Opciones opciones = parsearParametros(argc, argv);
 
-    Logger logger = Logger(opciones.logName);
+    Logger logger = Logger(opciones.logName, opciones.logLevel);
 
+    logger.error("un error");
     MainProcess mp(opciones, &logger);
 
     mp.run();

@@ -10,12 +10,14 @@
 #include <iostream>
 #include <sstream>
 
-Logger::Logger(std::string nombre) {
+Logger::Logger(std::string nombreArchivo, std::string nivel) {
 
-    if(nombre.empty())
+    if(nombreArchivo.empty())
         return;
 
-    this->lock = new LockFile(nombre);
+    this->lock = new LockFile(nombreArchivo);
+
+    this->logLevel = nivel;
 
 }
 
@@ -23,9 +25,11 @@ Logger::~Logger() {
     delete this->lock;
 }
 
-std::string Logger::generarMensaje(std::string mensaje){
+std::string Logger::generarMensaje(std::string mensaje, std::string nivel){
 
     std::stringstream mensajeFormateado;
+
+    mensajeFormateado << nivel;
 
     if (this->pid) {
 
@@ -65,22 +69,48 @@ void Logger::escribirAConsola(std::string mensaje) {
 
 void Logger::info(std::string mensaje) {
 
-    std::string mensajeFormateado = this->generarMensaje(mensaje);
+    if( this->levels["info"] < this->levels[this->logLevel] ) return;
 
-    if( this->lock == NULL)
-        return this->escribirAConsola(mensajeFormateado);
+    std::string mensajeFormateado = this->generarMensaje(mensaje, "INFO");
 
-    return this->escribirAArchivo(mensajeFormateado);
+    this->imprimirMensaje(mensajeFormateado);
+
 }
 
 void Logger::debug(std::string mensaje) {
 
-    if( this->logLevel.compare("debug") ) return;
+    if( this->levels["debug"] < this->levels[this->logLevel] ) return;
 
-    std::string mensajeFormateado = this->generarMensaje(mensaje);
+    std::string mensajeFormateado = this->generarMensaje(mensaje, "DEBUG");
 
+    this->imprimirMensaje(mensajeFormateado);
+
+}
+
+void Logger::warning(std::string mensaje) {
+
+    if( this->levels["warning"] < this->levels[this->logLevel] ) return;
+
+    std::string mensajeFormateado = this->generarMensaje(mensaje, "WARNING");
+
+    this->imprimirMensaje(mensajeFormateado);
+
+}
+
+void Logger::error(std::string mensaje) {
+
+    if( this->levels["error"] < this->levels[this->logLevel] ) return;
+
+    std::string mensajeFormateado = this->generarMensaje(mensaje, "ERROR");
+
+    this->imprimirMensaje(mensajeFormateado);
+
+}
+
+
+void Logger::imprimirMensaje(std::string mensaje) {
     if( this->lock == NULL)
-        return this->escribirAConsola(mensajeFormateado);
+        return this->escribirAConsola(mensaje);
 
-    return this->escribirAArchivo(mensajeFormateado);
+    return this->escribirAArchivo(mensaje);
 }
