@@ -57,7 +57,6 @@ int main(int argc, char *argv[]) {
 
     Logger logger = Logger(opciones.logName, opciones.logLevel);
 
-    logger.error("un error");
     MainProcess mp(opciones, &logger);
 
     mp.run();

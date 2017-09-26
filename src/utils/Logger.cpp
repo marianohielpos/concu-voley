@@ -12,13 +12,13 @@
 
 Logger::Logger(std::string nombreArchivo, std::string nivel) {
 
+    if( this->levels.find(nivel) != this->levels.end() )
+        this->logLevel = nivel;
+
     if(nombreArchivo.empty())
         return;
 
     this->lock = new LockFile(nombreArchivo);
-
-    this->logLevel = nivel;
-
 }
 
 Logger::~Logger() {
@@ -69,48 +69,37 @@ void Logger::escribirAConsola(std::string mensaje) {
 
 void Logger::info(std::string mensaje) {
 
-    if( this->levels["info"] < this->levels[this->logLevel] ) return;
-
-    std::string mensajeFormateado = this->generarMensaje(mensaje, "INFO");
-
-    this->imprimirMensaje(mensajeFormateado);
+    this->imprimirMensaje(mensaje, "INFO");
 
 }
 
 void Logger::debug(std::string mensaje) {
 
-    if( this->levels["debug"] < this->levels[this->logLevel] ) return;
-
-    std::string mensajeFormateado = this->generarMensaje(mensaje, "DEBUG");
-
-    this->imprimirMensaje(mensajeFormateado);
+    this->imprimirMensaje(mensaje, "DEBUG");
 
 }
 
 void Logger::warning(std::string mensaje) {
 
-    if( this->levels["warning"] < this->levels[this->logLevel] ) return;
-
-    std::string mensajeFormateado = this->generarMensaje(mensaje, "WARNING");
-
-    this->imprimirMensaje(mensajeFormateado);
+    this->imprimirMensaje(mensaje, "WARNING");
 
 }
 
 void Logger::error(std::string mensaje) {
 
-    if( this->levels["error"] < this->levels[this->logLevel] ) return;
-
-    std::string mensajeFormateado = this->generarMensaje(mensaje, "ERROR");
-
-    this->imprimirMensaje(mensajeFormateado);
+    this->imprimirMensaje(mensaje, "ERROR");
 
 }
 
 
-void Logger::imprimirMensaje(std::string mensaje) {
-    if( this->lock == NULL)
-        return this->escribirAConsola(mensaje);
+void Logger::imprimirMensaje(std::string mensaje, std::string nivel) {
 
-    return this->escribirAArchivo(mensaje);
+    if( this->levels[nivel] < this->levels[this->logLevel] ) return;
+
+    std::string mensajeFormateado = this->generarMensaje(mensaje, nivel);
+
+    if( this->lock == NULL)
+        return this->escribirAConsola(mensajeFormateado);
+
+    return this->escribirAArchivo(mensajeFormateado);
 }

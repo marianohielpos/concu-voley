@@ -16,11 +16,10 @@ class Logger {
 private:
 
     std::map<std::string, int> levels = {
-            {"debug", 10},
-            {"info", 20},
-            {"debug", 30},
-            {"warning", 40},
-            {"error", 50}
+            {"DEBUG", 10},
+            {"INFO", 20},
+            {"WARNIG", 30},
+            {"ERROR", 40}
     };
 
     LockFile *lock = NULL;
@@ -29,11 +28,11 @@ private:
 
     bool pid = true;
 
-    std::string logLevel = "info";
+    std::string logLevel = "INFO";
 
     std::string generarMensaje(std::string mensaje, std::string nivel);
 
-    void imprimirMensaje(std::string mensaje);
+    void imprimirMensaje(std::string mensaje, std::string nivel);
 
     void escribirAArchivo(std::string mensaje);
 
