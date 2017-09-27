@@ -43,6 +43,6 @@ void Partido::run() {
 }
 
 bool Partido::jugarSet() {
-  milisleep(this->opts_.sleep);
+  milisleep(this->opts_.sleepPartido);
   return rand() % 2 == 0;
 };

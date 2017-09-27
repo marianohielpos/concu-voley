@@ -6,6 +6,7 @@
 #define CONCU_VOLEY_MAREA_H
 #include "Logger.h"
 #include "MemoriaCompartidaCanchas.h"
+#include "Opciones.h"
 
 class Marea {
 
@@ -24,8 +25,10 @@ private:
 
     void enviarSIGINTAproceso(pid_t pid);
 
+    Opciones* opciones;
+
 public:
-    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas);
+    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones *opciones);
 
     void handleSignal(int signum);
 

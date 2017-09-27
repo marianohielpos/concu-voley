@@ -26,7 +26,7 @@ void MainProcess::run() {
 
   pid_t marea = fork();
   if (marea == 0) {
-    Marea marea = Marea(this->logger, nullptr);
+    Marea marea = Marea(this->logger, nullptr, &this->opts_);
     marea.run();
     exit(0);
   }
@@ -49,7 +49,7 @@ void MainProcess::run() {
 
       int i = v.size();
       while (i <= opts_.jugadores) {
-        milisleep(this->opts_.sleep);
+        milisleep(this->opts_.sleepJugadores);
         this->logger->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
         kill(pidTorneo, SIGUSR1);
         i++;
