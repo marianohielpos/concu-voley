@@ -9,7 +9,11 @@ typedef struct {
     unsigned int jugadores = 15;
     unsigned int partidos = 3;
     string logName = "";
-    unsigned int sleep = 5;
+    string logLevel = "info";
+    unsigned int sleepPartido = 200;
+    unsigned int sleepMarea = 200;
+    unsigned int sleepJugadores = 200;
+    unsigned int sleepPublicador = 200;
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H

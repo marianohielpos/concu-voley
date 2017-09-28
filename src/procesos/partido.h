@@ -4,6 +4,7 @@
 
 #include <array>
 #include <Logger.h>
+#include "Opciones.h"
 
 typedef std::array<int, 4> participantes;
 
@@ -22,12 +23,16 @@ protected:
 
     Logger* logger;
 
+    Opciones opts_;
+
 public:
-  Partido(participantes p, Logger* logger);
+  Partido(participantes p, Logger* logger, Opciones opts_);
 
   void run();
 
   participantes getParticipantes();
+
+
 };
 
 #endif

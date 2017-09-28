@@ -10,24 +10,28 @@
 #include <iostream>
 #include <sstream>
 
-Logger::Logger(std::string nombre) {
+Logger::Logger(std::string nombreArchivo, std::string nivel) {
 
-    if(nombre.empty())
+    if( this->levels.find(nivel) != this->levels.end() )
+        this->logLevel = nivel;
+
+    if(nombreArchivo.empty())
         return;
 
-    this->lock = new LockFile(nombre);
-
+    this->lock = new LockFile(nombreArchivo);
 }
 
 Logger::~Logger() {
     delete this->lock;
 }
 
-std::string Logger::generarMensaje(std::string mensaje){
+std::string Logger::generarMensaje(std::string mensaje, std::string nivel){
 
     std::stringstream mensajeFormateado;
 
-    if (this->timestamp) {
+    mensajeFormateado << nivel;
+
+    if (this->pid) {
 
         mensajeFormateado << " PID: ";
 
@@ -63,9 +67,36 @@ void Logger::escribirAConsola(std::string mensaje) {
     std::cout << mensaje;
 }
 
-void Logger::log(std::string mensaje) {
+void Logger::info(std::string mensaje) {
 
-    std::string mensajeFormateado = this->generarMensaje(mensaje);
+    this->imprimirMensaje(mensaje, "INFO");
+
+}
+
+void Logger::debug(std::string mensaje) {
+
+    this->imprimirMensaje(mensaje, "DEBUG");
+
+}
+
+void Logger::warning(std::string mensaje) {
+
+    this->imprimirMensaje(mensaje, "WARNING");
+
+}
+
+void Logger::error(std::string mensaje) {
+
+    this->imprimirMensaje(mensaje, "ERROR");
+
+}
+
+
+void Logger::imprimirMensaje(std::string mensaje, std::string nivel) {
+
+    if( this->levels[nivel] < this->levels[this->logLevel] ) return;
+
+    std::string mensajeFormateado = this->generarMensaje(mensaje, nivel);
 
     if( this->lock == NULL)
         return this->escribirAConsola(mensajeFormateado);

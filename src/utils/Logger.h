@@ -9,10 +9,18 @@
 #include <LockFile.h>
 #include <string>
 #include <iostream>
+#include <map>
 
 class Logger {
 
 private:
+
+    std::map<std::string, int> levels = {
+            {"DEBUG", 10},
+            {"INFO", 20},
+            {"WARNIG", 30},
+            {"ERROR", 40}
+    };
 
     LockFile *lock = NULL;
 
@@ -20,7 +28,11 @@ private:
 
     bool pid = true;
 
-    std::string generarMensaje(std::string mensaje);
+    std::string logLevel = "INFO";
+
+    std::string generarMensaje(std::string mensaje, std::string nivel);
+
+    void imprimirMensaje(std::string mensaje, std::string nivel);
 
     void escribirAArchivo(std::string mensaje);
 
@@ -28,12 +40,17 @@ private:
 
 public:
 
-    Logger ( std::string nombre );
+    Logger ( std::string nombreArchivo, std::string nivel);
 
     ~Logger();
 
-    void log(std::string texto);
+    void info(std::string mensaje);
 
+    void debug(std::string mensaje);
+
+    void warning(std::string mensaje);
+
+    void error(std::string mensaje);
 };
 
 
