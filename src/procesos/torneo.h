@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <MemoriaCompartidaCanchas.h>
 #include "../utils/Opciones.h"
 #include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
@@ -28,13 +29,21 @@ class Torneo {
 
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger);
+
+  Torneo(
+          std::vector<Jugador> jugadoresIniciales,
+          Opciones opts,
+          Logger* logger,
+          MemoriaCompartidaCanchas* memoriaCompartidaCanchas
+  );
+
   void agregarJugador();
 
   void run();
   //~Torneo();
 
     Logger *logger;
+    MemoriaCompartidaCanchas* memoriaCompartidaCanchas;
 };
 
 

@@ -12,6 +12,7 @@
 #include "../modelo/jugador.h"
 #include "../utils/sleep.h"
 #include "Marea.h"
+#include "MemoriaCompartidaCanchas.h"
 
 
 MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
@@ -23,10 +24,11 @@ void MainProcess::run() {
 
   this->logger->info("Comienzo del programa");
 
+  MemoriaCompartidaCanchas memoriaCompartidaCanchas = MemoriaCompartidaCanchas(this->opts_.filas, this->opts_.columnas);
 
   pid_t marea = fork();
   if (marea == 0) {
-    Marea marea = Marea(this->logger, nullptr, &this->opts_);
+    Marea marea = Marea(this->logger, &memoriaCompartidaCanchas, &this->opts_);
     marea.run();
     exit(0);
   }
@@ -42,7 +44,7 @@ void MainProcess::run() {
   if (v.size() >= JUGADORES_PARA_TORNEO) {
     pid_t pidTorneo = fork();
     if (pidTorneo == 0) {
-      Torneo t(v, opts_, this->logger);
+      Torneo t(v, opts_, this->logger, &memoriaCompartidaCanchas);
       t.run();
       exit(0);
     } else {

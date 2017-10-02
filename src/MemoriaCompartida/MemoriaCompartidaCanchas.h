@@ -4,6 +4,8 @@
 
 #ifndef TP_CONCURRENTES_2_CUATRI_MEMORIACOMPARTIDACANCHAS_H
 #define TP_CONCURRENTES_2_CUATRI_MEMORIACOMPARTIDACANCHAS_H
+
+#include <LockFile.h>
 #include "Serializados.h"
 #include "MemoriaCompartida.h"
 #define ARCHIVO_MEMORIA_CANCHAS "/bin/bash"
@@ -18,6 +20,8 @@ private:
 
     MemoriaCompartida<TCanchaSerializada> memoria;
     int filas,columnas;
+
+    LockFile lock = LockFile("memoria_compartida_canchas_lock.txt");
 
 public:
 

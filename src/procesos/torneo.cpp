@@ -7,9 +7,12 @@
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
 #include <sstream>
+#include <MemoriaCompartidaCanchas.h>
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
+Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas)
   : jugadores_(jugadoresIniciales), opts_(opts) {
+
+  this->memoriaCompartidaCanchas = memoriaCompartidaCanchas;
 
   this->logger = logger;
 }

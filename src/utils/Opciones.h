@@ -6,6 +6,8 @@ using std::string;
 
 typedef struct {
     bool debug = false;
+    unsigned int filas = 10;
+    unsigned int columnas = 10;
     unsigned int jugadores = 15;
     unsigned int partidos = 3;
     string logName = "";

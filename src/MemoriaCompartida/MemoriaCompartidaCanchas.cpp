@@ -13,13 +13,17 @@ MemoriaCompartidaCanchas::MemoriaCompartidaCanchas(const unsigned int filas, con
 }
 
 void MemoriaCompartidaCanchas::escribir(const TCanchaSerializada& cancha) throw(std::exception){
+    this->lock.tomarLock();
     checkFilaColumna(cancha.fila,cancha.columna);
     this->memoria.escribir(cancha, this->calcularOffset(cancha.fila, cancha.columna));
+    this->lock.liberarLock();
 }
 
 void MemoriaCompartidaCanchas::leer(TCanchaSerializada &cancha,const unsigned int fila,const unsigned int columna) throw(std::exception){
+    this->lock.tomarLock();
     checkFilaColumna(fila,columna);
     this->memoria.leer(cancha, this->calcularOffset(fila, columna));
+    this->lock.liberarLock();
 }
 
 unsigned int MemoriaCompartidaCanchas::calcularOffset(const unsigned int fila, const unsigned int columna) const {
