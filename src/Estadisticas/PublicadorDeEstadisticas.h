@@ -7,18 +7,25 @@
 #include <FifoLectura.h>
 #include <MemoriaCompartidaResultados.h>
 #include "PublicadorWeb.h"
-#define ARCHIVO_FIFO_ESTADISTICAS "/tmp/fifoEstadisticas"
+#include "LockMemoriaCompartidaResultados.h"
+#include "LockMemoriaCompartidaJugadores.h"
+
 class PublicadorDeEstadisticas {
 
 private:
 
-    MemoriaCompartidaResultados* memoriaResultados;
+    MemoriaCompartidaResultados* memoriaResultados=NULL;
+    LockMemoriaCompartidaResultados* lockResultados=NULL;
+
+    MemoriaCompartidaJugadores* memoriaJugadores=NULL;
+    LockMemoriaCompartidaJugadores* lockJugadores=NULL;
 
     PublicadorWeb publicador;
 
 public:
 
-    PublicadorDeEstadisticas(const unsigned maxCantidadResultados) throw(std::exception);
+    PublicadorDeEstadisticas(const unsigned maxCantidadResultados,
+                             const unsigned maxCantidadJugadores) throw(std::exception);
 
     void update();
 

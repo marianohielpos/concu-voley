@@ -9,7 +9,7 @@
 #define ARCHIVO_MEMORIA_CANCHAS "/bin/bash"
 #define CARACTER_MEMORIA_CANCHAS 'a'
 /*
- * Una instancia de esta clase representa una porción de memoria compartida asignada
+ * Una instancia de esta clase representa una porción de memoriaCompartidaResultados compartida asignada
  * a colección matricial de TCachaSerializada sobre la cual se puede leer o escribir.
  * */
 class MemoriaCompartidaCanchas{

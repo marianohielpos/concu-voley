@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <string>
 #include <cstring>
-
 #define JUGADORES_POR_EQUIPO 2
 #define NUMERO_MAX_SETS 5
 
@@ -99,5 +98,9 @@ typedef struct ResultadoSerializado{
 
 } TResultadoSerializado;
 
+typedef struct JugadorPuntaje{
+    pid_t jugador=0;
+    unsigned int puntaje=0;
+}TJugadorPuntaje;
 
 #endif //TP_CONCURRENTES_2_CUATRI_SERIALIZADOS_H
