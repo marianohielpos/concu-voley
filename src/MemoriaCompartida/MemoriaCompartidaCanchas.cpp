@@ -26,6 +26,14 @@ void MemoriaCompartidaCanchas::leer(TCanchaSerializada &cancha,const unsigned in
     this->lock.liberarLock();
 }
 
+
+void MemoriaCompartidaCanchas::leerTodo(TCanchaSerializada &canchas) throw(std::exception){
+    this->lock.tomarLock();
+    this->memoria.leer(canchas, 0);
+    this->lock.liberarLock();
+}
+
+
 unsigned int MemoriaCompartidaCanchas::calcularOffset(const unsigned int fila, const unsigned int columna) const {
     return fila*columnas+columna;
 }

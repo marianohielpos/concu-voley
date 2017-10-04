@@ -8,6 +8,7 @@
 #include "../ipc/SignalHandler.h"
 #include <sstream>
 #include <MemoriaCompartidaCanchas.h>
+#include <Opciones.h>
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas)
   : jugadores_(jugadoresIniciales), opts_(opts) {
@@ -126,8 +127,13 @@ bool Torneo::siguientesParticipantes(participantes& p) {
 };
 
 bool Torneo::sePuedeArmarPartido() {
-  participantes p {-1, -1, -1, -1};
-  return siguientesParticipantes(p);
+
+    TCanchaSerializada canchas[this->opts_.filas * this->opts_.columnas];
+
+    this->memoriaCompartidaCanchas->leerTodo(&canchas);
+
+    participantes p {-1, -1, -1, -1};
+    return siguientesParticipantes(p);
 };
 
 bool Torneo::partidosCorriendo() {

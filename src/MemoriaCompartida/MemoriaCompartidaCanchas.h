@@ -49,6 +49,8 @@ public:
      */
     void escribir(const TCanchaSerializada& cancha) throw(std::exception);
 
+    void leerTodo(TCanchaSerializada &cancha)
+
 protected:
 
     unsigned int calcularOffset(const unsigned int fila,const unsigned int columna) const;
