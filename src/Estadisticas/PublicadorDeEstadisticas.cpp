@@ -9,22 +9,15 @@
 PublicadorDeEstadisticas::PublicadorDeEstadisticas(const unsigned maxCantidadResultados,
                                                    const unsigned maxCantidadJugadores)
                                                     throw(std::exception){
-    this->memoriaResultados=new MemoriaCompartidaResultados(maxCantidadResultados);
-    this->lockResultados=new LockMemoriaCompartidaResultados(memoriaResultados);
+    this->lockResultados=new LockMemoriaCompartidaResultados(maxCantidadResultados);
 
-    this->memoriaJugadores=new MemoriaCompartidaJugadores(maxCantidadJugadores);
-    this->lockJugadores=new LockMemoriaCompartidaJugadores(memoriaJugadores);
+    this->lockJugadores=new LockMemoriaCompartidaJugadores(maxCantidadJugadores);
 }
 
 PublicadorDeEstadisticas::~PublicadorDeEstadisticas() {
-    delete(memoriaResultados);
     delete(lockResultados);
-    memoriaResultados=NULL;
     lockResultados=NULL;
-
-    delete(memoriaJugadores);
     delete(lockJugadores);
-    memoriaJugadores=NULL;
     lockJugadores=NULL;
 }
 

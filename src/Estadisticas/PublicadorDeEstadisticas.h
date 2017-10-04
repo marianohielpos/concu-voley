@@ -14,10 +14,8 @@ class PublicadorDeEstadisticas {
 
 private:
 
-    MemoriaCompartidaResultados* memoriaResultados=NULL;
     LockMemoriaCompartidaResultados* lockResultados=NULL;
 
-    MemoriaCompartidaJugadores* memoriaJugadores=NULL;
     LockMemoriaCompartidaJugadores* lockJugadores=NULL;
 
     PublicadorWeb publicador;

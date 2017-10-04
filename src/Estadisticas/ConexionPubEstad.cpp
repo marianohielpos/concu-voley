@@ -8,24 +8,16 @@
 
 ConexionPubEstad::ConexionPubEstad(unsigned int maxCantidadResultados, unsigned int maxCantidadJugadoresPuntaje)
                                     throw(std::exception){
-    memoriaCompartidaResultados=new MemoriaCompartidaResultados(maxCantidadResultados);
-    lockMemoriaCompartidaResultados=new LockMemoriaCompartidaResultados(memoriaCompartidaResultados);
+    lockMemoriaCompartidaResultados=new LockMemoriaCompartidaResultados(maxCantidadResultados);
     lockMemoriaCompartidaResultados->cleanMemoria();
-
-    memoriaCompartidaJugadores=new MemoriaCompartidaJugadores(maxCantidadJugadoresPuntaje);
-    lockMemoriaCompartidaJugadores=new LockMemoriaCompartidaJugadores(memoriaCompartidaJugadores);
+    lockMemoriaCompartidaJugadores=new LockMemoriaCompartidaJugadores(maxCantidadJugadoresPuntaje);
     lockMemoriaCompartidaJugadores->cleanMemoria();
 }
 
 ConexionPubEstad::~ConexionPubEstad() {
-    delete(this->memoriaCompartidaResultados);
     delete(this->lockMemoriaCompartidaResultados);
-    memoriaCompartidaResultados=NULL;
     lockMemoriaCompartidaResultados=NULL;
-
-    delete(this->memoriaCompartidaJugadores);
     delete(this->lockMemoriaCompartidaJugadores);
-    memoriaCompartidaJugadores=NULL;
     lockMemoriaCompartidaJugadores=NULL;
 }
 
