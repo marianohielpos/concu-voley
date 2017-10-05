@@ -9,6 +9,7 @@ class Jugador {
 
 int id_;
 int partidosJugados_;
+int puntos_;
 bool disponible_;
 std::set<int> parejas_;
 
@@ -22,6 +23,9 @@ public:
 
   bool disponible() const;
   void setDisponible(bool disponible);
+
+  void addPuntos(int puntos);
+  int getPuntos() const;
 
 };
 

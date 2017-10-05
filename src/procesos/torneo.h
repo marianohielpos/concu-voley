@@ -7,6 +7,7 @@
 #include "../utils/Opciones.h"
 #include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
+#include "../Estadisticas/ConexionPubEstad.h"
 #include "partido.h"
 
 #define JUGADORES_PARA_TORNEO 10
@@ -18,13 +19,16 @@ class Torneo {
   Opciones opts_;
   std::vector<Jugador> jugadores_;
   std::map<pid_t, Partido> partidos_;
+  ConexionPubEstad conexion_;
+  Logger* logger;
 
   bool sePuedeArmarPartido();
   bool partidosCorriendo();
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
   void finalizarPartido(pid_t pidPartido, int status);
-  void imprimirResultado(pid_t pidPartido, int status);
+  void guardarResultado(pid_t pidPartido, int status);
+  void finalizarTorneo();
 
 
 public:
@@ -34,7 +38,6 @@ public:
   void run();
   //~Torneo();
 
-    Logger *logger;
 };
 
 

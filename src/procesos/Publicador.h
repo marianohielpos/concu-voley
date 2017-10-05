@@ -8,17 +8,20 @@
 
 #include <EventHandler.h>
 #include <PublicadorDeEstadisticas.h>
+#include <Opciones.h>
+#include <Logger.h>
 
 class Publicador{
 
 private:
 
-    PublicadorDeEstadisticas* publicador = NULL;
+    Opciones opts_;
+    Logger* logger_;
+    PublicadorDeEstadisticas publicadorEstadisticas_;
 
 public:
 
-    Publicador(const unsigned maxCantidadResultados,
-               const unsigned maxCantidadJugadores) throw(std::exception);
+    Publicador(Opciones opts, Logger* logger) throw(std::exception);
 
     void run();
 

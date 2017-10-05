@@ -12,6 +12,7 @@
 #include "../modelo/jugador.h"
 #include "../utils/sleep.h"
 #include "Marea.h"
+#include "Publicador.h"
 
 
 MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
@@ -23,9 +24,16 @@ void MainProcess::run() {
 
   this->logger->info("Comienzo del programa");
 
+  pid_t pid_publicador = fork();
+  if (pid_publicador == 0) {
+    Publicador publicador = Publicador(this->opts_, this->logger);
+    publicador.run();
+    exit(0);
+  }
 
-  pid_t marea = fork();
-  if (marea == 0) {
+
+  pid_t pid_marea = fork();
+  if (pid_marea == 0) {
     Marea marea = Marea(this->logger, nullptr, &this->opts_);
     marea.run();
     exit(0);
@@ -59,7 +67,8 @@ void MainProcess::run() {
     }
   }
 
-  kill(marea, SIGINT);
+  kill(pid_marea, SIGINT);
+  kill(pid_publicador, SIGINT);
 
 }
 
