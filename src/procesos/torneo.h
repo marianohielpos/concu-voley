@@ -27,7 +27,8 @@ class Torneo {
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
   void finalizarPartido(pid_t pidPartido, int status);
-  void imprimirResultado(pid_t pidPartido, int status);
+  void guardarResultado(pid_t pidPartido, int status);
+  void finalizarTorneo();
 
 
 public:

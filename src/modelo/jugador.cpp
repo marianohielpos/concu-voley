@@ -1,7 +1,7 @@
 
 #include "jugador.h"
 
-Jugador::Jugador(int id) : id_(id), partidosJugados_(0), disponible_(true) {
+Jugador::Jugador(int id) : id_(id), partidosJugados_(0), disponible_(true), puntos_(0) {
 }
 
 int Jugador::getId() const {
@@ -28,5 +28,14 @@ bool Jugador::disponible() const {
 
 void Jugador::setDisponible(bool disponible) {
   disponible_ = disponible;
+};
+
+
+void Jugador::addPuntos(int puntos) {
+  puntos_ += puntos;
+};
+
+int Jugador::getPuntos() const {
+  return puntos_;
 };
 

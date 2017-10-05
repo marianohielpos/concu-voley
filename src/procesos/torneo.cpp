@@ -8,6 +8,8 @@
 #include "../ipc/SignalHandler.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
+#include <algorithm>
+
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
   : jugadores_(jugadoresIniciales), opts_(opts),
@@ -37,11 +39,14 @@ void Torneo::run() {
       }
 
   }
+
+  this->logger->info("Escribiendo los resultados!");
+  finalizarTorneo();
 }
 
 
 void Torneo::finalizarPartido(pid_t pidPartido, int status) {
-  imprimirResultado(pidPartido, status);
+  guardarResultado(pidPartido, status);
 
   Partido p = partidos_.at(pidPartido);
   participantes parts = p.getParticipantes();
@@ -59,7 +64,7 @@ void Torneo::finalizarPartido(pid_t pidPartido, int status) {
 }
 
 
-void Torneo::imprimirResultado(pid_t pidPartido, int status) {
+void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
   Partido p = partidos_.at(pidPartido);
   participantes parts = p.getParticipantes();
@@ -72,7 +77,10 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
       case SEGUNDA_PAREJA_3: resultadoPareja2 = 3; break;
   }
 
-  std::stringstream ss;
+  for (int i = 0; i < 4; ++i) {
+    Jugador& j = jugadores_.at(parts[i]);
+    j.addPuntos((i < 2) ? resultadoPareja1 : resultadoPareja2);
+  }
 
   TResultadoSerializado res;
   unsigned int resultadoSetsEquipo1[5];
@@ -81,10 +89,11 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
       resultadoSetsEquipo1[set] = 1;
       resultadoSetsEquipo2[set] = 1;
   }
-  res.init(1, 1, parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1,resultadoSetsEquipo2);
+  res.init(1, 1, parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1, resultadoSetsEquipo2);
 
   conexion_.addResultado(res);
 
+  std::stringstream ss;
   ss << "[Resultados del partido " << pidPartido << "] Jugadores "
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
@@ -164,6 +173,27 @@ bool Torneo::lanzarPartido() {
     partidos_.insert({pidPartido, partido});
   }
   return true;
+};
+
+bool compararPuntajes(Jugador const& j1, Jugador const& j2) {
+    return j1.getPuntos() > j2.getPuntos();
+}
+
+
+void Torneo::finalizarTorneo() {
+  std::sort(std::begin(jugadores_), std::end(jugadores_), compararPuntajes);
+
+  for (Jugador const& j : jugadores_) {
+    TJugadorPuntaje punt;
+    punt.jugador = j.getId();
+    punt.puntaje = j.getPuntos();
+
+    std::stringstream ss;
+    ss << "El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
+    this->logger->info(ss.str());
+
+    conexion_.addJugadorPuntaje(punt);
+  }
 };
 
 void Torneo::agregarJugador() {
