@@ -18,6 +18,7 @@ class Torneo {
   Opciones opts_;
   std::vector<Jugador> jugadores_;
   std::map<pid_t, Partido> partidos_;
+  Logger* logger;
 
   bool sePuedeArmarPartido();
   bool partidosCorriendo();
@@ -34,7 +35,6 @@ public:
   void run();
   //~Torneo();
 
-    Logger *logger;
 };
 
 
