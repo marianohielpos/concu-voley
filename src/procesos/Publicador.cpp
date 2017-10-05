@@ -19,11 +19,11 @@ void Publicador::run() {
 
     SIGINT_Handler sigint_handler;
     SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
-    milisleep(opts_.sleepPublicador);
+
     while(sigint_handler.getGracefulQuit() == 0){
+        milisleep(opts_.sleepPublicador);
         this->logger_->info("Publicador hace update...");
         this->publicadorEstadisticas_.update();
-        milisleep(opts_.sleepPublicador);
     }
 
     SignalHandler::destruir();
