@@ -6,10 +6,12 @@
 #include <Logger.h>
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
+#include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
-  : jugadores_(jugadoresIniciales), opts_(opts) {
+  : jugadores_(jugadoresIniciales), opts_(opts),
+    conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores) {
 
   this->logger = logger;
 }
@@ -71,6 +73,17 @@ void Torneo::imprimirResultado(pid_t pidPartido, int status) {
   }
 
   std::stringstream ss;
+
+  TResultadoSerializado res;
+  unsigned int resultadoSetsEquipo1[5];
+  unsigned int resultadoSetsEquipo2[5];
+  for(int set=0; set < 5; set++){
+      resultadoSetsEquipo1[set] = 1;
+      resultadoSetsEquipo2[set] = 1;
+  }
+  res.init(1, 1, parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1,resultadoSetsEquipo2);
+
+  conexion_.addResultado(res);
 
   ss << "[Resultados del partido " << pidPartido << "] Jugadores "
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "

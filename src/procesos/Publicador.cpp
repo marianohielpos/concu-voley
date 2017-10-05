@@ -10,7 +10,7 @@
 
 
 Publicador::Publicador(Opciones opts, Logger* logger) throw(std::exception) :
-  opts_(opts), logger_(logger), publicador_(opts_.jugadores * opts_.partidos, opts_.jugadores)
+  opts_(opts), logger_(logger), publicadorEstadisticas_(opts_.jugadores * opts_.partidos, opts_.jugadores)
                          {
 }
 
@@ -22,7 +22,7 @@ void Publicador::run() {
     milisleep(opts_.sleepPublicador);
     while(sigint_handler.getGracefulQuit() == 0){
         this->logger_->info("Publicador hace update...");
-        this->publicador_.update();
+        this->publicadorEstadisticas_.update();
         milisleep(opts_.sleepPublicador);
     }
 

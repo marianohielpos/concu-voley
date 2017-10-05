@@ -17,7 +17,7 @@ private:
 
     Opciones opts_;
     Logger* logger_;
-    PublicadorDeEstadisticas publicador_;
+    PublicadorDeEstadisticas publicadorEstadisticas_;
 
 public:
 
