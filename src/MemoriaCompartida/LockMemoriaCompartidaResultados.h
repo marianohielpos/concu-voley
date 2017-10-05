@@ -23,7 +23,7 @@ private:
 
 public:
 
-    LockMemoriaCompartidaResultados(MemoriaCompartidaResultados* memoriaCompartidaResultados) throw(std::exception);
+    LockMemoriaCompartidaResultados(unsigned int maxCantidadResultados) throw(std::exception);
 
     ~LockMemoriaCompartidaResultados();
 

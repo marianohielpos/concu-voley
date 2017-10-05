@@ -3,15 +3,18 @@
 //
 
 #include "LockMemoriaCompartidaResultados.h"
-#include <unistd.h>
 
-LockMemoriaCompartidaResultados ::LockMemoriaCompartidaResultados(MemoriaCompartidaResultados* memoriaCompartidaResultados) throw(std::exception) {
+LockMemoriaCompartidaResultados ::LockMemoriaCompartidaResultados(unsigned int maxCantidadResultados) throw(std::exception) {
     this->nombre=ARCHIVO_LOCK_MEMORIA_COMPARTIDA_RESULTADOS;
-    if(memoriaCompartidaResultados == NULL){
-        throw(std::exception());
-    }
-    this->memoriaCompartidaResultados=memoriaCompartidaResultados;
     this->inicializarLock();
+    this->tomarLock();
+    try{
+        this->memoriaCompartidaResultados=new MemoriaCompartidaResultados(maxCantidadResultados);
+    }catch(std::exception e){
+        this->liberarLock();
+        throw e;
+    }
+    this->liberarLock();
 }
 
 int LockMemoriaCompartidaResultados :: tomarLock () {
@@ -25,6 +28,8 @@ int LockMemoriaCompartidaResultados :: liberarLock () {
 }
 
 LockMemoriaCompartidaResultados :: ~LockMemoriaCompartidaResultados () {
+    delete(this->memoriaCompartidaResultados);
+    memoriaCompartidaResultados=NULL;
     close ( this->fd );
 }
 

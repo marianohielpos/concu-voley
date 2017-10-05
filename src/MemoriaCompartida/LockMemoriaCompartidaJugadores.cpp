@@ -4,14 +4,18 @@
 
 #include "LockMemoriaCompartidaJugadores.h"
 
-LockMemoriaCompartidaJugadores ::LockMemoriaCompartidaJugadores(MemoriaCompartidaJugadores* memoriaCompartidaJugadores)
+LockMemoriaCompartidaJugadores ::LockMemoriaCompartidaJugadores(unsigned int maxCantidadJugadoresPuntaje)
                                                                 throw(std::exception) {
     this->nombre=ARCHIVO_LOCK_MEMORIA_COMPARTIDA_JUGADORES;
-    if(memoriaCompartidaJugadores == NULL){
-        throw(std::exception());
-    }
-    this->memoriaCompartidaJugadores=memoriaCompartidaJugadores;
     this->inicializarLock();
+    this->tomarLock();
+    try{
+        this->memoriaCompartidaJugadores=new MemoriaCompartidaJugadores(maxCantidadJugadoresPuntaje);
+    }catch(std::exception e){
+        this->liberarLock();
+        throw e;
+    }
+    this->liberarLock();
 }
 
 int LockMemoriaCompartidaJugadores :: tomarLock () {

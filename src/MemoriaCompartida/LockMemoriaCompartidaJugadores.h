@@ -23,7 +23,7 @@ private:
 
 public:
 
-    LockMemoriaCompartidaJugadores(MemoriaCompartidaJugadores* memoriaCompartidaJugadores)
+    LockMemoriaCompartidaJugadores(unsigned int maxCantidadJugadoresPuntaje)
                                     throw(std::exception);
 
     ~LockMemoriaCompartidaJugadores();

@@ -16,11 +16,7 @@ private:
 
     LockMemoriaCompartidaResultados* lockMemoriaCompartidaResultados=NULL;
 
-    MemoriaCompartidaResultados* memoriaCompartidaResultados=NULL;
-
     LockMemoriaCompartidaJugadores* lockMemoriaCompartidaJugadores=NULL;
-
-    MemoriaCompartidaJugadores* memoriaCompartidaJugadores=NULL;
 
 public:
 
