@@ -11,6 +11,10 @@
 #include <Opciones.h>
 #include <Logger.h>
 
+/**
+ * Una instancia de esta clase se encarga de actualizar una paǵina web de acuerdo al contenido
+ * de la memoria compartida de resultados y jugador-puntaje.
+ */
 class Publicador{
 
 private:
@@ -21,8 +25,15 @@ private:
 
 public:
 
+    /**
+     *
+     * @throws: exception en caso de no poder acceder a las memorias compartidas asociadas.
+     */
     Publicador(Opciones opts, Logger* logger) throw(std::exception);
 
+    /*
+     * Corre el publicador hasta que el programa finalice.
+     */
     void run();
 
     ~Publicador();

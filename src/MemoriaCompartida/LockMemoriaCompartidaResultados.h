@@ -9,6 +9,10 @@
 #include <iostream>
 #include "MemoriaCompartidaResultados.h"
 
+/**
+ * Una instancia de esta clase permite accceder al contenido de la memoria compartida dada
+ * bajo mecanismos de lock.
+ */
 class LockMemoriaCompartidaResultados{
 
 private:
@@ -23,21 +27,41 @@ private:
 
 public:
 
+    /**
+     * @throws: exception en caso de no poder crear la instancia debido a problemas al
+     * reservar el recurso memoria.
+     */
     LockMemoriaCompartidaResultados(unsigned int maxCantidadResultados) throw(std::exception);
 
     ~LockMemoriaCompartidaResultados();
 
+    /**
+     *  Se actualiza el contenido de la memoria compartida de acuerdo al parámetro accediendo
+     *  bajo mecanismos de lock.
+     *
+     * @return verdad si se puede actualizar la memoria de acuerdo al parámetro, falso
+     * en caso contrario.
+     */
+    bool push(const TResultadoSerializado& resultado);
+
+    /**
+     * Se limpiar el contenido de la memoria asociada accediendo bajo mecanismo de lock.
+     */
+    void cleanMemoria();
+
+    /**
+     * Se lee el contenido de la memoria compartida bajo mecanismo de lock.
+     *
+     * @return Una lista con el contenido de la memoria compartida accediendo bajo
+     * mecanismos de lock.
+     */
+    std::list<TResultadoSerializado>* readAll();
+
+private:
+
     int tomarLock ();
 
     int liberarLock ();
-
-    bool push(const TResultadoSerializado& resultado);
-
-    void cleanMemoria();
-
-    std::list<TResultadoSerializado>* readAll();
-
-protected:
 
     void inicializarLock();
 };

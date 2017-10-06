@@ -10,7 +10,7 @@
 #define CARACTER_MEMORIA_CANCHAS 'a'
 /*
  * Una instancia de esta clase representa una porción de memoriaCompartidaResultados compartida asignada
- * a colección matricial de TCachaSerializada sobre la cual se puede leer o escribir.
+ * a una colección matricial de TCanchaSerializada sobre la cual se puede leer o escribir.
  * */
 class MemoriaCompartidaCanchas{
 
@@ -22,8 +22,7 @@ private:
 public:
 
     /**
-     * Pre:-
-     * Post: Se reserva la memoria compartida.
+     * Se reserva la memoria compartida.
      *
      * @throws: En caso de no poder reserva la memoria compartida se lanza una excepción.
      */
@@ -34,18 +33,19 @@ public:
     }
 
     /**
-     *
-     * @throws: lanza una excepción en caso de no poder acceder a la memoria de la cancha dada.
+     * Se actualiza el contenido de la cancha parámetro con el de la memoria asociada
+     * al par fila-columna parámetro.
+     * @throws: una excepción en caso de no poder acceder a la memoria de la cancha dada.
      */
     void leer(TCanchaSerializada& cancha,const unsigned int fila,const unsigned int columna) throw(std::exception);
 
     /**
-     *
+     * Se actualiza el contenido de la memoria de acuerdo al parámetro cancha.
      * @throws: lanza una excepción en caso de no poder acceder a la memoria de la cancha dada.
      */
     void escribir(const TCanchaSerializada& cancha) throw(std::exception);
 
-protected:
+private:
 
     unsigned int calcularOffset(const unsigned int fila,const unsigned int columna) const;
 

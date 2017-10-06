@@ -3,7 +3,6 @@
 //
 
 #include "MemoriaCompartidaResultados.h"
-#define SEMAFORO_INIC_MEM_COMP_RES "inicMemCompRes"
 
 MemoriaCompartidaResultados::MemoriaCompartidaResultados(unsigned int maxCantidadResultados) throw(std::exception){
     this->cantidadMaxResultados=maxCantidadResultados;

@@ -6,9 +6,11 @@
 #define CONCU_VOLEY_PUBLICADORWEB_H
 #include <list>
 #include <Serializados.h>
-
 #define ARCHIVO_HTML    "/tmp/webvoley.html"
 
+/**
+ * Una instancia de esta clase permite actualizar una página web.
+ */
 class PublicadorWeb {
 
 private:
@@ -17,10 +19,16 @@ private:
 
 public:
 
+    /**
+     * Actualiza el contenido de la página web a las ligas parámetro.
+     *
+     * @param resultadosPartidos : resultados de los partidos como lista no nula.
+     * @param jugadoresPuntajes : jugadores con su puntaje como lista no nula.
+     */
     void update(std::list<TResultadoSerializado>* resultadosPartidos,
                 std::list<TJugadorPuntaje>* jugadoresPuntajes);
 
-protected:
+private:
 
     void escribirTablaResultados(std::list<TResultadoSerializado> *resultadosPartidos);
 

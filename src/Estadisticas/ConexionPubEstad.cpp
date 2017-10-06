@@ -4,27 +4,21 @@
 
 #include <iostream>
 #include "ConexionPubEstad.h"
-#include "PublicadorDeEstadisticas.h"
 
 ConexionPubEstad::ConexionPubEstad(unsigned int maxCantidadResultados, unsigned int maxCantidadJugadoresPuntaje)
-                                    throw(std::exception){
-    lockMemoriaCompartidaResultados=new LockMemoriaCompartidaResultados(maxCantidadResultados);
-    lockMemoriaCompartidaResultados->cleanMemoria();
-    lockMemoriaCompartidaJugadores=new LockMemoriaCompartidaJugadores(maxCantidadJugadoresPuntaje);
-    lockMemoriaCompartidaJugadores->cleanMemoria();
+                                    throw(std::exception) :
+                            lockMemoriaCompartidaResultados(maxCantidadResultados),
+                            lockMemoriaCompartidaJugadores(maxCantidadJugadoresPuntaje){
+    lockMemoriaCompartidaResultados.cleanMemoria();
+    lockMemoriaCompartidaJugadores.cleanMemoria();
 }
 
-ConexionPubEstad::~ConexionPubEstad() {
-    delete(this->lockMemoriaCompartidaResultados);
-    lockMemoriaCompartidaResultados=NULL;
-    delete(this->lockMemoriaCompartidaJugadores);
-    lockMemoriaCompartidaJugadores=NULL;
-}
+ConexionPubEstad::~ConexionPubEstad() {}
 
 bool ConexionPubEstad::addResultado(TResultadoSerializado &resultadoSerializado) {
-    return this->lockMemoriaCompartidaResultados->push(resultadoSerializado);
+    return this->lockMemoriaCompartidaResultados.push(resultadoSerializado);
 }
 
 bool ConexionPubEstad::addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje) {
-    return this->lockMemoriaCompartidaJugadores->push(jugadorPuntaje);
+    return this->lockMemoriaCompartidaJugadores.push(jugadorPuntaje);
 }
