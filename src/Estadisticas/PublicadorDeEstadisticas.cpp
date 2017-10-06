@@ -4,25 +4,19 @@
 
 #include <iostream>
 #include "PublicadorDeEstadisticas.h"
-#include "Serializados.h"
 
 PublicadorDeEstadisticas::PublicadorDeEstadisticas(const unsigned maxCantidadResultados,
-                                                   const unsigned maxCantidadJugadores)
-                                                    throw(std::exception){
-    this->lockResultados=new LockMemoriaCompartidaResultados(maxCantidadResultados);
-    this->lockJugadores=new LockMemoriaCompartidaJugadores(maxCantidadJugadores);
+                        const unsigned maxCantidadJugadores) throw(std::exception) :
+                        lockResultados(maxCantidadResultados),
+                        lockJugadores(maxCantidadJugadores){
 }
 
 PublicadorDeEstadisticas::~PublicadorDeEstadisticas() {
-    delete(lockResultados);
-    lockResultados=NULL;
-    delete(lockJugadores);
-    lockJugadores=NULL;
 }
 
 void PublicadorDeEstadisticas::update() {
-    std::list<TResultadoSerializado>* listaResultados=this->lockResultados->readAll();
-    std::list<TJugadorPuntaje>* listaJugadores=this->lockJugadores->readAll();
+    std::list<TResultadoSerializado>* listaResultados=this->lockResultados.readAll();
+    std::list<TJugadorPuntaje>* listaJugadores=this->lockJugadores.readAll();
     publicador.update(listaResultados,listaJugadores);
     delete(listaResultados);
     delete(listaJugadores);

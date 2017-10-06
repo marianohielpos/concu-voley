@@ -9,6 +9,9 @@
 #include <iostream>
 #include "MemoriaCompartidaCanchas.h"
 
+/**
+ * Permite acceder a la memoria compartida de canchas bajo mecanismos de lock.
+ */
 class LockMemoriaCompartidaCanchas {
 
 private:
@@ -22,28 +25,32 @@ private:
     MemoriaCompartidaCanchas* memoriaCompartidaCanchas=NULL;
 
 public:
-
+    /**
+     *
+     * @throws exception en caso de no poder acceder la memoria compartida dada.
+     */
     LockMemoriaCompartidaCanchas(MemoriaCompartidaCanchas* memoriaCompartidaCanchas) throw(std::exception);
 
     ~LockMemoriaCompartidaCanchas();
 
-    int tomarLock ();
-
-    int liberarLock ();
 
     /**
-     *
+     * Accede a la memoria bajo mecanismo de lock.
      * @throws: lanza una excepción en caso de no poder acceder a la memoria de la cancha dada.
      */
     void leer(TCanchaSerializada& cancha,const unsigned int fila,const unsigned int columna) throw(std::exception);
 
     /**
-     *
+     * Accede a la memoria bajo mecanismo de lock.
      * @throws: lanza una excepción en caso de no poder acceder a la memoria de la cancha dada.
      */
     void escribir(const TCanchaSerializada& cancha) throw(std::exception);
 
-protected:
+private:
+
+    int tomarLock ();
+
+    int liberarLock ();
 
     void inicializarLock();
 };

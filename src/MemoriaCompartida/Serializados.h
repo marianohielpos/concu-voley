@@ -10,6 +10,9 @@
 #define JUGADORES_POR_EQUIPO 2
 #define NUMERO_MAX_SETS 5
 
+/**
+ * Almacena los datos de una cancha con su estado de disponibilidad.
+ */
 typedef struct CanchaSerializada{
     unsigned int fila=0;
     unsigned int columna=0;
@@ -50,6 +53,9 @@ typedef struct CanchaSerializada{
 
 struct ResultadoSerializado;
 
+/**
+ * Almacena un partido con los datos de sus jugadores y los set's asociados al mismo.
+ */
 typedef struct ResultadoSerializado{
     pid_t equipo1[JUGADORES_POR_EQUIPO];
     pid_t equipo2[JUGADORES_POR_EQUIPO];
@@ -124,6 +130,9 @@ typedef struct ResultadoSerializado{
 
 struct JugadorPuntaje;
 
+/**
+ * Alamacena un par jugador-puntaje
+ */
 typedef struct JugadorPuntaje{
     pid_t jugador=0;
     unsigned int puntaje=0;

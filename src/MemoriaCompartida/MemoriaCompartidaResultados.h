@@ -11,6 +11,10 @@
 #define CARACTER_MEMORIA_RESULTADOS 'b'
 #define CARACTER_MEMORIA_CANTIDAD_RESULTADOS 'c'
 
+/**
+ * Una instancia de esta clase permite insertar y leer resultados en una memoria compartida
+ * dada para este tipo de dato.
+ */
 class MemoriaCompartidaResultados {
 
 private:
@@ -24,8 +28,7 @@ private:
 public:
 
     /**
-     * Pre:-
-     * Post: Se reserva la memoria compartida.
+     * Se reserva la memoria compartida.
      *
      * @throws: En caso de no poder reserva la memoria compartida se lanza una excepción.
      */
@@ -38,10 +41,14 @@ public:
 
     bool push(const TResultadoSerializado& resultado);
 
+    /*
+     * Se limpia la memoria compartida asociada.
+     */
     void cleanMemoria();
 
     /*
-     * Post: la destrucción de la lista retornada queda a cargo del usuario.
+     * Se retorna una lista con el cotenido de la memoria de resultados. La destrucción
+     * de la lista retornada queda a cargo del usuario.
      */
     std::list<TResultadoSerializado>* readAll();
 
