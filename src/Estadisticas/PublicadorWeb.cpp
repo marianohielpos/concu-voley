@@ -9,6 +9,7 @@
 void PublicadorWeb::update(std::list<TResultadoSerializado>* resultadosPartidos,
                            std::list<TJugadorPuntaje>* jugadoresPuntajes) {
     fd=open(ARCHIVO_HTML,O_WRONLY|O_CREAT|O_TRUNC,0644);
+    jugadoresPuntajes->sort(compareJugadorPuntajeReverse);
     this->escribirHeader();
     this->escribirBody(resultadosPartidos,jugadoresPuntajes);
     this->escribirFooter();
@@ -24,7 +25,6 @@ void PublicadorWeb::escribirTablaResultados(std::list<TResultadoSerializado>* re
     cadena+="td {border: black 1px solid;\n}\n";
     cadena+="</style>\n";
     cadena+="<tr>\n";
-    cadena+="<td><strong>Cancha</strong></td>\n";
     cadena+="<td><strong>Equipo 1</strong></td>\n";
     cadena+="<td><strong>Equipo 2</strong></td>\n";
     for(int i=1;i<6;i++)
@@ -33,7 +33,6 @@ void PublicadorWeb::escribirTablaResultados(std::list<TResultadoSerializado>* re
     escribirEnWeb("</tr>\n");
     for(std::list<TResultadoSerializado>::iterator it=resultadosPartidos->begin();it!=resultadosPartidos->end();++it){
         std::string cadena("<tr>\n");
-        cadena+="<td><strong>"+std::to_string(it->fila)+","+std::to_string(it->columna)+"</strong></td>\n";
         cadena+="<td><strong>"+std::to_string(it->equipo1[0])+","+std::to_string(it->equipo1[1])+"</strong></td>\n";
         cadena+="<td><strong>"+std::to_string(it->equipo2[0])+","+std::to_string(it->equipo2[1])+"</strong></td>\n";
         for(int i=0;i<it->cantidadSets;i++)
@@ -82,15 +81,19 @@ void PublicadorWeb::escribirTablaPuntajeJugadores(std::list<TJugadorPuntaje>* ju
          cadena += "<td><strong>PUNTAJE</strong></td>\n";
          escribirEnWeb(cadena);
          escribirEnWeb("</tr>\n");
-         unsigned int posicion=1;
+         unsigned int posicion=0;
+         unsigned int puntaje=0;
          for(std::list<TJugadorPuntaje>::iterator it=jugadoresPuntajes->begin();it!=jugadoresPuntajes->end();++it){
+            if(puntaje!=it->puntaje){
+                 puntaje=it->puntaje;
+                 posicion++;
+            }
             std::string cadena("<tr>\n");
             cadena+="<td><strong>"+std::to_string(posicion)+"</strong></td>\n";
             cadena+="<td><strong>"+std::to_string(it->jugador)+"</strong></td>\n";
             cadena+="<td><strong>"+std::to_string(it->puntaje)+"</strong></td>\n";
             cadena+="</tr>\n";
             escribirEnWeb(cadena);
-            posicion++;
          }
          escribirEnWeb("</table>\n");
      }

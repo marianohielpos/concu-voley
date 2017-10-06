@@ -10,7 +10,6 @@ PublicadorDeEstadisticas::PublicadorDeEstadisticas(const unsigned maxCantidadRes
                                                    const unsigned maxCantidadJugadores)
                                                     throw(std::exception){
     this->lockResultados=new LockMemoriaCompartidaResultados(maxCantidadResultados);
-
     this->lockJugadores=new LockMemoriaCompartidaJugadores(maxCantidadJugadores);
 }
 
@@ -25,7 +24,6 @@ void PublicadorDeEstadisticas::update() {
     std::list<TResultadoSerializado>* listaResultados=this->lockResultados->readAll();
     std::list<TJugadorPuntaje>* listaJugadores=this->lockJugadores->readAll();
     publicador.update(listaResultados,listaJugadores);
-
     delete(listaResultados);
     delete(listaJugadores);
 }

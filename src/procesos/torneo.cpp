@@ -89,7 +89,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
       resultadoSetsEquipo1[set] = 1;
       resultadoSetsEquipo2[set] = 1;
   }
-  res.init(1, 1, parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1, resultadoSetsEquipo2);
+  res.init(parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1, resultadoSetsEquipo2);
 
   conexion_.addResultado(res);
 
