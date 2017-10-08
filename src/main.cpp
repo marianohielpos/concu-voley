@@ -27,10 +27,13 @@ Opciones parsearParametros (int argc, char *argv[]) {
                 break;
             case 'a':
                 opciones.sleepMarea = (unsigned int) std::stoul(optarg);
+                break;
             case 'b':
                 opciones.sleepPartido = (unsigned int) std::stoul(optarg);
+                break;
             case 'e':
                 opciones.sleepPublicador = (unsigned int) std::stoul(optarg);
+                break;
             case 'g':
                 opciones.sleepJugadores = (unsigned int) std::stoul(optarg);
                 break;
