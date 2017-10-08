@@ -88,9 +88,10 @@ std::list<pid_t> LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool 
             if (inundar) {
                 cancha.inundada = true;
 
-                if (cancha.proceso != 0)
+                if (cancha.proceso != 0) {
                     procesosAfectados.push_back(cancha.proceso);
                     kill(cancha.proceso, SIGINT);
+                }
 
             } else {
                 cancha.inundada = false;
