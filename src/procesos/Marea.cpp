@@ -12,11 +12,8 @@
 #include <sstream>
 
 
-Marea::Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones) {
-
-    this->logger = logger;
-    this->canchas = canchas;
-    this->opciones = opciones;
+Marea::Marea(Logger* logger, Opciones opciones)
+    : logger(logger), opciones(opciones), lockCanchas(opciones) {
 }
 
 void Marea::generarMensajeDeLog(std::string mensaje) {
@@ -57,6 +54,7 @@ void Marea::run() {
     }
 
     SignalHandler :: destruir ();
+    lockCanchas.liberar();
     this->logger->info("Proceso de marea termina");
     return;
 }

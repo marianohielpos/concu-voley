@@ -10,17 +10,17 @@
 class MainProcess {
 
 Opciones opts_;
+MemoriaCompartidaCanchas memoriaCompartidaCanchas_;
+
 
 protected:
     Logger* logger = NULL;
 
 public:
-    MainProcess(Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas);
+    MainProcess(Opciones opts, Logger* logger);
     ~MainProcess();
 
     void run();
-
-    MemoriaCompartidaCanchas *memoriaCompartidaCanchas;
 };
 
 

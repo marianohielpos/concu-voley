@@ -7,6 +7,9 @@ MemoriaCompartidaCanchas::MemoriaCompartidaCanchas(const unsigned int filas, con
                                                     throw(std::exception){
     this->filas=filas;
     this->columnas=columnas;
+}
+
+void MemoriaCompartidaCanchas::inicializar() {
     if(this->memoria.crear(ARCHIVO_MEMORIA_CANCHAS,CARACTER_MEMORIA_CANCHAS,filas*columnas)!=SHM_OK){
         throw(std::exception());
     };
@@ -30,4 +33,8 @@ void MemoriaCompartidaCanchas::checkFilaColumna(const unsigned int fila,const un
     if ((fila>=filas)||(columna>=columnas)){
         throw(std::exception());
     }
+}
+
+void MemoriaCompartidaCanchas::liberar() {
+    this->memoria.liberar();
 }

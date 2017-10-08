@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include "MemoriaCompartidaCanchas.h"
+#include "../utils/Opciones.h"
 
 /**
  * Permite acceder a la memoria compartida de canchas bajo mecanismos de lock.
@@ -22,14 +23,14 @@ private:
 
     std::string nombre;
 
-    MemoriaCompartidaCanchas* memoriaCompartidaCanchas=NULL;
+    MemoriaCompartidaCanchas memoriaCompartidaCanchas;
 
 public:
     /**
      *
      * @throws exception en caso de no poder acceder la memoria compartida dada.
      */
-    LockMemoriaCompartidaCanchas(MemoriaCompartidaCanchas* memoriaCompartidaCanchas) throw(std::exception);
+    LockMemoriaCompartidaCanchas(Opciones opts_) throw(std::exception);
 
     ~LockMemoriaCompartidaCanchas();
 
@@ -45,6 +46,8 @@ public:
      * @throws: lanza una excepción en caso de no poder acceder a la memoria de la cancha dada.
      */
     void escribir(const TCanchaSerializada& cancha) throw(std::exception);
+
+    void liberar();
 
 private:
 

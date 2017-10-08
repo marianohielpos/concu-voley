@@ -5,7 +5,7 @@
 #ifndef CONCU_VOLEY_MAREA_H
 #define CONCU_VOLEY_MAREA_H
 #include "Logger.h"
-#include "MemoriaCompartidaCanchas.h"
+#include "LockMemoriaCompartidaCanchas.h"
 #include "Opciones.h"
 
 class Marea {
@@ -13,7 +13,7 @@ class Marea {
 private:
     Logger* logger = NULL;
 
-    MemoriaCompartidaCanchas* canchas = NULL;
+    LockMemoriaCompartidaCanchas lockCanchas;
 
     bool gracefulQuit = false;
 
@@ -32,7 +32,7 @@ private:
     void generarMensajeDeLog(std::string mensaje);
 
 public:
-    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones);
+    Marea(Logger* logger, Opciones opciones);
 
     void handleSignal(int signum);
 

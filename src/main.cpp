@@ -68,9 +68,7 @@ int main(int argc, char *argv[]) {
 
     Logger logger = Logger(opciones.logName, opciones.logLevel);
 
-    MemoriaCompartidaCanchas memoriaCompartidaCanchas = MemoriaCompartidaCanchas(opciones.filas, opciones.columnas);
-
-    MainProcess mp(opciones, &logger, &memoriaCompartidaCanchas);
+    MainProcess mp(opciones, &logger);
 
     mp.run();
 
