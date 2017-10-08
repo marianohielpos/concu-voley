@@ -8,6 +8,8 @@
 #include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
 #include "../Estadisticas/ConexionPubEstad.h"
+#include "../MemoriaCompartida/LockMemoriaCompartidaCanchas.h"
+#include "../MemoriaCompartida/Serializados.h"
 #include "partido.h"
 
 #define JUGADORES_PARA_TORNEO 10
@@ -21,6 +23,7 @@ class Torneo {
   std::map<pid_t, Partido> partidos_;
   ConexionPubEstad conexion_;
   Logger* logger;
+  LockMemoriaCompartidaCanchas memoriaCanchas_;
 
   bool sePuedeArmarPartido();
   bool partidosCorriendo();
@@ -28,7 +31,9 @@ class Torneo {
   bool siguientesParticipantes(participantes& p);
   void finalizarPartido(pid_t pidPartido, int status);
   void guardarResultado(pid_t pidPartido, int status);
+  void liberarCancha(pid_t pidPartido);
   void finalizarTorneo();
+  void liberarRecursos();
 
 
 public:

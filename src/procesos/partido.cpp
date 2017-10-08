@@ -8,9 +8,8 @@
 
 
 
-Partido::Partido(participantes p, Logger* logger, Opciones opts_) : p_(p) {
-  this->logger = logger;
-  this->opts_ = opts_;
+Partido::Partido(participantes p, Logger* logger, Opciones opts, TCanchaSerializada cancha)
+  : p_(p), logger(logger), opts_(opts), cancha_(cancha) {
 }
 
 participantes Partido::getParticipantes() {
@@ -45,4 +44,8 @@ void Partido::run() {
 bool Partido::jugarSet() {
   milisleep(this->opts_.sleepPartido);
   return rand() % 2 == 0;
+};
+
+TCanchaSerializada Partido::getCancha() {
+  return cancha_;
 };
