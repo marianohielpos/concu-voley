@@ -43,7 +43,7 @@ void Marea::run() {
 
         if (this->mareaSubio()) {
             this->generarMensajeDeLog("Marea subió");
-            std::list<pid_t> procesosAfectados = this->lockCanchas.inundarFilasDeCanchas(this->nivel);
+            std::list<pid_t> procesosAfectados = this->lockCanchas.inundarFilasDeCanchas(this->nivel - 1);
 
             std::stringstream mensajeProcesosAfectados;
 
@@ -58,7 +58,7 @@ void Marea::run() {
         }
         else if (this->mareaBajo()) {
             this->generarMensajeDeLog("Marea bajó");
-            this->lockCanchas.desinundarFilasDeCanchas(this->nivel);
+            this->lockCanchas.desinundarFilasDeCanchas(this->nivel - 1);
         }
         else {
             this->generarMensajeDeLog("Marea se quedó en el mismo nivel");
@@ -76,7 +76,7 @@ void Marea::run() {
 
 bool Marea::mareaSubio() {
 
-    bool subio = (rand() % 5) == 1 && this->nivel < this->opciones.filas;
+    bool subio = (rand() % 5) == 1 && this->nivel < this->opciones.filas - 1;
 
     if (subio)
         this->nivel++;

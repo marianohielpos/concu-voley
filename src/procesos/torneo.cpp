@@ -33,8 +33,10 @@ void Torneo::run() {
 
       if (pidPartido != -1) {
         if (WIFEXITED(status)) {
+          this->logger->info("Partido terminó exitosamente" + std::to_string(pidPartido));
           finalizarPartido(pidPartido, status);
         } else {
+          this->logger->info("Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
       } else {
