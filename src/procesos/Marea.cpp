@@ -47,10 +47,10 @@ void Marea::run() {
 
             std::stringstream mensajeProcesosAfectados;
 
-            mensajeProcesosAfectados << "Procesos afectados: ";
+            mensajeProcesosAfectados << "Procesos afectados:";
 
             for(std::list<pid_t>::iterator it=procesosAfectados.begin();it!=procesosAfectados.end();++it){
-                mensajeProcesosAfectados << std::to_string(*it);
+                mensajeProcesosAfectados << " " << std::to_string(*it);
             }
 
             this->logger->info(mensajeProcesosAfectados.str());
