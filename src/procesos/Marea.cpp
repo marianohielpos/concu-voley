@@ -9,6 +9,7 @@
 #include "SIGINT_Handler.h"
 #include "sleep.h"
 #include "signal.h"
+#include <list>
 #include <sstream>
 
 
@@ -42,7 +43,18 @@ void Marea::run() {
 
         if (this->mareaSubio()) {
             this->generarMensajeDeLog("Marea subió");
-            this->lockCanchas.inundarFilasDeCanchas(this->nivel);
+            std::list<pid_t> procesosAfectados = this->lockCanchas.inundarFilasDeCanchas(this->nivel);
+
+            std::stringstream mensajeProcesosAfectados;
+
+            mensajeProcesosAfectados << "Procesos afectados: ";
+
+            for(std::list<pid_t>::iterator it=procesosAfectados.begin();it!=procesosAfectados.end();++it){
+                mensajeProcesosAfectados << std::to_string(*it);
+            }
+
+            this->logger->info(mensajeProcesosAfectados.str());
+
         }
         else if (this->mareaBajo()) {
             this->generarMensajeDeLog("Marea bajó");

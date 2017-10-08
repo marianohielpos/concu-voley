@@ -4,7 +4,7 @@
 
 #include "LockMemoriaCompartidaCanchas.h"
 #include "signal.h"
-
+#include <list>
 
 LockMemoriaCompartidaCanchas::LockMemoriaCompartidaCanchas(Opciones opts_) throw(std::exception)
         : memoriaCompartidaCanchas(opts_.filas, opts_.columnas) {
@@ -66,17 +66,19 @@ void LockMemoriaCompartidaCanchas::escribir(const TCanchaSerializada &cancha) th
     this->liberarLock();
 }
 
-void LockMemoriaCompartidaCanchas::inundarFilasDeCanchas(int fila) {
-    this->inundarDesinundar(fila, true);
+std::list<pid_t> LockMemoriaCompartidaCanchas::inundarFilasDeCanchas(int fila) {
+    return this->inundarDesinundar(fila, true);
 }
 
-void LockMemoriaCompartidaCanchas::desinundarFilasDeCanchas(int fila) {
-    this->inundarDesinundar(fila, false);
+std::list<pid_t> LockMemoriaCompartidaCanchas::desinundarFilasDeCanchas(int fila) {
+    return this->inundarDesinundar(fila, false);
 }
 
-void LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool inundar) {
+std::list<pid_t> LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool inundar) {
 
     TCanchaSerializada cancha;
+
+    std::list<pid_t> procesosAfectados;
 
     this->tomarLock();
     try{
@@ -87,7 +89,11 @@ void LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool inundar) {
                 cancha.inundada = true;
 
                 if (cancha.proceso != 0)
+                    procesosAfectados.push_back(cancha.proceso);
                     kill(cancha.proceso, SIGINT);
+
+            } else {
+                cancha.inundada = false;
             }
 
             this->memoriaCompartidaCanchas.escribir(cancha);
@@ -97,5 +103,7 @@ void LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool inundar) {
         throw(e);
     }
     this->liberarLock();
+
+    return procesosAfectados;
 
 }

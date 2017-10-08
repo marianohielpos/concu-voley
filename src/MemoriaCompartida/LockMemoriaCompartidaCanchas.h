@@ -9,6 +9,8 @@
 #include <iostream>
 #include "MemoriaCompartidaCanchas.h"
 #include "../utils/Opciones.h"
+#include <list>
+
 
 /**
  * Permite acceder a la memoria compartida de canchas bajo mecanismos de lock.
@@ -49,9 +51,9 @@ public:
 
     void liberar();
 
-    void inundarFilasDeCanchas(int fila);
+    std::list<pid_t> inundarFilasDeCanchas(int fila);
 
-    void desinundarFilasDeCanchas(int fila);
+    std::list<pid_t> desinundarFilasDeCanchas(int fila);
 
 
 private:
@@ -60,7 +62,7 @@ private:
 
     int liberarLock ();
 
-    void inundarDesinundar(int fila, bool inundar);
+    std::list<pid_t> inundarDesinundar(int fila, bool inundar);
 
     void inicializarLock();
 };
