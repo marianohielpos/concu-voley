@@ -28,6 +28,7 @@ void Publicador::run() {
 
     SignalHandler::destruir();
     this->logger_->info("Proceso de publicador termina");
+    this->publicadorEstadisticas_.liberarRecursos();
     return;
 }
 

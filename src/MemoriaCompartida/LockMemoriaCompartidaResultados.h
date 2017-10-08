@@ -57,6 +57,8 @@ public:
      */
     std::list<TResultadoSerializado>* readAll();
 
+    void liberarMemoria();
+
 private:
 
     int tomarLock ();

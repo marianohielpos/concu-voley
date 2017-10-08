@@ -55,3 +55,8 @@ void MemoriaCompartidaResultados::inicializarMemoriaResultados() throw(std::exce
         throw (std::exception());
     }
 }
+
+void MemoriaCompartidaResultados::liberar() {
+    this->resultados.liberar();
+    this->cantidadResultados.liberar();
+}

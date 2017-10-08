@@ -22,3 +22,8 @@ bool ConexionPubEstad::addResultado(TResultadoSerializado &resultadoSerializado)
 bool ConexionPubEstad::addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje) {
     return this->lockMemoriaCompartidaJugadores.push(jugadorPuntaje);
 }
+
+void ConexionPubEstad::liberarRecursos() {
+    this->lockMemoriaCompartidaResultados.liberarMemoria();
+    this->lockMemoriaCompartidaJugadores.liberarMemoria();
+}
