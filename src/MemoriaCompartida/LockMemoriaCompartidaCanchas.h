@@ -55,6 +55,8 @@ public:
 
     std::list<pid_t> desinundarFilasDeCanchas(int fila);
 
+    bool obtenerCanchaLibre(TCanchaSerializada &cancha);
+
 
 private:
 

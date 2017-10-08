@@ -5,6 +5,7 @@
 #include <array>
 #include <Logger.h>
 #include "Opciones.h"
+#include "../MemoriaCompartida/Serializados.h"
 
 typedef std::array<int, 4> participantes;
 
@@ -16,6 +17,7 @@ typedef std::array<int, 4> participantes;
 class Partido {
 
 participantes p_;
+TCanchaSerializada cancha_;
 
 bool jugarSet();
 
@@ -26,12 +28,13 @@ protected:
     Opciones opts_;
 
 public:
-  Partido(participantes p, Logger* logger, Opciones opts_);
+  Partido(participantes p, Logger* logger, Opciones opts_, TCanchaSerializada cancha);
 
   void run();
 
   participantes getParticipantes();
 
+  TCanchaSerializada getCancha();
 
 };
 

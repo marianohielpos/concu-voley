@@ -106,5 +106,26 @@ std::list<pid_t> LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool 
     this->liberarLock();
 
     return procesosAfectados;
+}
 
+bool LockMemoriaCompartidaCanchas::obtenerCanchaLibre(TCanchaSerializada &cancha) {
+    bool canchaEncontrada = false;
+    int i = 0, j = 0;
+
+    while(!canchaEncontrada) {
+        leer(cancha, i, j);
+        if (!cancha.ocupada && !cancha.inundada) {
+            canchaEncontrada = true;
+        } else {
+            if (++i == memoriaCompartidaCanchas.getColumnas()) {
+                i = 0;
+                j++;
+            }
+        }
+        if (j == memoriaCompartidaCanchas.getFilas()) {
+            break;
+        }
+    }
+
+    return canchaEncontrada;
 }

@@ -13,9 +13,8 @@
 
 Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
   : jugadores_(jugadoresIniciales), opts_(opts),
-    conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores) {
-
-  this->logger = logger;
+    conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
+    logger(logger), memoriaCanchas_(opts_) {
 }
 
 void Torneo::run() {
@@ -32,8 +31,12 @@ void Torneo::run() {
       int status = 0;
       pid_t pidPartido = wait(&status);
 
-      if (pidPartido != -1 && WIFEXITED(status)) {
-        finalizarPartido(pidPartido, status);
+      if (pidPartido != -1) {
+        if (WIFEXITED(status)) {
+          finalizarPartido(pidPartido, status);
+        } else {
+          liberarCancha(pidPartido);
+        }
       } else {
         this->logger->info("Wait terminó sin exit!");
       }
@@ -60,6 +63,18 @@ void Torneo::finalizarPartido(pid_t pidPartido, int status) {
     }
   }
 
+  liberarCancha(pidPartido);
+}
+
+void Torneo::liberarCancha(pid_t pidPartido) {
+  Partido p = partidos_.at(pidPartido);
+  TCanchaSerializada cancha = p.getCancha();
+
+  memoriaCanchas_.leer(cancha, cancha.fila, cancha.columna);
+  cancha.proceso = 0;
+  cancha.ocupada = false;
+  memoriaCanchas_.escribir(cancha);
+
   partidos_.erase(pidPartido);
 }
 
@@ -83,13 +98,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
   }
 
   TResultadoSerializado res;
-  unsigned int resultadoSetsEquipo1[5];
-  unsigned int resultadoSetsEquipo2[5];
-  for(int set=0; set < 5; set++){
-      resultadoSetsEquipo1[set] = 1;
-      resultadoSetsEquipo2[set] = 1;
-  }
-  res.init(parts.data(), &parts.data()[2], 5, resultadoSetsEquipo1, resultadoSetsEquipo2);
+  res.init(parts[0], parts[1], parts[2], parts[3], 5, resultadoPareja1, resultadoPareja2);
 
   conexion_.addResultado(res);
 
@@ -165,11 +174,17 @@ bool Torneo::lanzarPartido() {
     j.setDisponible(false);
   }
 
-  Partido partido(p, logger, this->opts_);
+  TCanchaSerializada cancha;
+  memoriaCanchas_.obtenerCanchaLibre(cancha);
+
+  Partido partido(p, logger, this->opts_, cancha);
   pid_t pidPartido = fork();
   if (pidPartido == 0) {
     partido.run();
   } else {
+    cancha.ocupada = true;
+    cancha.proceso = pidPartido;
+    memoriaCanchas_.escribir(cancha);
     partidos_.insert({pidPartido, partido});
   }
   return true;
@@ -194,11 +209,18 @@ void Torneo::finalizarTorneo() {
 
     conexion_.addJugadorPuntaje(punt);
   }
+
+  liberarRecursos();
 };
 
 void Torneo::agregarJugador() {
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
+};
+
+void Torneo::liberarRecursos() {
+  memoriaCanchas_.liberar();
+  conexion_.liberarRecursos();
 };
 
 
