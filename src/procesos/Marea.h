@@ -25,10 +25,10 @@ private:
 
     void enviarSIGINTAproceso(pid_t pid);
 
-    Opciones* opciones;
+    Opciones opciones;
 
 public:
-    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones *opciones);
+    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones, MemoriaCompartidaCanchas* memoriaCompartidaCanchas);
 
     void handleSignal(int signum);
 

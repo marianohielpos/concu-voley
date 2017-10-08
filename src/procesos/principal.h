@@ -3,6 +3,7 @@
 #define __MAIN_PROCESS_H__
 
 
+#include <MemoriaCompartidaCanchas.h>
 #include "../utils/Opciones.h"
 #include "Logger.h"
 
@@ -14,10 +15,12 @@ protected:
     Logger* logger = NULL;
 
 public:
-    MainProcess(Opciones opts, Logger* logger);
+    MainProcess(Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas);
     ~MainProcess();
 
     void run();
+
+    MemoriaCompartidaCanchas *memoriaCompartidaCanchas;
 };
 
 

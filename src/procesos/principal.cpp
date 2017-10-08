@@ -15,8 +15,10 @@
 #include "Publicador.h"
 
 
-MainProcess::MainProcess(Opciones opts, Logger* logger) : opts_(opts) {
+MainProcess::MainProcess(Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas) : opts_(opts) {
   this->logger = logger;
+
+  this->memoriaCompartidaCanchas = memoriaCompartidaCanchas:
 }
 
 
@@ -34,7 +36,7 @@ void MainProcess::run() {
 
   pid_t pid_marea = fork();
   if (pid_marea == 0) {
-    Marea marea = Marea(this->logger, nullptr, &this->opts_);
+    Marea marea = Marea(this->logger, this->memoriaCompartidaCanchas, this->opts_);
     marea.run();
     exit(0);
   }

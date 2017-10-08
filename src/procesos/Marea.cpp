@@ -11,14 +11,11 @@
 #include "signal.h"
 
 
-Marea::Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones *opciones) {
+Marea::Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones) {
 
     this->logger = logger;
-
     this->canchas = canchas;
-
     this->opciones = opciones;
-
 }
 
 void Marea::run() {
@@ -44,7 +41,7 @@ void Marea::run() {
             this->logger->info("Marea se quedó en el mismo nivel");
         }
 
-        milisleep ( this->opciones->sleepMarea );
+        milisleep ( this->opciones.sleepMarea );
     }
 
     SignalHandler :: destruir ();

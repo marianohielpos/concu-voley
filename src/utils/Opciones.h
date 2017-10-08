@@ -14,6 +14,8 @@ typedef struct {
     unsigned int sleepMarea = 200;
     unsigned int sleepJugadores = 200;
     unsigned int sleepPublicador = 200;
+    unsigned int filas = 5;
+    unsigned int columnas = 5;
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H
