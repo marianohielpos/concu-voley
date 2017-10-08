@@ -44,7 +44,7 @@ void MemoriaCompartidaResultados::inicializarCantidadResultados() throw(std::exc
     }else{
         unsigned int cantidadResultadosLeido;
         this->cantidadResultados.leer(cantidadResultadosLeido,0);
-        if((cantidadResultadosLeido>this->cantidadMaxResultados)||(cantidadResultadosLeido<0)){
+        if(cantidadResultadosLeido>this->cantidadMaxResultados){
             this->cleanMemoria();
         }
     }
