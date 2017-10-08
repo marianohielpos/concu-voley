@@ -42,9 +42,11 @@ void Marea::run() {
 
         if (this->mareaSubio()) {
             this->generarMensajeDeLog("Marea subió");
+            this->lockCanchas.inundarFilasDeCanchas(this->nivel);
         }
         else if (this->mareaBajo()) {
             this->generarMensajeDeLog("Marea bajó");
+            this->lockCanchas.desinundarFilasDeCanchas(this->nivel);
         }
         else {
             this->generarMensajeDeLog("Marea se quedó en el mismo nivel");

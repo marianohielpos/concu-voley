@@ -19,6 +19,15 @@ private:
 
     MemoriaCompartida<TCanchaSerializada> memoria;
     int filas,columnas;
+public:
+    int getFilas() const;
+
+    void setFilas(int filas);
+
+public:
+    int getColumnas() const;
+
+    void setColumnas(int columnas);
 
 public:
 

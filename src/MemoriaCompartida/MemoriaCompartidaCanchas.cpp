@@ -38,3 +38,19 @@ void MemoriaCompartidaCanchas::checkFilaColumna(const unsigned int fila,const un
 void MemoriaCompartidaCanchas::liberar() {
     this->memoria.liberar();
 }
+
+int MemoriaCompartidaCanchas::getColumnas() const {
+    return columnas;
+}
+
+void MemoriaCompartidaCanchas::setColumnas(int columnas) {
+    MemoriaCompartidaCanchas::columnas = columnas;
+}
+
+int MemoriaCompartidaCanchas::getFilas() const {
+    return filas;
+}
+
+void MemoriaCompartidaCanchas::setFilas(int filas) {
+    MemoriaCompartidaCanchas::filas = filas;
+}

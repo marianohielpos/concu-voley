@@ -49,11 +49,18 @@ public:
 
     void liberar();
 
+    void inundarFilasDeCanchas(int fila);
+
+    void desinundarFilasDeCanchas(int fila);
+
+
 private:
 
     int tomarLock ();
 
     int liberarLock ();
+
+    void inundarDesinundar(int fila, bool inundar);
 
     void inicializarLock();
 };

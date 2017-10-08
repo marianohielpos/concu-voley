@@ -3,6 +3,8 @@
 //
 
 #include "LockMemoriaCompartidaCanchas.h"
+#include "signal.h"
+
 
 LockMemoriaCompartidaCanchas::LockMemoriaCompartidaCanchas(Opciones opts_) throw(std::exception)
         : memoriaCompartidaCanchas(opts_.filas, opts_.columnas) {
@@ -62,4 +64,38 @@ void LockMemoriaCompartidaCanchas::escribir(const TCanchaSerializada &cancha) th
         throw(e);
     }
     this->liberarLock();
+}
+
+void LockMemoriaCompartidaCanchas::inundarFilasDeCanchas(int fila) {
+    this->inundarDesinundar(fila, true);
+}
+
+void LockMemoriaCompartidaCanchas::desinundarFilasDeCanchas(int fila) {
+    this->inundarDesinundar(fila, false);
+}
+
+void LockMemoriaCompartidaCanchas::inundarDesinundar(int fila, bool inundar) {
+
+    TCanchaSerializada cancha;
+
+    this->tomarLock();
+    try{
+        for (int columna = 0; columna < this->memoriaCompartidaCanchas.getColumnas(); ++columna) {
+            this->memoriaCompartidaCanchas.leer(cancha,fila,columna);
+
+            if (inundar) {
+                cancha.inundada = true;
+
+                if (cancha.proceso != 0)
+                    kill(cancha.proceso, SIGINT);
+            }
+
+            this->memoriaCompartidaCanchas.escribir(cancha);
+        }
+    }catch(std::exception e){
+        this->liberarLock();
+        throw(e);
+    }
+    this->liberarLock();
+
 }

@@ -21,10 +21,6 @@ private:
 
     bool mareaBajo();
 
-    pid_t* leerProcesosEnCancha();
-
-    void enviarSIGINTAproceso(pid_t pid);
-
     Opciones opciones;
 
     int nivel = 0;
