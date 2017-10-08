@@ -69,25 +69,25 @@ void Logger::escribirAConsola(std::string mensaje) {
 
 void Logger::info(std::string mensaje) {
 
-    this->imprimirMensaje(mensaje, "INFO");
+    this->imprimirMensaje(mensaje, INFO);
 
 }
 
 void Logger::debug(std::string mensaje) {
 
-    this->imprimirMensaje(mensaje, "DEBUG");
+    this->imprimirMensaje(mensaje, DEBUG);
 
 }
 
 void Logger::warning(std::string mensaje) {
 
-    this->imprimirMensaje(mensaje, "WARNING");
+    this->imprimirMensaje(mensaje, WARNING);
 
 }
 
 void Logger::error(std::string mensaje) {
 
-    this->imprimirMensaje(mensaje, "ERROR");
+    this->imprimirMensaje(mensaje, ERROR);
 
 }
 
