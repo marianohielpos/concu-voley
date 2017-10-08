@@ -23,6 +23,7 @@ void PublicadorDeEstadisticas::update() {
 }
 
 void PublicadorDeEstadisticas::liberarRecursos() {
+    this->update();
     this->lockJugadores.liberarMemoria();
     this->lockResultados.liberarMemoria();
 }

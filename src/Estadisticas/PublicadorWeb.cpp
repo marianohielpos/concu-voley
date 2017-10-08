@@ -27,14 +27,16 @@ void PublicadorWeb::escribirTablaResultados(std::list<TResultadoSerializado>* re
     cadena+="<tr>\n";
     cadena+="<td><strong>Equipo 1</strong></td>\n";
     cadena+="<td><strong>Equipo 2</strong></td>\n";
-    cadena+="<td><strong>Puntaje Partido</strong></td>\n";
+    cadena+="<td><strong>Puntaje Equipo 1</strong></td>\n";
+    cadena+="<td><strong>Puntaje Equipo 2</strong></td>\n";
     escribirEnWeb(cadena);
     escribirEnWeb("</tr>\n");
     for(std::list<TResultadoSerializado>::iterator it=resultadosPartidos->begin();it!=resultadosPartidos->end();++it){
         std::string cadena("<tr>\n");
         cadena+="<td><strong>"+std::to_string(it->equipo1[0])+","+std::to_string(it->equipo1[1])+"</strong></td>\n";
         cadena+="<td><strong>"+std::to_string(it->equipo2[0])+","+std::to_string(it->equipo2[1])+"</strong></td>\n";
-        cadena+="<td><strong>"+std::to_string(it->puntajeEquipo1)+" a "+std::to_string(it->puntajeEquipo2)+"</strong></td>\n";
+        cadena+="<td><strong>"+std::to_string(it->puntajeEquipo1)+"</strong></td>\n";
+        cadena+="<td><strong>"+std::to_string(it->puntajeEquipo2)+"</strong></td>\n";
         cadena+="</tr>\n";
         escribirEnWeb(cadena);
     }
