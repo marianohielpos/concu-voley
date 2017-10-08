@@ -18,7 +18,7 @@
 MainProcess::MainProcess(Opciones opts, Logger* logger, MemoriaCompartidaCanchas* memoriaCompartidaCanchas) : opts_(opts) {
   this->logger = logger;
 
-  this->memoriaCompartidaCanchas = memoriaCompartidaCanchas:
+  this->memoriaCompartidaCanchas = memoriaCompartidaCanchas;
 }
 
 

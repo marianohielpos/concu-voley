@@ -28,7 +28,7 @@ private:
     Opciones opciones;
 
 public:
-    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones, MemoriaCompartidaCanchas* memoriaCompartidaCanchas);
+    Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones);
 
     void handleSignal(int signum);
 
