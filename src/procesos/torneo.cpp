@@ -6,6 +6,7 @@
 #include <Logger.h>
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
+#include "../ipc/SIGINT_Handler.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 #include <algorithm>
@@ -24,7 +25,11 @@ void Torneo::run() {
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
-  while(sePuedeArmarPartido() || partidosCorriendo()) {
+  SIGINT_Handler sigint_handler;
+  SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+
+  while(sigint_handler.getGracefulQuit() == 0 &&
+        (sePuedeArmarPartido() || partidosCorriendo())) {
       if (lanzarPartido()) {
         continue;
       }
@@ -45,8 +50,12 @@ void Torneo::run() {
 
   }
 
-  this->logger->info("Escribiendo los resultados!");
-  finalizarTorneo();
+  if (sigint_handler.getGracefulQuit() == 0) {
+    this->logger->info("Escribiendo los resultados!");
+    finalizarTorneo();
+  } else {
+    liberarRecursos();
+  }
 }
 
 
@@ -82,7 +91,6 @@ void Torneo::liberarCancha(pid_t pidPartido) {
   cancha.proceso = 0;
   cancha.ocupada = false;
   memoriaCanchas_.escribir(cancha);
-
 
   partidos_.erase(pidPartido);
 }
@@ -235,6 +243,14 @@ void Torneo::agregarJugador() {
 };
 
 void Torneo::liberarRecursos() {
+  for (auto const& pair : partidos_) {
+    kill(pair.first, SIGINT);
+  }
+
+  for (auto const& element : partidos_) {
+    wait(NULL);
+  }
+
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
 };
