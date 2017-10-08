@@ -60,9 +60,6 @@ void Torneo::finalizarPartido(pid_t pidPartido, int status) {
     Jugador& j = jugadores_.at(parts[i]);
     int offset = (i % 2 == 0) ? 1 : -1;
     j.agregarPartido(parts[i + offset]);
-    if (j.getPartidosJugados() <= opts_.partidos) {
-      j.setDisponible(true);
-    }
   }
 
   liberarCancha(pidPartido);
@@ -70,12 +67,22 @@ void Torneo::finalizarPartido(pid_t pidPartido, int status) {
 
 void Torneo::liberarCancha(pid_t pidPartido) {
   Partido p = partidos_.at(pidPartido);
+  participantes parts = p.getParticipantes();
+
+  for (int i = 0; i < 4; ++i) {
+    Jugador& j = jugadores_.at(parts[i]);
+    if (j.getPartidosJugados() <= opts_.partidos) {
+      j.setDisponible(true);
+    }
+  }
+
   TCanchaSerializada cancha = p.getCancha();
 
   memoriaCanchas_.leer(cancha, cancha.fila, cancha.columna);
   cancha.proceso = 0;
   cancha.ocupada = false;
   memoriaCanchas_.escribir(cancha);
+
 
   partidos_.erase(pidPartido);
 }
