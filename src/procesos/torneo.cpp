@@ -54,6 +54,7 @@ void Torneo::run() {
     this->logger->info("Escribiendo los resultados!");
     finalizarTorneo();
   } else {
+    this->logger->info("Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
 }
