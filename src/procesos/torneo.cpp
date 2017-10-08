@@ -100,7 +100,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
   }
 
   TResultadoSerializado res;
-  res.init(parts[0], parts[1], parts[2], parts[3], 5, resultadoPareja1, resultadoPareja2);
+  res.init(parts[0], parts[1], parts[2], parts[3], resultadoPareja1, resultadoPareja2);
 
   conexion_.addResultado(res);
 

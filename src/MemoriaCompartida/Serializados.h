@@ -57,38 +57,21 @@ struct ResultadoSerializado;
  * Almacena un partido con los datos de sus jugadores y los set's asociados al mismo.
  */
 typedef struct ResultadoSerializado{
-    pid_t equipo1[JUGADORES_POR_EQUIPO];
-    pid_t equipo2[JUGADORES_POR_EQUIPO];
+    unsigned int equipo1[JUGADORES_POR_EQUIPO];
+    unsigned int equipo2[JUGADORES_POR_EQUIPO];
     unsigned int puntajeEquipo1=0;
     unsigned int puntajeEquipo2=0;
 
-    void init(pid_t* equipo1,pid_t* equipo2,
+    void init(unsigned int* equipo1,unsigned int* equipo2,
               const unsigned int cantidadSets,
               const unsigned int* resultadoSetsEquipo1,
               const unsigned int* resultadoSetsEquipo2){
-        memcpy(&this->equipo1,equipo1,sizeof(pid_t)*JUGADORES_POR_EQUIPO);
-        memcpy(&this->equipo2,equipo2,sizeof(pid_t)*JUGADORES_POR_EQUIPO);
+        memcpy(&this->equipo1,equipo1,sizeof(unsigned int)*JUGADORES_POR_EQUIPO);
+        memcpy(&this->equipo2,equipo2,sizeof(unsigned int)*JUGADORES_POR_EQUIPO);
     }
-//-> todo quita esto
-    void init(const pid_t jugador1Equipo1,const pid_t jugador2Equipo1,
-              const pid_t jugador1Equipo2,const pid_t jugador2Equipo2,
-              const unsigned int cantidadSets,
-              const unsigned int set1eq1,const unsigned int set1eq2,
-              const unsigned int set2eq1,const unsigned int set2eq2,
-              const unsigned int set3eq1,const unsigned int set3eq2,
-              const unsigned int set4eq1,const unsigned int set4eq2,
-              const unsigned int set5eq1,const unsigned int set5eq2){
-        this->equipo1[0]=jugador1Equipo1;
-        this->equipo1[1]=jugador2Equipo1;
-        this->equipo2[0]=jugador1Equipo2;
-        this->equipo2[1]=jugador2Equipo2;
-    }
-// todo quita esto <-
 
-// usar este de aquí en adelante
-    void init(const pid_t jugador1Equipo1,const pid_t jugador2Equipo1,
-              const pid_t jugador1Equipo2,const pid_t jugador2Equipo2,
-              const unsigned int cantidadSets,
+    void init(const unsigned int jugador1Equipo1,const unsigned int jugador2Equipo1,
+              const unsigned int jugador1Equipo2,const unsigned int jugador2Equipo2,
               const unsigned int puntajeEquipo1,
               const unsigned int puntajeEquipo2){
         this->equipo1[0]=jugador1Equipo1;
@@ -124,9 +107,13 @@ struct JugadorPuntaje;
  * Alamacena un par jugador-puntaje
  */
 typedef struct JugadorPuntaje{
-    pid_t jugador=0;
+    unsigned int jugador=0;
     unsigned int puntaje=0;
 
+    void init(unsigned int jugador, unsigned int puntaje) {
+        this->jugador=jugador;
+        this->puntaje=puntaje;
+    }
     /**
      * @return verdadero si el puntaje del primero es menor que el segundo
      */
