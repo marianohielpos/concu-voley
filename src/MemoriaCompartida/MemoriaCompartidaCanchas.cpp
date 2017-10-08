@@ -13,6 +13,13 @@ void MemoriaCompartidaCanchas::inicializar() {
     if(this->memoria.crear(ARCHIVO_MEMORIA_CANCHAS,CARACTER_MEMORIA_CANCHAS,filas*columnas)!=SHM_OK){
         throw(std::exception());
     };
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            TCanchaSerializada cancha;
+            cancha.init(i, j, false, false, 0);
+            escribir(cancha);
+        }
+    }
 }
 
 void MemoriaCompartidaCanchas::escribir(const TCanchaSerializada& cancha) throw(std::exception){

@@ -187,6 +187,13 @@ bool Torneo::lanzarPartido() {
     memoriaCanchas_.escribir(cancha);
     partidos_.insert({pidPartido, partido});
   }
+
+  std::stringstream ss;
+  ss << "Torneo: lanzando partido " << pidPartido << " en la cancha fila "
+     << cancha.fila << " y columna " << cancha.columna;
+
+  this->logger->info(ss.str());
+
   return true;
 };
 
