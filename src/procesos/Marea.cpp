@@ -58,7 +58,7 @@ void Marea::run() {
         }
         else if (this->mareaBajo()) {
             this->generarMensajeDeLog("Marea bajó");
-            this->lockCanchas.desinundarFilasDeCanchas(this->nivel - 1);
+            this->lockCanchas.desinundarFilasDeCanchas(this->nivel);
         }
         else {
             this->generarMensajeDeLog("Marea se quedó en el mismo nivel");
@@ -76,7 +76,7 @@ void Marea::run() {
 
 bool Marea::mareaSubio() {
 
-    bool subio = (rand() % 5) == 1 && this->nivel < this->opciones.filas - 1;
+    bool subio = (rand() % 5) == 1 && this->nivel < (this->opciones.filas - 1);
 
     if (subio)
         this->nivel++;
