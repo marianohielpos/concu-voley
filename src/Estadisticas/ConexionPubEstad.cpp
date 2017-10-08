@@ -25,4 +25,5 @@ bool ConexionPubEstad::addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje) {
 
 void ConexionPubEstad::liberarRecursos() {
     this->lockMemoriaCompartidaResultados.liberarMemoria();
+    this->lockMemoriaCompartidaJugadores.liberarMemoria();
 }
