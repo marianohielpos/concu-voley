@@ -113,7 +113,7 @@ bool LockMemoriaCompartidaCanchas::obtenerCanchaLibre(TCanchaSerializada &cancha
     int i = 0, j = 0;
 
     while(!canchaEncontrada) {
-        leer(cancha, i, j);
+        leer(cancha, j, i);
         if (!cancha.ocupada && !cancha.inundada) {
             canchaEncontrada = true;
         } else {
