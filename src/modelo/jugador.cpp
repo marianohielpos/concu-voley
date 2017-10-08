@@ -1,7 +1,8 @@
 
 #include "jugador.h"
 
-Jugador::Jugador(int id) : id_(id), partidosJugados_(0), disponible_(true), puntos_(0) {
+Jugador::Jugador(int id) : id_(id), partidosJugados_(0),
+                           disponible_(true), enPredio_(true), puntos_(0) {
 }
 
 int Jugador::getId() const {
@@ -23,13 +24,25 @@ int Jugador::getPartidosJugados() const {
 
 
 bool Jugador::disponible() const {
-  return disponible_;
+  return enPredio_ && disponible_;
 };
 
 void Jugador::setDisponible(bool disponible) {
   disponible_ = disponible;
 };
 
+
+void Jugador::entrarPredio() {
+  enPredio_ = true;
+};
+
+void Jugador::salirPredio() {
+  enPredio_ = false;
+};
+
+bool Jugador::estaEnPredio() {
+  return enPredio_;
+};
 
 void Jugador::addPuntos(int puntos) {
   puntos_ += puntos;

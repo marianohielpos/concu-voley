@@ -22,6 +22,8 @@ void Torneo::run() {
 
   this->logger->info("Torneo corriendo!");
 
+  srand(getpid());
+
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
@@ -44,6 +46,8 @@ void Torneo::run() {
           this->logger->info("Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
+        checkearEntradaJugadores();
+        checkearSalidaJugadores();
       } else {
         this->logger->info("Wait terminó sin exit!");
       }
@@ -127,6 +131,28 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
   this->logger->info(ss.str());
 
+};
+
+void Torneo::checkearEntradaJugadores() {
+  for (Jugador& j1 : jugadores_) {
+    if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
+      j1.entrarPredio();
+      std::stringstream ss;
+      ss << "Jugador " << j1.getId() << " está volviendo al predio!";
+      this->logger->info(ss.str());
+    }
+  }
+};
+
+void Torneo::checkearSalidaJugadores() {
+  for (Jugador& j1 : jugadores_) {
+    if (j1.estaEnPredio() && j1.disponible() && rand() % 100 < opts_.chanceSalirPredio) {
+      j1.salirPredio();
+      std::stringstream ss;
+      ss << "Jugador " << j1.getId() << " está saliendo del predio!";
+      this->logger->info(ss.str());
+    }
+  }
 };
 
 
