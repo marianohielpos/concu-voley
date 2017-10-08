@@ -9,6 +9,7 @@
 #include "SIGINT_Handler.h"
 #include "sleep.h"
 #include "signal.h"
+#include <sstream>
 
 
 Marea::Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones) {
@@ -16,6 +17,16 @@ Marea::Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opcione
     this->logger = logger;
     this->canchas = canchas;
     this->opciones = opciones;
+}
+
+void Marea::generarMensajeDeLog(std::string mensaje) {
+    std::string nivel = std::to_string(this->nivel);
+    std::stringstream mensajeFormateado;
+    mensajeFormateado << mensaje;
+    mensajeFormateado << " Nivel: ";
+    mensajeFormateado << nivel.c_str();
+
+    this->logger->info(mensajeFormateado.str());
 }
 
 void Marea::run() {
@@ -29,16 +40,17 @@ void Marea::run() {
     SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
     while ( sigint_handler.getGracefulQuit() == 0 ) {
-        this->logger->info("Proceso de marea corriendo");
+
+        this->generarMensajeDeLog("Proceso de marea corriendo");
 
         if (this->mareaSubio()) {
-            this->logger->info("Marea subió");
+            this->generarMensajeDeLog("Marea subió");
         }
         else if (this->mareaBajo()) {
-            this->logger->info("Marea bajó");
+            this->generarMensajeDeLog("Marea bajó");
         }
         else {
-            this->logger->info("Marea se quedó en el mismo nivel");
+            this->generarMensajeDeLog("Marea se quedó en el mismo nivel");
         }
 
         milisleep ( this->opciones.sleepMarea );
@@ -51,9 +63,21 @@ void Marea::run() {
 
 
 bool Marea::mareaSubio() {
-    return (rand() % 5) == 1 ;
+
+    bool subio = (rand() % 5) == 1 && this->nivel < this->opciones.filas;
+
+    if (subio)
+        this->nivel++;
+
+    return subio;
 }
 
 bool Marea::mareaBajo() {
-    return (rand() % 4) == 1 ;
+
+    bool bajo = (rand() % 4) == 1 && this->nivel > 0;
+
+    if (bajo)
+        this->nivel--;
+
+    return bajo;
 }

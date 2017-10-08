@@ -27,6 +27,10 @@ private:
 
     Opciones opciones;
 
+    int nivel = 0;
+
+    void generarMensajeDeLog(std::string mensaje);
+
 public:
     Marea(Logger* logger, MemoriaCompartidaCanchas* canchas, Opciones opciones);
 
