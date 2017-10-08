@@ -54,6 +54,8 @@ public:
      */
     std::list<TJugadorPuntaje>* readAll();
 
+    void liberarMemoria();
+
 private:
 
     int tomarLock ();

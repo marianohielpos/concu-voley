@@ -37,6 +37,8 @@ public:
     void update();
 
     ~PublicadorDeEstadisticas();
+
+    void liberarRecursos();
 };
 
 

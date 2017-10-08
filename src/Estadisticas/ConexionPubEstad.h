@@ -41,6 +41,8 @@ public:
      */
     bool addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje);
 
+    void liberarRecursos();
+
 };
 
 

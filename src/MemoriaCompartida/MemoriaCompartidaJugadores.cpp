@@ -56,3 +56,8 @@ void MemoriaCompartidaJugadores::inicializarMemoriaJugadorPuntaje() throw(std::e
         throw (std::exception());
     }
 }
+
+void MemoriaCompartidaJugadores::liberar() {
+    this->cantidadJugadores.liberar();
+    this->jugadores.liberar();
+}

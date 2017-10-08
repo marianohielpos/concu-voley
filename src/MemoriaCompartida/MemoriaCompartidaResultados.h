@@ -52,6 +52,8 @@ public:
      */
     std::list<TResultadoSerializado>* readAll();
 
+    void liberar();
+
 private:
 
     void inicializarMemoriaResultados() throw(std::exception);

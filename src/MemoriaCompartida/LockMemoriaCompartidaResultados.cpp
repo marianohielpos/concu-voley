@@ -61,3 +61,7 @@ void LockMemoriaCompartidaResultados::cleanMemoria() {
     this->memoriaCompartidaResultados->cleanMemoria();
     this->liberarLock();
 }
+
+void LockMemoriaCompartidaResultados::liberarMemoria() {
+    this->memoriaCompartidaResultados->liberar();
+}

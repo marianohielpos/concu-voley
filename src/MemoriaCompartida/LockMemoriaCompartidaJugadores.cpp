@@ -60,3 +60,7 @@ void LockMemoriaCompartidaJugadores::cleanMemoria() {
     this->memoriaCompartidaJugadores->cleanMemoria();
     this->liberarLock();
 }
+
+void LockMemoriaCompartidaJugadores::liberarMemoria() {
+    this->memoriaCompartidaJugadores->liberar();
+}

@@ -54,6 +54,8 @@ public:
      */
     std::list<TJugadorPuntaje>* readAll();
 
+    void liberar();
+
 private:
 
     void inicializarMemoriaJugadorPuntaje() throw(std::exception);

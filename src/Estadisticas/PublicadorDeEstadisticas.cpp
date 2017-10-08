@@ -21,3 +21,8 @@ void PublicadorDeEstadisticas::update() {
     delete(listaResultados);
     delete(listaJugadores);
 }
+
+void PublicadorDeEstadisticas::liberarRecursos() {
+    this->lockJugadores.liberarMemoria();
+    this->lockResultados.liberarMemoria();
+}
