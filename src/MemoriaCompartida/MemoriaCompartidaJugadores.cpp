@@ -45,7 +45,7 @@ void MemoriaCompartidaJugadores::inicializarCantidadJugadores() throw(std::excep
     }else{
         unsigned int cantidadJugadoresLeido;
         this->cantidadJugadores.leer(cantidadJugadoresLeido,0);
-        if((cantidadJugadoresLeido>this->cantidadMaxJugadores)||(cantidadJugadoresLeido<0)){
+        if(cantidadJugadoresLeido>this->cantidadMaxJugadores){
             this->cleanMemoria();
         }
     }
