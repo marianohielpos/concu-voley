@@ -54,21 +54,13 @@ typedef struct CanchaSerializada{
 struct ResultadoSerializado;
 
 /**
- * Almacena un partido con los datos de sus jugadores y los set's asociados al mismo.
+ * Almacena los resultados de un partido con los datos de sus jugadores y el puntaje final de los mismos.
  */
 typedef struct ResultadoSerializado{
     unsigned int equipo1[JUGADORES_POR_EQUIPO];
     unsigned int equipo2[JUGADORES_POR_EQUIPO];
     unsigned int puntajeEquipo1=0;
     unsigned int puntajeEquipo2=0;
-
-    void init(unsigned int* equipo1,unsigned int* equipo2,
-              const unsigned int cantidadSets,
-              const unsigned int* resultadoSetsEquipo1,
-              const unsigned int* resultadoSetsEquipo2){
-        memcpy(&this->equipo1,equipo1,sizeof(unsigned int)*JUGADORES_POR_EQUIPO);
-        memcpy(&this->equipo2,equipo2,sizeof(unsigned int)*JUGADORES_POR_EQUIPO);
-    }
 
     void init(const unsigned int jugador1Equipo1,const unsigned int jugador2Equipo1,
               const unsigned int jugador1Equipo2,const unsigned int jugador2Equipo2,

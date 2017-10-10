@@ -38,6 +38,9 @@ public:
 
     ~PublicadorDeEstadisticas();
 
+    /**
+     * libera los recursos de memoria compartida asociados a la instancia.
+     */
     void liberarRecursos();
 };
 

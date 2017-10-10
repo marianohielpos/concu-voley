@@ -42,6 +42,9 @@ public:
         this->memoria.liberar();
     }
 
+    /**
+     * crea la memoria compartida de la instancia.
+     */
     void inicializar();
 
     /**
@@ -51,6 +54,9 @@ public:
      */
     void leer(TCanchaSerializada& cancha,const unsigned int fila,const unsigned int columna) throw(std::exception);
 
+    /**
+     * libera los recursos de memoria compartida asociados a la instancia.
+     */
     void liberar();
 
     /**
