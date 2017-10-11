@@ -34,7 +34,8 @@ class Torneo {
   void liberarCancha(pid_t pidPartido);
   void finalizarTorneo();
   void liberarRecursos();
-
+  void checkearSalidaJugadores();
+  void checkearEntradaJugadores();
 
 public:
   Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger);

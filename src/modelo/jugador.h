@@ -11,6 +11,7 @@ int id_;
 int partidosJugados_;
 int puntos_;
 bool disponible_;
+bool enPredio_;
 std::set<int> parejas_;
 
 public:
@@ -26,6 +27,10 @@ public:
 
   void addPuntos(int puntos);
   int getPuntos() const;
+
+  void entrarPredio();
+  void salirPredio();
+  bool estaEnPredio();
 
 };
 

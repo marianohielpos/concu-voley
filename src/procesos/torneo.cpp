@@ -6,6 +6,7 @@
 #include <Logger.h>
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
+#include "../ipc/SIGINT_Handler.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 #include <algorithm>
@@ -21,10 +22,16 @@ void Torneo::run() {
 
   this->logger->info("[Torneo] Torneo corriendo!");
 
+  srand(getpid());
+
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
-  while(sePuedeArmarPartido() || partidosCorriendo()) {
+  SIGINT_Handler sigint_handler;
+  SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+
+  while(sigint_handler.getGracefulQuit() == 0 &&
+        (sePuedeArmarPartido() || partidosCorriendo())) {
       if (lanzarPartido()) {
         continue;
       }
@@ -39,6 +46,8 @@ void Torneo::run() {
           this->logger->info("[Torneo] Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
+        checkearEntradaJugadores();
+        checkearSalidaJugadores();
       } else {
         this->logger->info("[Torneo]Wait terminó sin exit!");
       }
@@ -47,6 +56,13 @@ void Torneo::run() {
 
   this->logger->info("[Torneo] Escribiendo los resultados!");
   finalizarTorneo();
+  if (sigint_handler.getGracefulQuit() == 0) {
+    this->logger->info("Escribiendo los resultados!");
+    finalizarTorneo();
+  } else {
+    this->logger->info("Recibí SIGINT! Liberando recursos.");
+    liberarRecursos();
+  }
 }
 
 
@@ -83,7 +99,6 @@ void Torneo::liberarCancha(pid_t pidPartido) {
   cancha.ocupada = false;
   memoriaCanchas_.escribir(cancha);
 
-
   partidos_.erase(pidPartido);
 }
 
@@ -118,6 +133,28 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
   this->logger->info(ss.str());
 
+};
+
+void Torneo::checkearEntradaJugadores() {
+  for (Jugador& j1 : jugadores_) {
+    if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
+      j1.entrarPredio();
+      std::stringstream ss;
+      ss << "Jugador " << j1.getId() << " está volviendo al predio!";
+      this->logger->info(ss.str());
+    }
+  }
+};
+
+void Torneo::checkearSalidaJugadores() {
+  for (Jugador& j1 : jugadores_) {
+    if (j1.estaEnPredio() && j1.disponible() && rand() % 100 < opts_.chanceSalirPredio) {
+      j1.salirPredio();
+      std::stringstream ss;
+      ss << "Jugador " << j1.getId() << " está saliendo del predio!";
+      this->logger->info(ss.str());
+    }
+  }
 };
 
 
@@ -235,6 +272,14 @@ void Torneo::agregarJugador() {
 };
 
 void Torneo::liberarRecursos() {
+  for (auto const& pair : partidos_) {
+    kill(pair.first, SIGINT);
+  }
+
+  for (auto const& element : partidos_) {
+    wait(NULL);
+  }
+
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
 };

@@ -16,6 +16,9 @@ typedef struct {
     unsigned int sleepPublicador = 200;
     unsigned int filas = 5;
     unsigned int columnas = 5;
+
+    unsigned int chanceSalirPredio = 20;
+    unsigned int chanceEntrarPredio = 30;
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H
