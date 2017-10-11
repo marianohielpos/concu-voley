@@ -18,7 +18,6 @@ private:
     pid_t pidMarea;
     pid_t pidTorneo;
 
-protected:
     Logger* logger = NULL;
 
 public:
@@ -28,6 +27,8 @@ public:
     void enviarSeñalDeTerminacion();
 
     void run();
+
+    void enviarSeñalDeTerminacionPorInterrupcion();
 };
 
 class Terminador : public EventHandler {

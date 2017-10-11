@@ -88,6 +88,8 @@ MainProcess::~MainProcess(){
 
 void MainProcess::enviarSeñalDeTerminacion() {
 
+  this->logger->info("[Principal] Enviando señales a procesos");
+
   if (this->pidMarea != 0) kill(this->pidMarea, SIGINT);
 
   if (this->pidPublicador != 0) kill(this->pidPublicador, SIGINT);
@@ -95,6 +97,13 @@ void MainProcess::enviarSeñalDeTerminacion() {
   if (this->pidTorneo != 0) kill(this->pidTorneo, SIGINT);
 }
 
+void MainProcess::enviarSeñalDeTerminacionPorInterrupcion() {
+
+  this->logger->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
+
+  this->enviarSeñalDeTerminacion();
+
+}
 
 Terminador::Terminador(MainProcess &mainProcess): m_(mainProcess){}
 
@@ -102,7 +111,7 @@ Terminador::~Terminador() {}
 
 int Terminador::handleSignal (int signum) {
   assert(signum == SIGINT);
-  m_.enviarSeñalDeTerminacion();
+    m_.enviarSeñalDeTerminacionPorInterrupcion();
   exit(SIGINT);
 }
 
