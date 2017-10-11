@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
 
     Opciones opciones = parsearParametros(argc, argv);
 
-    Logger logger = Logger(opciones.logName, opciones.logLevel);
+    Logger::setInstance(opciones);
 
-    MainProcess mp(opciones, &logger);
+    MainProcess mp(opciones);
 
     mp.run();
 

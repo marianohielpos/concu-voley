@@ -8,8 +8,8 @@
 
 
 
-Partido::Partido(participantes p, Logger* logger, Opciones opts, TCanchaSerializada cancha)
-  : p_(p), logger(logger), opts_(opts), cancha_(cancha) {
+Partido::Partido(participantes p, Opciones opts, TCanchaSerializada cancha)
+  : p_(p), opts_(opts), cancha_(cancha) {
 }
 
 participantes Partido::getParticipantes() {
@@ -17,7 +17,7 @@ participantes Partido::getParticipantes() {
 };
 
 void Partido::run() {
-  this->logger->info("[Principal] Partido corriendo!");
+  Logger::getInstance()->info("[Principal] Partido corriendo!");
 
   srand(getpid());
 
@@ -30,7 +30,7 @@ void Partido::run() {
     }
   }
 
-  this->logger->info("[Principal] Partido terminando!");
+  Logger::getInstance()->info("[Principal] Partido terminando!");
 
   int retCode;
   if (i == 3) {

@@ -18,10 +18,8 @@ private:
     pid_t pidMarea;
     pid_t pidTorneo;
 
-    Logger* logger = NULL;
-
 public:
-    MainProcess(Opciones opts, Logger* logger);
+    MainProcess(Opciones opts);
     ~MainProcess();
 
     void enviarSeñalDeTerminacion();

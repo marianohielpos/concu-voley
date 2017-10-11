@@ -13,8 +13,8 @@
 #include <sstream>
 
 
-Marea::Marea(Logger* logger, Opciones opciones)
-    : logger(logger), opciones(opciones), lockCanchas(opciones) {
+Marea::Marea(Opciones opciones)
+    :opciones(opciones), lockCanchas(opciones) {
 }
 
 void Marea::generarMensajeDeLog(std::string mensaje) {
@@ -24,12 +24,12 @@ void Marea::generarMensajeDeLog(std::string mensaje) {
     mensajeFormateado << " Nivel: ";
     mensajeFormateado << nivel.c_str();
 
-    this->logger->info(mensajeFormateado.str());
+    Logger::getInstance()->info(mensajeFormateado.str());
 }
 
 void Marea::run() {
 
-    this->logger->info("[Marea] Marea incializada");
+    Logger::getInstance()->info("[Marea] Marea incializada");
 
     srand(getpid());
 
@@ -53,7 +53,7 @@ void Marea::run() {
                 mensajeProcesosAfectados << " " << std::to_string(*it);
             }
 
-            this->logger->info(mensajeProcesosAfectados.str());
+            Logger::getInstance()->info(mensajeProcesosAfectados.str());
 
         }
         else if (this->mareaBajo()) {
@@ -69,7 +69,7 @@ void Marea::run() {
 
     SignalHandler :: destruir ();
     lockCanchas.liberar();
-    this->logger->info("[Marea] Proceso de marea termina");
+    Logger::getInstance()->info("[Marea] Proceso de marea termina");
     return;
 }
 

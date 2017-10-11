@@ -13,27 +13,25 @@
 #include "Publicador.h"
 
 
-MainProcess::MainProcess(Opciones opts, Logger* logger)
+MainProcess::MainProcess(Opciones opts)
 : opts_(opts),
   memoriaCompartidaCanchas_(opts_.filas, opts_.columnas),
   pidMarea(0),
   pidPublicador(0),
   pidTorneo(0)
-{
-  this->logger = logger;
-}
+{}
 
 
 void MainProcess::run() {
 
-  this->logger->info("[Principal] Comienzo del programa");
+  Logger::getInstance()->info("[Principal] Comienzo del programa");
 
   Terminador sigint_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
   this->pidPublicador = fork();
   if (this->pidPublicador == 0) {
-    Publicador publicador = Publicador(this->opts_, this->logger);
+    Publicador publicador = Publicador(this->opts_);
     publicador.run();
     exit(0);
   }
@@ -41,7 +39,7 @@ void MainProcess::run() {
 
   this->pidMarea = fork();
   if (this->pidMarea == 0) {
-    Marea marea = Marea(this->logger, this->opts_);
+    Marea marea = Marea(this->opts_);
     marea.run();
     exit(0);
   }
@@ -57,7 +55,7 @@ void MainProcess::run() {
   if (v.size() >= JUGADORES_PARA_TORNEO) {
     this->pidTorneo = fork();
     if (this->pidTorneo == 0) {
-      Torneo t(v, opts_, this->logger);
+      Torneo t(v, opts_);
       t.run();
       exit(0);
     } else {
@@ -65,7 +63,7 @@ void MainProcess::run() {
       int i = v.size();
       while (i <= opts_.jugadores) {
         milisleep(this->opts_.sleepJugadores);
-        this->logger->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
+        Logger::getInstance()->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
         kill(pidTorneo, SIGUSR1);
         i++;
       }
@@ -83,12 +81,12 @@ void MainProcess::run() {
 
 MainProcess::~MainProcess(){
   memoriaCompartidaCanchas_.liberar();
-  this->logger->info("[Principal] Borrando main process!");
+  Logger::getInstance()->info("[Principal] Borrando main process!");
 }
 
 void MainProcess::enviarSeñalDeTerminacion() {
 
-  this->logger->info("[Principal] Enviando señales a procesos");
+  Logger::getInstance()->info("[Principal] Enviando señales a procesos");
 
   if (this->pidMarea != 0) kill(this->pidMarea, SIGINT);
 
@@ -99,7 +97,7 @@ void MainProcess::enviarSeñalDeTerminacion() {
 
 void MainProcess::enviarSeñalDeTerminacionPorInterrupcion() {
 
-  this->logger->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
+  Logger::getInstance()->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
 
   this->enviarSeñalDeTerminacion();
 

@@ -12,15 +12,15 @@
 #include <algorithm>
 
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger)
+Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
   : jugadores_(jugadoresIniciales), opts_(opts),
     conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
-    logger(logger), memoriaCanchas_(opts_) {
+    memoriaCanchas_(opts_) {
 }
 
 void Torneo::run() {
 
-  this->logger->info("[Torneo] Torneo corriendo!");
+  Logger::getInstance()->info("[Torneo] Torneo corriendo!");
 
   srand(getpid());
 
@@ -40,27 +40,27 @@ void Torneo::run() {
 
       if (pidPartido != -1) {
         if (WIFEXITED(status)) {
-          this->logger->info("[Torneo] Partido terminó exitosamente " + std::to_string(pidPartido));
+          Logger::getInstance()->info("[Torneo] Partido terminó exitosamente " + std::to_string(pidPartido));
           finalizarPartido(pidPartido, status);
         } else {
-          this->logger->info("[Torneo] Partido terminó por una interrupción");
+          Logger::getInstance()->info("[Torneo] Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
         checkearEntradaJugadores();
         checkearSalidaJugadores();
       } else {
-        this->logger->info("[Torneo] Wait terminó sin exit!");
+        Logger::getInstance()->info("[Torneo] Wait terminó sin exit!");
       }
 
   }
 
-  this->logger->info("[Torneo] Escribiendo los resultados!");
+  Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
   finalizarTorneo();
   if (sigint_handler.getGracefulQuit() == 0) {
-    this->logger->info("[Torneo] Escribiendo los resultados!");
+    Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
     finalizarTorneo();
   } else {
-    this->logger->info("[Torneo] Recibí SIGINT! Liberando recursos.");
+    Logger::getInstance()->info("[Torneo] Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
 }
@@ -131,7 +131,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
-  this->logger->info(ss.str());
+  Logger::getInstance()->info(ss.str());
 
 };
 
@@ -141,7 +141,7 @@ void Torneo::checkearEntradaJugadores() {
       j1.entrarPredio();
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está volviendo al predio!";
-      this->logger->info(ss.str());
+      Logger::getInstance()->info(ss.str());
     }
   }
 };
@@ -152,7 +152,7 @@ void Torneo::checkearSalidaJugadores() {
       j1.salirPredio();
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
-      this->logger->info(ss.str());
+      Logger::getInstance()->info(ss.str());
     }
   }
 };
@@ -223,7 +223,7 @@ bool Torneo::lanzarPartido() {
   TCanchaSerializada cancha;
   memoriaCanchas_.obtenerCanchaLibre(cancha);
 
-  Partido partido(p, logger, this->opts_, cancha);
+  Partido partido(p, this->opts_, cancha);
   pid_t pidPartido = fork();
   if (pidPartido == 0) {
     partido.run();
@@ -238,7 +238,7 @@ bool Torneo::lanzarPartido() {
   ss << "[Torneo] Torneo: lanzando partido " << pidPartido << " en la cancha fila "
      << cancha.fila << " y columna " << cancha.columna;
 
-  this->logger->info(ss.str());
+  Logger::getInstance()->info(ss.str());
 
   return true;
 };
@@ -258,7 +258,7 @@ void Torneo::finalizarTorneo() {
 
     std::stringstream ss;
     ss << "[Torneo] El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
-    this->logger->info(ss.str());
+    Logger::getInstance()->info(ss.str());
 
     conexion_.addJugadorPuntaje(punt);
   }
