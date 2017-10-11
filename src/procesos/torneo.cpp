@@ -40,7 +40,7 @@ void Torneo::run() {
           liberarCancha(pidPartido);
         }
       } else {
-        this->logger->info("[Torneo] Wait terminó sin exit!");
+        this->logger->info("[Torneo]Wait terminó sin exit!");
       }
 
   }
@@ -112,7 +112,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
   conexion_.addResultado(res);
 
   std::stringstream ss;
-  ss << "[Torneo] [Resultados del partido " << pidPartido << "] Jugadores "
+  ss << "[Resultados del partido " << pidPartido << "] Jugadores "
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
@@ -198,7 +198,7 @@ bool Torneo::lanzarPartido() {
   }
 
   std::stringstream ss;
-  ss << "[Torneo] lanzando partido " << pidPartido << " en la cancha fila "
+  ss << "Torneo: lanzando partido " << pidPartido << " en la cancha fila "
      << cancha.fila << " y columna " << cancha.columna;
 
   this->logger->info(ss.str());
@@ -220,7 +220,7 @@ void Torneo::finalizarTorneo() {
     punt.puntaje = j.getPuntos();
 
     std::stringstream ss;
-    ss << "[Torneo] El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
+    ss << "El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
     this->logger->info(ss.str());
 
     conexion_.addJugadorPuntaje(punt);

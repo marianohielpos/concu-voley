@@ -3,20 +3,23 @@
 #include <vector>
 #include <unistd.h>
 #include <signal.h>
-#include <sys/wait.h>
 #include <Logger.h>
-#include <Opciones.h>
-
+#include <assert.h>
+#include <SignalHandler.h>
 #include "principal.h"
 #include "torneo.h"
-#include "../modelo/jugador.h"
 #include "../utils/sleep.h"
 #include "Marea.h"
 #include "Publicador.h"
 
 
 MainProcess::MainProcess(Opciones opts, Logger* logger)
-: opts_(opts), memoriaCompartidaCanchas_(opts_.filas, opts_.columnas) {
+: opts_(opts),
+  memoriaCompartidaCanchas_(opts_.filas, opts_.columnas),
+  pidMarea(0),
+  pidPublicador(0),
+  pidTorneo(0)
+{
   this->logger = logger;
 }
 
@@ -25,23 +28,26 @@ void MainProcess::run() {
 
   this->logger->info("[Principal] Comienzo del programa");
 
-  pid_t pid_publicador = fork();
-  if (pid_publicador == 0) {
+  Terminador sigint_handler(*this);
+  SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+
+  this->pidPublicador = fork();
+  if (this->pidPublicador == 0) {
     Publicador publicador = Publicador(this->opts_, this->logger);
     publicador.run();
     exit(0);
   }
 
 
-  pid_t pid_marea = fork();
-  if (pid_marea == 0) {
+  this->pidMarea = fork();
+  if (this->pidMarea == 0) {
     Marea marea = Marea(this->logger, this->opts_);
     marea.run();
     exit(0);
   }
 
 
-    std::vector<Jugador> v;
+  std::vector<Jugador> v;
   for (int i = 0; i < JUGADORES_PARA_TORNEO; ++i) {
     v.push_back(Jugador(i));
   }
@@ -49,8 +55,8 @@ void MainProcess::run() {
   // Si hay jugadores suficientes, lanzar torneo
   // TODO: si no, esperar a que haya suficientes
   if (v.size() >= JUGADORES_PARA_TORNEO) {
-    pid_t pidTorneo = fork();
-    if (pidTorneo == 0) {
+    this->pidTorneo = fork();
+    if (this->pidTorneo == 0) {
       Torneo t(v, opts_, this->logger);
       t.run();
       exit(0);
@@ -64,12 +70,14 @@ void MainProcess::run() {
         i++;
       }
       int status = 0;
+
       wait(&status);
+
+      this->pidTorneo = 0;
     }
   }
 
-  kill(pid_marea, SIGINT);
-  kill(pid_publicador, SIGINT);
+  this->enviarSeñalDeTerminacion();
 
 }
 
@@ -77,3 +85,24 @@ MainProcess::~MainProcess(){
   memoriaCompartidaCanchas_.liberar();
   this->logger->info("[Principal] Borrando main process!");
 }
+
+void MainProcess::enviarSeñalDeTerminacion() {
+
+  if (this->pidMarea != 0) kill(this->pidMarea, SIGINT);
+
+  if (this->pidPublicador != 0) kill(this->pidPublicador, SIGINT);
+
+  if (this->pidTorneo != 0) kill(this->pidTorneo, SIGINT);
+}
+
+
+Terminador::Terminador(MainProcess &mainProcess): m_(mainProcess){}
+
+Terminador::~Terminador() {}
+
+int Terminador::handleSignal (int signum) {
+  assert(signum == SIGINT);
+  m_.enviarSeñalDeTerminacion();
+  exit(SIGINT);
+}
+
