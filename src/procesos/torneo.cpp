@@ -49,7 +49,7 @@ void Torneo::run() {
         checkearEntradaJugadores();
         checkearSalidaJugadores();
       } else {
-        this->logger->info("[Torneo]Wait terminó sin exit!");
+        this->logger->info("[Torneo] Wait terminó sin exit!");
       }
 
   }
@@ -57,10 +57,10 @@ void Torneo::run() {
   this->logger->info("[Torneo] Escribiendo los resultados!");
   finalizarTorneo();
   if (sigint_handler.getGracefulQuit() == 0) {
-    this->logger->info("Escribiendo los resultados!");
+    this->logger->info("[Torneo] Escribiendo los resultados!");
     finalizarTorneo();
   } else {
-    this->logger->info("Recibí SIGINT! Liberando recursos.");
+    this->logger->info("[Torneo] Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
 }
@@ -127,7 +127,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
   conexion_.addResultado(res);
 
   std::stringstream ss;
-  ss << "[Resultados del partido " << pidPartido << "] Jugadores "
+  ss << "[Torneo] [Resultados del partido " << pidPartido << "] Jugadores "
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
@@ -140,7 +140,7 @@ void Torneo::checkearEntradaJugadores() {
     if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
       j1.entrarPredio();
       std::stringstream ss;
-      ss << "Jugador " << j1.getId() << " está volviendo al predio!";
+      ss << "[Torneo] Jugador " << j1.getId() << " está volviendo al predio!";
       this->logger->info(ss.str());
     }
   }
@@ -151,7 +151,7 @@ void Torneo::checkearSalidaJugadores() {
     if (j1.estaEnPredio() && j1.disponible() && rand() % 100 < opts_.chanceSalirPredio) {
       j1.salirPredio();
       std::stringstream ss;
-      ss << "Jugador " << j1.getId() << " está saliendo del predio!";
+      ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       this->logger->info(ss.str());
     }
   }
@@ -235,7 +235,7 @@ bool Torneo::lanzarPartido() {
   }
 
   std::stringstream ss;
-  ss << "Torneo: lanzando partido " << pidPartido << " en la cancha fila "
+  ss << "[Torneo] Torneo: lanzando partido " << pidPartido << " en la cancha fila "
      << cancha.fila << " y columna " << cancha.columna;
 
   this->logger->info(ss.str());
@@ -257,7 +257,7 @@ void Torneo::finalizarTorneo() {
     punt.puntaje = j.getPuntos();
 
     std::stringstream ss;
-    ss << "El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
+    ss << "[Torneo] El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
     this->logger->info(ss.str());
 
     conexion_.addJugadorPuntaje(punt);
