@@ -29,7 +29,7 @@ void Marea::generarMensajeDeLog(std::string mensaje) {
 
 void Marea::run() {
 
-    this->logger->info("Marea incializada");
+    this->logger->info("[Marea] Marea incializada");
 
     srand(getpid());
 
@@ -39,15 +39,15 @@ void Marea::run() {
 
     while ( sigint_handler.getGracefulQuit() == 0 ) {
 
-        this->generarMensajeDeLog("Proceso de marea corriendo");
+        this->generarMensajeDeLog("[Marea] Proceso de marea corriendo");
 
         if (this->mareaSubio()) {
-            this->generarMensajeDeLog("Marea subió");
+            this->generarMensajeDeLog("[Marea] Marea subió");
             std::list<pid_t> procesosAfectados = this->lockCanchas.inundarFilasDeCanchas(this->nivel - 1);
 
             std::stringstream mensajeProcesosAfectados;
 
-            mensajeProcesosAfectados << "Procesos afectados:";
+            mensajeProcesosAfectados << "[Marea] Procesos afectados:";
 
             for(std::list<pid_t>::iterator it=procesosAfectados.begin();it!=procesosAfectados.end();++it){
                 mensajeProcesosAfectados << " " << std::to_string(*it);
@@ -57,11 +57,11 @@ void Marea::run() {
 
         }
         else if (this->mareaBajo()) {
-            this->generarMensajeDeLog("Marea bajó");
+            this->generarMensajeDeLog("[Marea] Marea bajó");
             this->lockCanchas.desinundarFilasDeCanchas(this->nivel);
         }
         else {
-            this->generarMensajeDeLog("Marea se quedó en el mismo nivel");
+            this->generarMensajeDeLog("[Marea] Marea se quedó en el mismo nivel");
         }
 
         milisleep ( this->opciones.sleepMarea );
@@ -69,7 +69,7 @@ void Marea::run() {
 
     SignalHandler :: destruir ();
     lockCanchas.liberar();
-    this->logger->info("Proceso de marea termina");
+    this->logger->info("[Marea] Proceso de marea termina");
     return;
 }
 

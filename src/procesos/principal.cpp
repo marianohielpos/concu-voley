@@ -23,7 +23,7 @@ MainProcess::MainProcess(Opciones opts, Logger* logger)
 
 void MainProcess::run() {
 
-  this->logger->info("Comienzo del programa");
+  this->logger->info("[Principal] Comienzo del programa");
 
   pid_t pid_publicador = fork();
   if (pid_publicador == 0) {
@@ -75,5 +75,5 @@ void MainProcess::run() {
 
 MainProcess::~MainProcess(){
   memoriaCompartidaCanchas_.liberar();
-  this->logger->info("Borrando main process!");
+  this->logger->info("[Principal] Borrando main process!");
 }

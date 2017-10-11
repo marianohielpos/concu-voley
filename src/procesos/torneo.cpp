@@ -19,7 +19,7 @@ Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* l
 
 void Torneo::run() {
 
-  this->logger->info("Torneo corriendo!");
+  this->logger->info("[Torneo] Torneo corriendo!");
 
   ReceptorDeJugadores sigusr_handler(*this);
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
@@ -33,19 +33,19 @@ void Torneo::run() {
 
       if (pidPartido != -1) {
         if (WIFEXITED(status)) {
-          this->logger->info("Partido terminó exitosamente " + std::to_string(pidPartido));
+          this->logger->info("[Torneo] Partido terminó exitosamente " + std::to_string(pidPartido));
           finalizarPartido(pidPartido, status);
         } else {
-          this->logger->info("Partido terminó por una interrupción");
+          this->logger->info("[Torneo] Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
       } else {
-        this->logger->info("Wait terminó sin exit!");
+        this->logger->info("[Torneo] Wait terminó sin exit!");
       }
 
   }
 
-  this->logger->info("Escribiendo los resultados!");
+  this->logger->info("[Torneo] Escribiendo los resultados!");
   finalizarTorneo();
 }
 
@@ -112,7 +112,7 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
   conexion_.addResultado(res);
 
   std::stringstream ss;
-  ss << "[Resultados del partido " << pidPartido << "] Jugadores "
+  ss << "[Torneo] [Resultados del partido " << pidPartido << "] Jugadores "
      << parts[0] << " y " << parts[1]  << ": "  << resultadoPareja1  << " puntos; "
      << parts[2] << " y " << parts[3] << ": " << resultadoPareja2 << " puntos;";
 
@@ -198,7 +198,7 @@ bool Torneo::lanzarPartido() {
   }
 
   std::stringstream ss;
-  ss << "Torneo: lanzando partido " << pidPartido << " en la cancha fila "
+  ss << "[Torneo] lanzando partido " << pidPartido << " en la cancha fila "
      << cancha.fila << " y columna " << cancha.columna;
 
   this->logger->info(ss.str());
@@ -220,7 +220,7 @@ void Torneo::finalizarTorneo() {
     punt.puntaje = j.getPuntos();
 
     std::stringstream ss;
-    ss << "El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
+    ss << "[Torneo] El jugador " << j.getId() << " obtuvo " << j.getPuntos() << " puntos!";
     this->logger->info(ss.str());
 
     conexion_.addJugadorPuntaje(punt);
