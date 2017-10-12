@@ -28,7 +28,7 @@ protected:
     Opciones opts_;
 
 public:
-  Partido(participantes p, Logger* logger, Opciones opts_, TCanchaSerializada cancha);
+  Partido(participantes p, Opciones opts_, TCanchaSerializada cancha);
 
   void run();
 

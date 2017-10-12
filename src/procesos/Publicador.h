@@ -20,7 +20,6 @@ class Publicador{
 private:
 
     Opciones opts_;
-    Logger* logger_;
     PublicadorDeEstadisticas publicadorEstadisticas_;
 
 public:
@@ -29,7 +28,7 @@ public:
      *
      * @throws: exception en caso de no poder acceder a las memorias compartidas asociadas.
      */
-    Publicador(Opciones opts, Logger* logger) throw(std::exception);
+    Publicador(Opciones opts) throw(std::exception);
 
     /*
      * Corre el publicador hasta que el programa finalice.

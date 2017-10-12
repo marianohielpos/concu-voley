@@ -3,12 +3,31 @@
 //
 
 #include "Logger.h"
-#include "../ipc/LockFile.h"
 #include <unistd.h>
-#include <sys/types.h>
-#include <time.h>
-#include <iostream>
 #include <sstream>
+
+Logger* Logger::instance = NULL;
+
+Logger* Logger::getInstance() {
+
+    if (Logger::instance == nullptr)
+        throw std::exception();
+
+    return Logger::instance;
+}
+
+
+void Logger::setInstance(Opciones opciones) {
+    Logger::instance = new Logger(opciones.logName, opciones.logLevel);
+}
+
+
+void Logger::deleteInstance() {
+    if ( Logger::instance != NULL ) {
+        delete ( Logger::instance );
+        Logger::instance = NULL;
+    }
+}
 
 Logger::Logger(std::string nombreArchivo, std::string nivel) {
 

@@ -10,16 +10,18 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include "Opciones.h"
 
 #define DEBUG "DEBUG"
 #define INFO "INFO"
 #define WARNING "WARNING"
 #define ERROR "ERROR"
 
-
 class Logger {
 
 private:
+
+    static Logger* instance;
 
     std::map<std::string, int> levels = {
             {DEBUG, 10},
@@ -49,6 +51,12 @@ public:
     Logger ( std::string nombreArchivo, std::string nivel);
 
     ~Logger();
+
+    static Logger* getInstance();
+
+    static void setInstance(Opciones opciones);
+
+    static void deleteInstance();
 
     void info(std::string mensaje);
 

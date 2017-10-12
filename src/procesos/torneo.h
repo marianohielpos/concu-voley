@@ -22,7 +22,6 @@ class Torneo {
   std::vector<Jugador> jugadores_;
   std::map<pid_t, Partido> partidos_;
   ConexionPubEstad conexion_;
-  Logger* logger;
   LockMemoriaCompartidaCanchas memoriaCanchas_;
 
   bool sePuedeArmarPartido();
@@ -38,7 +37,7 @@ class Torneo {
   void checkearEntradaJugadores();
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts, Logger* logger);
+  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
   void agregarJugador();
 
   void run();

@@ -11,8 +11,6 @@
 class Marea {
 
 private:
-    Logger* logger = NULL;
-
     LockMemoriaCompartidaCanchas lockCanchas;
 
     bool gracefulQuit = false;
@@ -28,7 +26,7 @@ private:
     void generarMensajeDeLog(std::string mensaje);
 
 public:
-    Marea(Logger* logger, Opciones opciones);
+    Marea(Opciones opciones);
 
     void handleSignal(int signum);
 

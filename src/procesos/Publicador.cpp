@@ -9,25 +9,25 @@
 #include "../utils/sleep.h"
 
 
-Publicador::Publicador(Opciones opts, Logger* logger) throw(std::exception) :
-  opts_(opts), logger_(logger), publicadorEstadisticas_(opts_.jugadores * opts_.partidos, opts_.jugadores)
+Publicador::Publicador(Opciones opts) throw(std::exception) :
+  opts_(opts), publicadorEstadisticas_(opts_.jugadores * opts_.partidos, opts_.jugadores)
                          {
 }
 
 void Publicador::run() {
-    this->logger_->info("Publicador incializado");
+    Logger::getInstance()->info("[Publicador] Publicador incializado");
 
     SIGINT_Handler sigint_handler;
     SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
     while(sigint_handler.getGracefulQuit() == 0){
         milisleep(opts_.sleepPublicador);
-        this->logger_->info("Publicador hace update...");
+        Logger::getInstance()->info("[Publicador] Publicador hace update...");
         this->publicadorEstadisticas_.update();
     }
 
     SignalHandler::destruir();
-    this->logger_->info("Proceso de publicador termina");
+    Logger::getInstance()->info("[Publicador] Proceso de publicador termina");
     this->publicadorEstadisticas_.liberarRecursos();
     return;
 }

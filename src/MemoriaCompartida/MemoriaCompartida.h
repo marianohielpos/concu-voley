@@ -60,11 +60,9 @@ template <class T> int MemoriaCompartida<T>::crear(const std::string& archivo,co
 }
 
 template<class T> void MemoriaCompartida<T>::liberar(){
-    std::cout << "[MEMORIA COMPARTIDA] Liberando procesos!" << std::endl;
     shmdt (static_cast<void*>(this->ptrDatos));
     int procAdosados = this->cantidadProcesosAdosados();
     if(procAdosados == 0){
-        std::cout << "[MEMORIA COMPARTIDA] entro a shmctl!" << std::endl;
         shmctl(this->shmId,IPC_RMID,NULL);
     }
 }
