@@ -6,9 +6,12 @@
 #include <iostream>
 #include "PublicadorWeb.h"
 
+PublicadorWeb::PublicadorWeb(string archivo) : archivo_(archivo) {
+}
+
 void PublicadorWeb::update(std::list<TResultadoSerializado>* resultadosPartidos,
                            std::list<TJugadorPuntaje>* jugadoresPuntajes) {
-    fd=open(ARCHIVO_HTML,O_WRONLY|O_CREAT|O_TRUNC,0644);
+    fd=open(archivo_.c_str(),O_WRONLY|O_CREAT|O_TRUNC,0644);
     jugadoresPuntajes->sort(compareJugadorPuntajeReverse);
     this->escribirHeader();
     this->escribirBody(resultadosPartidos,jugadoresPuntajes);

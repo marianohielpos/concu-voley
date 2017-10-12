@@ -19,6 +19,7 @@ typedef struct {
 
     unsigned int chanceSalirPredio = 20;
     unsigned int chanceEntrarPredio = 30;
+    string archivoSalida = "/tmp/webvoley.html";
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H

@@ -46,6 +46,9 @@ Opciones parsearParametros (int argc, char *argv[]) {
             case 'p':
                 opciones.partidos = (unsigned int) std::stoul(optarg);
                 break;
+            case 's':
+                opciones.archivoSalida = std::string(optarg);
+                break;
             case 'h':
                 std::cout << "Uso: [-d] [-j cantidadDeJugadores] [-s sleepTime]"
                           << "[-p partidosPorJugador]"

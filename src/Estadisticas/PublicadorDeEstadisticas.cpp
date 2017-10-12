@@ -5,10 +5,9 @@
 #include <iostream>
 #include "PublicadorDeEstadisticas.h"
 
-PublicadorDeEstadisticas::PublicadorDeEstadisticas(const unsigned maxCantidadResultados,
-                        const unsigned maxCantidadJugadores) throw(std::exception) :
-                        lockResultados(maxCantidadResultados),
-                        lockJugadores(maxCantidadJugadores){
+PublicadorDeEstadisticas::PublicadorDeEstadisticas(Opciones opts) throw(std::exception) :
+                        lockResultados(opts.jugadores * opts.partidos),
+                        lockJugadores(opts.jugadores), publicador(opts.archivoSalida) {
 }
 
 PublicadorDeEstadisticas::~PublicadorDeEstadisticas() {

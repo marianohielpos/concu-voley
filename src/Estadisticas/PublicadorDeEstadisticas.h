@@ -7,6 +7,7 @@
 #include "PublicadorWeb.h"
 #include "LockMemoriaCompartidaResultados.h"
 #include "LockMemoriaCompartidaJugadores.h"
+#include "../utils/Opciones.h"
 
 /**
  * Una instancia de esta clase lee los resultados de partidos y pares jugador-puntaje
@@ -28,8 +29,7 @@ public:
     /**
      * @throws exception en caso de no poder acceder a las memorias correspondientes
      */
-    PublicadorDeEstadisticas(const unsigned maxCantidadResultados,
-                             const unsigned maxCantidadJugadores) throw(std::exception);
+    PublicadorDeEstadisticas(Opciones opts) throw(std::exception);
     /**
      * Lee el contenido de las memorias compartidas asociadas bajo mecanismo de lock
      * actualizando el contenido de la página web.

@@ -10,7 +10,7 @@
 
 
 Publicador::Publicador(Opciones opts) throw(std::exception) :
-  opts_(opts), publicadorEstadisticas_(opts_.jugadores * opts_.partidos, opts_.jugadores)
+  opts_(opts), publicadorEstadisticas_(opts)
                          {
 }
 
