@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <unistd.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <Logger.h>
 #include <assert.h>
