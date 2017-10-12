@@ -16,7 +16,6 @@
 
 MainProcess::MainProcess(Opciones opts)
 : opts_(opts),
-  memoriaCompartidaCanchas_(opts_.filas, opts_.columnas),
   pidMarea(0),
   pidPublicador(0),
   pidTorneo(0)
@@ -81,19 +80,35 @@ void MainProcess::run() {
 }
 
 MainProcess::~MainProcess(){
-  memoriaCompartidaCanchas_.liberar();
-  Logger::getInstance()->info("[Principal] Borrando main process!");
 }
 
 void MainProcess::matarProcesosHijos() {
 
   Logger::getInstance()->info("[Principal] Enviando señales a procesos");
 
-  if (this->pidMarea != 0) kill(this->pidMarea, SIGINT);
+  int procesosMatados = 0;
 
-  if (this->pidPublicador != 0) kill(this->pidPublicador, SIGINT);
+  if (this->pidMarea != 0) {
+    kill(this->pidMarea, SIGINT);
+    procesosMatados++;
+  }
 
-  if (this->pidTorneo != 0) kill(this->pidTorneo, SIGINT);
+  if (this->pidPublicador != 0) {
+    kill(this->pidPublicador, SIGINT);
+    procesosMatados++;
+  }
+
+  if (this->pidTorneo != 0) {
+    kill(this->pidTorneo, SIGINT);
+    procesosMatados++;
+  }
+
+  for (int i = 0; i < procesosMatados; ++i) {
+    int status = 0;
+    wait(&status);
+  }
+
+  Logger::getInstance()->info("[Principal] Terminado!");
 }
 
 void MainProcess::matarProcesosHijosPorInterrupcion() {

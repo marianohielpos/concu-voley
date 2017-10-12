@@ -11,7 +11,6 @@
 class MainProcess {
 
 Opciones opts_;
-MemoriaCompartidaCanchas memoriaCompartidaCanchas_;
 
 private:
     pid_t pidPublicador;
