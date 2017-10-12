@@ -17,7 +17,7 @@ participantes Partido::getParticipantes() {
 };
 
 void Partido::run() {
-  Logger::getInstance()->info("[Principal] Partido corriendo!");
+  Logger::getInstance()->info("[Partido] Partido corriendo!");
 
   srand(getpid());
 
@@ -30,7 +30,7 @@ void Partido::run() {
     }
   }
 
-  Logger::getInstance()->info("[Principal] Partido terminando!");
+  Logger::getInstance()->info("[Partido] Partido terminando!");
 
   int retCode;
   if (i == 3) {
