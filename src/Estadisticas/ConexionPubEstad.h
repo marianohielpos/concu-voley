@@ -41,6 +41,9 @@ public:
      */
     bool addJugadorPuntaje(TJugadorPuntaje &jugadorPuntaje);
 
+    /**
+     * libera los recursos de memoria compartida asociados a la instancia.
+     */
     void liberarRecursos();
 
 };

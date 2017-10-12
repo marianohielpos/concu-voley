@@ -49,6 +49,9 @@ public:
      */
     void escribir(const TCanchaSerializada& cancha) throw(std::exception);
 
+    /**
+     * libera los recursos de memoria compartida asociados a la instancia.
+     */
     void liberar();
 
     std::list<pid_t> inundarFilasDeCanchas(int fila);

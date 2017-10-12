@@ -52,6 +52,9 @@ public:
      */
     std::list<TResultadoSerializado>* readAll();
 
+    /**
+     * libera los recursos de memoria compartida asociados a la instancia.
+     */
     void liberar();
 
 private:
