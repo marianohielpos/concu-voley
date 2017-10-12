@@ -75,7 +75,7 @@ void MainProcess::run() {
     }
   }
 
-  this->enviarSeñalDeTerminacion();
+  this->matarProcesosHijos();
 
 }
 
@@ -84,7 +84,7 @@ MainProcess::~MainProcess(){
   Logger::getInstance()->info("[Principal] Borrando main process!");
 }
 
-void MainProcess::enviarSeñalDeTerminacion() {
+void MainProcess::matarProcesosHijos() {
 
   Logger::getInstance()->info("[Principal] Enviando señales a procesos");
 
@@ -95,11 +95,11 @@ void MainProcess::enviarSeñalDeTerminacion() {
   if (this->pidTorneo != 0) kill(this->pidTorneo, SIGINT);
 }
 
-void MainProcess::enviarSeñalDeTerminacionPorInterrupcion() {
+void MainProcess::matarProcesosHijosPorInterrupcion() {
 
   Logger::getInstance()->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
 
-  this->enviarSeñalDeTerminacion();
+  this->matarProcesosHijos();
 
 }
 
@@ -109,7 +109,7 @@ Terminador::~Terminador() {}
 
 int Terminador::handleSignal (int signum) {
   assert(signum == SIGINT);
-    m_.enviarSeñalDeTerminacionPorInterrupcion();
+    m_.matarProcesosHijosPorInterrupcion();
   exit(SIGINT);
 }
 

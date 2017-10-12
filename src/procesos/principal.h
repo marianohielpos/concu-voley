@@ -22,11 +22,11 @@ public:
     MainProcess(Opciones opts);
     ~MainProcess();
 
-    void enviarSeñalDeTerminacion();
+    void matarProcesosHijos();
 
     void run();
 
-    void enviarSeñalDeTerminacionPorInterrupcion();
+    void matarProcesosHijosPorInterrupcion();
 };
 
 class Terminador : public EventHandler {
