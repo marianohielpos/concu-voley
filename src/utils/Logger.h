@@ -46,6 +46,8 @@ private:
 
     void escribirAConsola(std::string mensaje);
 
+    bool cout = false;
+
 public:
 
     Logger ( std::string nombreArchivo, std::string nivel);
@@ -65,6 +67,7 @@ public:
     void warning(std::string mensaje);
 
     void error(std::string mensaje);
+
 };
 
 

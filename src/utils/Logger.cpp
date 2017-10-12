@@ -34,8 +34,11 @@ Logger::Logger(std::string nombreArchivo, std::string nivel) {
     if( this->levels.find(nivel) != this->levels.end() )
         this->logLevel = nivel;
 
-    if(nombreArchivo.empty())
+    if(nombreArchivo.empty()) {
+        this->lock = new LockFile("tmp");
+        this->cout = true;
         return;
+    }
 
     this->lock = new LockFile(nombreArchivo);
 }
@@ -83,7 +86,12 @@ void Logger::escribirAArchivo(std::string mensaje) {
 }
 
 void Logger::escribirAConsola(std::string mensaje) {
+    this->lock->tomarLock();
+
     std::cout << mensaje;
+
+    this->lock->liberarLock();
+
 }
 
 void Logger::info(std::string mensaje) {
@@ -117,7 +125,7 @@ void Logger::imprimirMensaje(std::string mensaje, std::string nivel) {
 
     std::string mensajeFormateado = this->generarMensaje(mensaje, nivel);
 
-    if( this->lock == NULL)
+    if( this->cout )
         return this->escribirAConsola(mensajeFormateado);
 
     return this->escribirAArchivo(mensajeFormateado);
