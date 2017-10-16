@@ -108,6 +108,21 @@ void LockMemoriaCompartidaPersonas::retirarPersona() {
 
 bool LockMemoriaCompartidaPersonas::obtenerParticipantes(participantes &p, std::map<pid_t, Partido> &partidos_) {
     this->tomarLock();
+    bool retorno=doObtenerParticipantes(p,partidos_);
+    this->marcarEstadoJugando(p,true);
+    this->liberarLock();
+    return retorno;
+}
+
+bool LockMemoriaCompartidaPersonas::sePuedenObtenerParticipantes(std::map<pid_t, Partido> &partidos_) {
+    participantes p {-1, -1, -1, -1};
+    this->tomarLock();
+    bool retorno=doObtenerParticipantes(p,partidos_);
+    this->liberarLock();
+    return retorno;
+}
+
+bool LockMemoriaCompartidaPersonas::doObtenerParticipantes(participantes &p, std::map<pid_t, Partido> &partidos_) {
     std::vector<Jugador>* jugadores=this->memoriaCompartidaPersonas->readAllEnPredioEsperandoParaJugarAsVector();
     bool parEncontrado;
     for (int i = 0; i < 2; i++) {
@@ -144,8 +159,6 @@ bool LockMemoriaCompartidaPersonas::obtenerParticipantes(participantes &p, std::
         }
     }
     delete(jugadores);
-    this->marcarEstadoJugando(p,true);
-    this->liberarLock();
     return parEncontrado;
 }
 

@@ -74,6 +74,8 @@ public:
 
     bool obtenerParticipantes(participantes& p, std::map<pid_t,Partido>& partidos_);
 
+    bool sePuedenObtenerParticipantes(std::map<pid_t,Partido>& partidos_);
+
     /**
      * marca como jugando bajo locks
      */
@@ -107,6 +109,8 @@ private:
      * sin meceanismos de lock
      */
     void doMarcarEstadoJugando(unsigned int idPersona, bool estado);
+
+    bool doObtenerParticipantes(participantes& p, std::map<pid_t,Partido>& partidos_);
 };
 
 

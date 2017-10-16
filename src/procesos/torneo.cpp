@@ -47,9 +47,7 @@ void Torneo::run() {
         Logger::getInstance()->info("[Torneo] Wait terminó sin exit!");
       }
   }
-
   Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
-  finalizarTorneo();
   if (sigint_handler.getGracefulQuit() == 0) {
     Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
     finalizarTorneo();
@@ -133,8 +131,7 @@ bool Torneo::siguientesParticipantes(participantes& p) {
 };
 
 bool Torneo::sePuedeArmarPartido() {
-  participantes p {-1, -1, -1, -1};
-  return siguientesParticipantes(p);
+  return this->memoriaCompartidaPersonas.sePuedenObtenerParticipantes(this->partidos_);
 };
 
 bool Torneo::partidosCorriendo() {
