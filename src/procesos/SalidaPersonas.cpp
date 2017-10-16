@@ -21,7 +21,7 @@ void SalidaPersonas::run() {
     while(sigint_handler.getGracefulQuit() == 0){
         milisleep(opts_.sleepJugadores);
         Logger::getInstance()->info("[Salida Personas] Salidada Personas hace update...");
-        this->adminSalidaPersonas.update();
+     //   this->adminSalidaPersonas.update();
     }
 
     SignalHandler::destruir();

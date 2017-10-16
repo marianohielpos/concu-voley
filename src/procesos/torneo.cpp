@@ -23,7 +23,11 @@ void Torneo::run() {
   Logger::getInstance()->info("[Torneo] Torneo corriendo!");
   SIGINT_Handler sigint_handler;
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
-  while(this->memoriaCompartidaPersonas.cantidadEnPredio()<2);
+  /*
+  while((this->memoriaCompartidaPersonas.cantidadEnPredio()<JUGADORES_PARA_TORNEO)&&
+          (sigint_handler.getGracefulQuit() == 0)){
+    Logger::getInstance()->info("[Torneo] No hay jugadores suficientes!");
+  }*/
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
       if (lanzarPartido()) {
@@ -205,11 +209,12 @@ void Torneo::liberarRecursos() {
   }
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
+  memoriaCompartidaPersonas.liberarRecursos();
 };
 
 void Torneo::inicializarVectorJugadores(unsigned int maxCantPersonas) {
-  for(int i=0;i<maxCantPersonas;i++){
+  for(unsigned int i=0;i<maxCantPersonas;i++){
     Jugador jugador(i);
-    this->jugadores_.push_back(i);
+    this->jugadores_.push_back(jugador);
   }
 }
