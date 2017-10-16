@@ -10,26 +10,20 @@
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 #include <algorithm>
+#include <Opciones.h>
 
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
-  : jugadores_(jugadoresIniciales), opts_(opts),
-    conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
-    memoriaCanchas_(opts_) {
+Torneo::Torneo( Opciones opts) : opts_(opts), conexion_(opts_.jugadores * opts_.partidos,
+                                 opts_.jugadores), memoriaCanchas_(opts_),
+                                 memoriaCompartidaPersonas(opts.jugadores,opts.capacidad) {
+  this->inicializarVectorJugadores(opts_.jugadores);
 }
 
 void Torneo::run() {
-
   Logger::getInstance()->info("[Torneo] Torneo corriendo!");
-
-  srand(getpid());
-
-  ReceptorDeJugadores sigusr_handler(*this);
-  SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
-
   SIGINT_Handler sigint_handler;
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
-
+  while(this->memoriaCompartidaPersonas.cantidadEnPredio()<2);
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
       if (lanzarPartido()) {
@@ -37,7 +31,6 @@ void Torneo::run() {
       }
       int status = 0;
       pid_t pidPartido = wait(&status);
-
       if (pidPartido != -1) {
         if (WIFEXITED(status)) {
           Logger::getInstance()->info("[Torneo] Partido terminó exitosamente " + std::to_string(pidPartido));
@@ -46,12 +39,9 @@ void Torneo::run() {
           Logger::getInstance()->info("[Torneo] Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
-        checkearEntradaJugadores();
-        checkearSalidaJugadores();
       } else {
         Logger::getInstance()->info("[Torneo] Wait terminó sin exit!");
       }
-
   }
 
   Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
@@ -68,7 +58,6 @@ void Torneo::run() {
 
 void Torneo::finalizarPartido(pid_t pidPartido, int status) {
   guardarResultado(pidPartido, status);
-
   Partido p = partidos_.at(pidPartido);
   participantes parts = p.getParticipantes();
 
@@ -77,7 +66,7 @@ void Torneo::finalizarPartido(pid_t pidPartido, int status) {
     int offset = (i % 2 == 0) ? 1 : -1;
     j.agregarPartido(parts[i + offset]);
   }
-
+  this->memoriaCompartidaPersonas.marcarComoEsperandoJugar(parts);
   liberarCancha(pidPartido);
 }
 
@@ -135,68 +124,8 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
 };
 
-void Torneo::checkearEntradaJugadores() {
-  for (Jugador& j1 : jugadores_) {
-    if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
-      j1.entrarPredio();
-      std::stringstream ss;
-      ss << "[Torneo] Jugador " << j1.getId() << " está volviendo al predio!";
-      Logger::getInstance()->info(ss.str());
-    }
-  }
-};
-
-void Torneo::checkearSalidaJugadores() {
-  for (Jugador& j1 : jugadores_) {
-    if (j1.estaEnPredio() && j1.disponible() && rand() % 100 < opts_.chanceSalirPredio) {
-      j1.salirPredio();
-      std::stringstream ss;
-      ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
-      Logger::getInstance()->info(ss.str());
-    }
-  }
-};
-
-
 bool Torneo::siguientesParticipantes(participantes& p) {
-
-  bool parEncontrado;
-
-  for (int i = 0; i < 2; i++) {
-    parEncontrado = false;
-    for (Jugador const& j1 : jugadores_) {
-      if (j1.disponible()) {
-
-        if (i > 0 && (p[0] == j1.getId() || p[1] == j1.getId())) {
-          // Si estoy buscando el segundo par de jugadores, me fijo que no lo haya
-          // incluido en el primer par
-          continue;
-        }
-
-        for (Jugador const& j2 : jugadores_) {
-          if ((&j1 != &j2) && j2.disponible() && j1.puedeJugarCon(j2.getId())) {
-
-            if (i > 0 && (p[0] == j2.getId() || p[1] == j2.getId())) {
-              continue;
-            }
-
-            p[0 + i * 2] = j1.getId();
-            p[1 + i * 2] = j2.getId();
-            parEncontrado = true;
-            break;
-          }
-        }
-      }
-      if (parEncontrado) {
-        break;
-      }
-    }
-    if (!parEncontrado) {
-      break;
-    }
-  }
-
-  return parEncontrado;
+  return this->memoriaCompartidaPersonas.obtenerParticipantes(p,this->partidos_);
 };
 
 bool Torneo::sePuedeArmarPartido() {
@@ -266,11 +195,6 @@ void Torneo::finalizarTorneo() {
   liberarRecursos();
 };
 
-void Torneo::agregarJugador() {
-  Jugador j(jugadores_.size());
-  jugadores_.push_back(j);
-};
-
 void Torneo::liberarRecursos() {
   for (auto const& pair : partidos_) {
     kill(pair.first, SIGINT);
@@ -279,21 +203,13 @@ void Torneo::liberarRecursos() {
   for (auto const& element : partidos_) {
     wait(NULL);
   }
-
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
 };
 
-
-
-ReceptorDeJugadores::ReceptorDeJugadores(Torneo& t) : t_(t) {
-};
-
-ReceptorDeJugadores::~ReceptorDeJugadores() {
-};
-
-int ReceptorDeJugadores::handleSignal (int signum) {
-  assert(signum == SIGUSR1);
-  t_.agregarJugador();
-  return 0;
+void Torneo::inicializarVectorJugadores(unsigned int maxCantPersonas) {
+  for(int i=0;i<maxCantPersonas;i++){
+    Jugador jugador(i);
+    this->jugadores_.push_back(i);
+  }
 }

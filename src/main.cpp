@@ -49,6 +49,9 @@ Opciones parsearParametros (int argc, char *argv[]) {
             case 's':
                 opciones.archivoSalida = std::string(optarg);
                 break;
+            case 'q':
+                opciones.capacidad = (unsigned int) std::stoul(optarg);
+                break;
             case 'h':
                 std::cout << "Uso:\n"
                           << "\n"
@@ -56,6 +59,7 @@ Opciones parsearParametros (int argc, char *argv[]) {
                           << "\n"
                           << "Opciones:\n"
                           << "-j      Cantidad de jugadores máxima para jugar en el torneo (default: 15)\n"
+                          << "-q      Capacidad máxima del predio (default: 20)\n"
                           << "-p      Cantidad de partidos que puede jugar un jugador como máximo (default: 3)\n"
                           << "-f      Cantidad de filas de canchas (default: 5)\n"
                           << "-c      Cantidad de columnas de canchas (default: 5)\n"

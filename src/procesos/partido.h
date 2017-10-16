@@ -6,9 +6,7 @@
 #include <Logger.h>
 #include "Opciones.h"
 #include "../MemoriaCompartida/Serializados.h"
-
-typedef std::array<int, 4> participantes;
-
+#include "participantes.h"
 #define PRIMER_PAREJA_3 10
 #define SEGUNDA_PAREJA_3 11
 #define PRIMER_PAREJA_2 12

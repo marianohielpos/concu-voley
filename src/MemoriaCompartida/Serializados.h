@@ -114,6 +114,27 @@ typedef struct JugadorPuntaje{
     }
 }TJugadorPuntaje;
 
+/*
+ * Define la estructura de la memoria compartida persona
+ */
+typedef struct Persona{
+    unsigned int idPersona=0;
+    bool enPredio=false;
+    bool jugando=false;
+
+    void init(unsigned int idPersona, bool enPredio, bool jugando){
+        this->idPersona=idPersona;
+        this->enPredio=enPredio;
+        this->jugando=jugando;
+    }
+
+    void init(Persona& persona){
+        this->idPersona=persona.idPersona;
+        this->enPredio=persona.enPredio;
+        this->jugando=persona.jugando;
+    }
+}TPersona;
+
 /**
   * @return verdadero si el puntaje del primero es menor que el segundo
 */

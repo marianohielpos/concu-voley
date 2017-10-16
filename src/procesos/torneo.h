@@ -11,51 +11,58 @@
 #include "../MemoriaCompartida/LockMemoriaCompartidaCanchas.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include "partido.h"
-
+#include "LockMemoriaCompartidaPersonas.h"
 #define JUGADORES_PARA_TORNEO 10
 
-
-
+/**
+ * una instancia de clase implementa la funcionalidad de llevar a cabo un torneo
+ * realizando los accesos a memoria compartida bajo mecanismos de lock y salvando
+ * en el log las operaciones realizadas.
+ */
 class Torneo {
 
-  Opciones opts_;
-  std::vector<Jugador> jugadores_;
-  std::map<pid_t, Partido> partidos_;
-  ConexionPubEstad conexion_;
-  LockMemoriaCompartidaCanchas memoriaCanchas_;
+    Opciones opts_;
 
-  bool sePuedeArmarPartido();
-  bool partidosCorriendo();
-  bool lanzarPartido();
-  bool siguientesParticipantes(participantes& p);
-  void finalizarPartido(pid_t pidPartido, int status);
-  void guardarResultado(pid_t pidPartido, int status);
-  void liberarCancha(pid_t pidPartido);
-  void finalizarTorneo();
-  void liberarRecursos();
-  void checkearSalidaJugadores();
-  void checkearEntradaJugadores();
+    std::vector<Jugador> jugadores_;
+
+    std::map<pid_t, Partido> partidos_;
+
+    ConexionPubEstad conexion_;
+
+    LockMemoriaCompartidaCanchas memoriaCanchas_;
+
+    LockMemoriaCompartidaPersonas memoriaCompartidaPersonas;
+
+    bool sePuedeArmarPartido();
+
+    bool partidosCorriendo();
+
+    bool lanzarPartido();
+
+    /**
+    * Determina los participantes necesarios para llevar a cabo un partido.
+    * @returns verdadero si puede hallarlos.
+    */
+    bool siguientesParticipantes(participantes& p);
+
+    void finalizarPartido(pid_t pidPartido, int status);
+
+    void guardarResultado(pid_t pidPartido, int status);
+
+    void liberarCancha(pid_t pidPartido);
+
+    void finalizarTorneo();
+
+    void liberarRecursos();
+
+    void inicializarVectorJugadores(unsigned int maxCantPersonas);
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
-  void agregarJugador();
 
-  void run();
-  //~Torneo();
+    Torneo(Opciones opts);
 
-};
+    void run();
 
-
-class ReceptorDeJugadores : public EventHandler {
-
-Torneo& t_;
-
-public:
-  ReceptorDeJugadores(Torneo& t);
-
-  virtual int handleSignal (int signum);
-
-  ~ReceptorDeJugadores();
 };
 
 #endif
