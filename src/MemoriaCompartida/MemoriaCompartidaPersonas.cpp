@@ -71,15 +71,12 @@ std::list<TPersona>* MemoriaCompartidaPersonas::readAllEnPredioEsperandoParaJuga
     return lista;
 }
 
-std::vector<Jugador>* MemoriaCompartidaPersonas::readAllEnPredioEsperandoParaJugarAsVector() {
-    std::vector<Jugador>* retorno=new std::vector<Jugador>();
+std::vector<TPersona>* MemoriaCompartidaPersonas::readAllAsVector() {
+    std::vector<Persona>* retorno=new std::vector<TPersona>();
     for(int offset=0;offset<cantidadPersonas;offset++){
         TPersona persona;
         this->personas.leer(persona,offset);
-        if((!persona.jugando)&&(persona.enPredio)) {
-            Jugador jugador(persona.idPersona);
-            retorno->push_back(jugador);
-        }
+        retorno->push_back(persona);
     }
     return retorno;
 }

@@ -72,9 +72,9 @@ public:
      */
     void retirarPersona();
 
-    bool obtenerParticipantes(participantes& p, std::map<pid_t,Partido>& partidos_);
+    bool obtenerParticipantes(std::vector<Jugador>& jugadores,participantes& p, std::map<pid_t,Partido>& partidos_);
 
-    bool sePuedenObtenerParticipantes(std::map<pid_t,Partido>& partidos_);
+    bool sePuedenObtenerParticipantes(std::vector<Jugador>& jugadores,std::map<pid_t,Partido>& partidos_);
 
     /**
      * marca como jugando bajo locks
@@ -83,7 +83,14 @@ public:
 
     unsigned int cantidadEnPredio();
 
+    void actualizarEstados(std::vector<Jugador>& jugadores_);
+
 private:
+
+    /**
+     * sin mecanismos de lock
+     */
+    void doActualizarEstados(std::vector<Jugador>& jugadores_);
 
     int tomarLock ();
 
@@ -91,6 +98,9 @@ private:
 
     void inicializarLock();
 
+    /**
+     * sin mecanismos de lock
+     */
     std::list<TPersona>* doReadAll();
 
     /**
@@ -103,14 +113,20 @@ private:
 
     bool calcularSalida();
 
-    void marcarEstadoJugando(participantes &p, bool estado);
+    /**
+     * sin mecanismos de lock
+     */
+    void marcarEstadoJugando(participantes &p, bool jugando);
 
     /**
      * sin meceanismos de lock
      */
-    void doMarcarEstadoJugando(unsigned int idPersona, bool estado);
+    void doMarcarEstadoJugando(unsigned int idPersona, bool jugando);
 
-    bool doObtenerParticipantes(participantes& p, std::map<pid_t,Partido>& partidos_);
+    /**
+     * sin mecanismos de lock
+     */
+    bool doObtenerParticipantes(std::vector<Jugador>& jugadores,participantes& p, std::map<pid_t,Partido>& partidos_);
 };
 
 

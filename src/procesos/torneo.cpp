@@ -127,11 +127,11 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 };
 
 bool Torneo::siguientesParticipantes(participantes& p) {
-  return this->memoriaCompartidaPersonas.obtenerParticipantes(p,this->partidos_);
+  return this->memoriaCompartidaPersonas.obtenerParticipantes(jugadores_,p,this->partidos_);
 };
 
 bool Torneo::sePuedeArmarPartido() {
-  return this->memoriaCompartidaPersonas.sePuedenObtenerParticipantes(this->partidos_);
+  return this->memoriaCompartidaPersonas.sePuedenObtenerParticipantes(jugadores_,this->partidos_);
 };
 
 bool Torneo::partidosCorriendo() {

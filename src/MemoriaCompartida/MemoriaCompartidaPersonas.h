@@ -78,8 +78,7 @@ public:
      */
     std::list<TPersona>* readAllEnPredioEsperandoParaJugar();
 
-    std::vector<Jugador>* readAllEnPredioEsperandoParaJugarAsVector();
-
+    std::vector<TPersona>* readAllAsVector();
 
     /**
      * libera los recursos de memoria compartida asociados a la instancia.

@@ -3,7 +3,7 @@
 //
 
 #include "LockMemoriaCompartidaPersonas.h"
-
+#include "participantes.h"
 
 LockMemoriaCompartidaPersonas ::LockMemoriaCompartidaPersonas(unsigned int cantidadPersonas,
                                  unsigned int capacidadPredio)throw(std::exception){
@@ -106,28 +106,28 @@ void LockMemoriaCompartidaPersonas::retirarPersona() {
     this->liberarLock();
 }
 
-bool LockMemoriaCompartidaPersonas::obtenerParticipantes(participantes &p, std::map<pid_t, Partido> &partidos_) {
+bool LockMemoriaCompartidaPersonas::obtenerParticipantes(std::vector<Jugador>& jugadores,participantes &p, std::map<pid_t, Partido> &partidos_) {
     this->tomarLock();
-    bool retorno=doObtenerParticipantes(p,partidos_);
+    bool retorno=doObtenerParticipantes(jugadores,p,partidos_);
     this->marcarEstadoJugando(p,true);
     this->liberarLock();
     return retorno;
 }
 
-bool LockMemoriaCompartidaPersonas::sePuedenObtenerParticipantes(std::map<pid_t, Partido> &partidos_) {
+bool LockMemoriaCompartidaPersonas::sePuedenObtenerParticipantes(std::vector<Jugador>& jugadores,std::map<pid_t, Partido> &partidos_) {
     participantes p {-1, -1, -1, -1};
     this->tomarLock();
-    bool retorno=doObtenerParticipantes(p,partidos_);
+    bool retorno=doObtenerParticipantes(jugadores,p,partidos_);
     this->liberarLock();
     return retorno;
 }
 
-bool LockMemoriaCompartidaPersonas::doObtenerParticipantes(participantes &p, std::map<pid_t, Partido> &partidos_) {
-    std::vector<Jugador>* jugadores=this->memoriaCompartidaPersonas->readAllEnPredioEsperandoParaJugarAsVector();
+bool LockMemoriaCompartidaPersonas::doObtenerParticipantes(std::vector<Jugador>& jugadores,participantes &p, std::map<pid_t, Partido> &partidos_) {
+    this->doActualizarEstados(jugadores);
     bool parEncontrado;
     for (int i = 0; i < 2; i++) {
         parEncontrado = false;
-        for (Jugador const& j1 : *jugadores) {
+        for (Jugador const& j1 : jugadores) {
             if (j1.disponible()) {
 
                 if (i > 0 && (p[0] == j1.getId() || p[1] == j1.getId())) {
@@ -136,7 +136,7 @@ bool LockMemoriaCompartidaPersonas::doObtenerParticipantes(participantes &p, std
                     continue;
                 }
 
-                for (Jugador const& j2 : *jugadores) {
+                for (Jugador const& j2 : jugadores) {
                     if ((&j1 != &j2) && j2.disponible() && j1.puedeJugarCon(j2.getId())) {
 
                         if (i > 0 && (p[0] == j2.getId() || p[1] == j2.getId())) {
@@ -158,7 +158,6 @@ bool LockMemoriaCompartidaPersonas::doObtenerParticipantes(participantes &p, std
             break;
         }
     }
-    delete(jugadores);
     return parEncontrado;
 }
 
@@ -171,27 +170,46 @@ bool LockMemoriaCompartidaPersonas::calcularSalida() {
     return (calcularRandom()>5);
 }
 
-void LockMemoriaCompartidaPersonas::marcarComoEsperandoJugar(participantes& participantes) {
+void LockMemoriaCompartidaPersonas::marcarComoEsperandoJugar(participantes& p) {
     this->tomarLock();
-    this->marcarEstadoJugando(participantes, false);
+    this->marcarEstadoJugando(p, false);
     this->liberarLock();
 }
 
-
-void LockMemoriaCompartidaPersonas::doMarcarEstadoJugando(unsigned int idPersona,bool estado) {
-    Persona persona;
-    persona.init(idPersona,true,estado);
-    this->memoriaCompartidaPersonas->escribir(persona);
+void LockMemoriaCompartidaPersonas::marcarEstadoJugando(participantes &p, bool jugando) {
+    for(unsigned int i=0; i < 4 ;i++) {
+        doMarcarEstadoJugando(p[i], jugando);
+    }
 }
 
-void LockMemoriaCompartidaPersonas::marcarEstadoJugando(participantes& p, bool estado){
-    for(unsigned int i=0; i < 4 ;i++){
-        doMarcarEstadoJugando(p[i],estado);
-    }
+void LockMemoriaCompartidaPersonas::doMarcarEstadoJugando(unsigned int idPersona,bool jugando) {
+    Persona persona;
+    persona.init(idPersona,true,jugando);
+    this->memoriaCompartidaPersonas->escribir(persona);
 }
 
 unsigned int LockMemoriaCompartidaPersonas::cantidadEnPredio() {
     this->tomarLock();
-    return this->memoriaCompartidaPersonas->cantidadPersonasDentroDelPredio();
+    unsigned int retorno=this->memoriaCompartidaPersonas->cantidadPersonasDentroDelPredio();
+    this->liberarLock();
+    return retorno;
+}
+
+void LockMemoriaCompartidaPersonas::doActualizarEstados(std::vector<Jugador> &jugadores_) {
+    std::vector<TPersona>* personas=memoriaCompartidaPersonas->readAllAsVector();
+    for(std::vector<TPersona>::iterator it=personas->begin();it!=personas->end();++it){
+        if(it->enPredio){
+            jugadores_[it->idPersona].entrarPredio();
+        }else{
+            jugadores_[it->idPersona].salirPredio();
+        }
+        jugadores_[it->idPersona].setDisponible(!it->jugando);
+    }
+    delete(personas);
+}
+
+void LockMemoriaCompartidaPersonas::actualizarEstados(std::vector<Jugador> &jugadores_) {
+    this->tomarLock();
+    this->doActualizarEstados(jugadores_);
     this->liberarLock();
 }
