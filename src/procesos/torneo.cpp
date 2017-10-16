@@ -10,10 +10,11 @@
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 #include <algorithm>
+#include <../Semaforo/Semaforo.h>
 
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
-  : jugadores_(jugadoresIniciales), opts_(opts),
+Torneo::Torneo(Opciones opts)
+  : opts_(opts),
     conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
     memoriaCanchas_(opts_) {
 }
@@ -29,6 +30,9 @@ void Torneo::run() {
 
   SIGINT_Handler sigint_handler;
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+
+
+  esperarParticipantes();
 
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
@@ -63,6 +67,19 @@ void Torneo::run() {
     Logger::getInstance()->info("[Torneo] Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
+}
+
+void Torneo::esperarParticipantes() const {
+
+  Logger::getInstance()->info("[Torneo] Esperando jugadores");
+
+  int resultado = semaforo.p();
+
+  if( resultado == -1 ){
+    return esperarParticipantes();
+  }
+
+  this->semaforo.eliminar();
 }
 
 
@@ -269,6 +286,9 @@ void Torneo::finalizarTorneo() {
 void Torneo::agregarJugador() {
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
+
+  if( jugadores_.size() == 10)
+    this->semaforo.v();
 };
 
 void Torneo::liberarRecursos() {
@@ -282,8 +302,7 @@ void Torneo::liberarRecursos() {
 
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
-};
-
+}
 
 
 ReceptorDeJugadores::ReceptorDeJugadores(Torneo& t) : t_(t) {

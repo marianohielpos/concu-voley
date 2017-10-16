@@ -11,6 +11,7 @@
 #include "../MemoriaCompartida/LockMemoriaCompartidaCanchas.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include "partido.h"
+#include "../Semaforo/Semaforo.h"
 
 #define JUGADORES_PARA_TORNEO 10
 
@@ -23,6 +24,7 @@ class Torneo {
   std::map<pid_t, Partido> partidos_;
   ConexionPubEstad conexion_;
   LockMemoriaCompartidaCanchas memoriaCanchas_;
+    Semaforo semaforo = Semaforo("principal.cpp",0);
 
   bool sePuedeArmarPartido();
   bool partidosCorriendo();
@@ -35,14 +37,14 @@ class Torneo {
   void liberarRecursos();
   void checkearSalidaJugadores();
   void checkearEntradaJugadores();
+    void esperarParticipantes() const;
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
+  Torneo(Opciones opts);
   void agregarJugador();
 
   void run();
   //~Torneo();
-
 };
 
 
