@@ -129,3 +129,11 @@ bool LockMemoriaCompartidaCanchas::obtenerCanchaLibre(TCanchaSerializada &cancha
 
     return canchaEncontrada;
 }
+
+bool LockMemoriaCompartidaCanchas::hayCanchaLibre() {
+
+    TCanchaSerializada cancha;
+
+    return this->obtenerCanchaLibre(cancha);
+
+}

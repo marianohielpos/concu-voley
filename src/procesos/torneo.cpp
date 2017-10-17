@@ -200,8 +200,10 @@ bool Torneo::siguientesParticipantes(participantes& p) {
 };
 
 bool Torneo::sePuedeArmarPartido() {
-  participantes p {-1, -1, -1, -1};
-  return siguientesParticipantes(p);
+
+    participantes p {-1, -1, -1, -1};
+
+    return memoriaCanchas_.hayCanchaLibre() && siguientesParticipantes(p);
 };
 
 bool Torneo::partidosCorriendo() {

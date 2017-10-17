@@ -60,6 +60,8 @@ public:
 
     bool obtenerCanchaLibre(TCanchaSerializada &cancha);
 
+    bool hayCanchaLibre();
+
 
 private:
 
