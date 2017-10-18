@@ -35,6 +35,7 @@ void MainProcess::run() {
     Terminador terminador(*this);
     SignalHandler :: getInstance()->registrarHandler (SIGINT, &terminador);
 
+
     this->pidPublicador = fork();
   if (this->pidPublicador == 0) {
     Publicador publicador = Publicador(this->opts_);
@@ -83,9 +84,11 @@ void MainProcess::run() {
 
     int status;
 
-    wait(&status);
+    pid_t pid = wait(&status);
 
-    this->pidTorneo = 0;
+    if (pid != -1)  {
+        this->pidTorneo = 0;
+    }
 
     Logger::getInstance()->info("[Principal] Elimiando semaforo");
 
@@ -136,9 +139,7 @@ void MainProcess::matarProcesosHijos() {
 
 void MainProcess::matarProcesosHijosPorInterrupcion() {
 
-  Logger::getInstance()->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
-
-  this->matarProcesosHijos();
+  Logger::getInstance()->info("Handle señal");
 
 }
 
@@ -147,10 +148,5 @@ Terminador::Terminador(MainProcess &mainProcess): m_(mainProcess){}
 Terminador::~Terminador() {}
 
 int Terminador::handleSignal (int signum) {
-  assert(signum == SIGINT);
-    m_.matarProcesosHijosPorInterrupcion();
-  exit(SIGINT);
+    assert(signum == SIGINT);
 }
-
-
-

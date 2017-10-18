@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <SIGINT_Handler.h>
 #include "../utils/Opciones.h"
 #include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
@@ -41,7 +42,7 @@ class Torneo {
   void liberarRecursos();
   void checkearSalidaJugadores();
   void checkearEntradaJugadores();
-    void esperarParticipantes() const;
+    void esperarParticipantes(SIGINT_Handler* sigint_handler) const;
 
     int cantidadDeJugadoresEnElPredio();
     int cantidadDeJugadoresAfueraDelPredio();

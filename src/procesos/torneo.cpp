@@ -38,7 +38,7 @@ void Torneo::run() {
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
 
-  esperarParticipantes();
+  esperarParticipantes(&sigint_handler);
 
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
@@ -76,18 +76,20 @@ void Torneo::run() {
   }
 }
 
-void Torneo::esperarParticipantes() const {
+void Torneo::esperarParticipantes(SIGINT_Handler* sigint_handler) const {
 
   Logger::getInstance()->info("[Torneo] Esperando jugadores");
 
   int resultado = this->semaforo.p();
 
-  if( resultado == -1 ){
+    if (sigint_handler->getGracefulQuit() == 1)
+        return;
+
+  if( resultado == -1){
     perror("Hubo un error esperando los participantes");
-    return esperarParticipantes();
+    return esperarParticipantes(sigint_handler);
   }
 
-  this->semaforo.eliminar();
 }
 
 
@@ -334,6 +336,7 @@ void Torneo::liberarRecursos() {
 
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
+    this->semaforo.eliminar();
 }
 
 int Torneo::cantidadDeJugadoresEnElPredio() {
@@ -359,12 +362,6 @@ int Torneo::cantidadDeJugadoresAfueraDelPredio() {
 }
 
 Torneo::~Torneo() {
-
-  Logger::getInstance()->info("[Torneo] Elimiando semaforo");
-
-  int resultado = semaforoEntradaJugadores.eliminar();
-
-  if (resultado == -1 ) perror("Error eliminadno semaforo en torneo ");
 
 }
 
