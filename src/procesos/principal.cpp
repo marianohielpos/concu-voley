@@ -19,17 +19,22 @@ MainProcess::MainProcess(Opciones opts)
   pidMarea(0),
   pidPublicador(0),
   pidTorneo(0)
-{}
+{
+    if (semaforoEntradaJugadores.getId() == -1){
+        Logger::getInstance()->error("[Principal] Error creando semaforo ");
+        exit(1);
+    }
+}
 
 
 void MainProcess::run() {
 
   Logger::getInstance()->info("[Principal] Comienzo del programa");
 
-  Terminador sigint_handler(*this);
-  SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+    Terminador sigint_handler(*this);
+    SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
-  this->pidPublicador = fork();
+    this->pidPublicador = fork();
   if (this->pidPublicador == 0) {
     Publicador publicador = Publicador(this->opts_);
     publicador.run();
@@ -44,8 +49,6 @@ void MainProcess::run() {
     exit(0);
   }
 
-
-
   this->pidTorneo = fork();
   if (this->pidTorneo == 0) {
     Torneo t(opts_);
@@ -53,21 +56,46 @@ void MainProcess::run() {
     exit(0);
   } else {
 
+      if (this->pidTorneo < 0) exit(1);
+
     int i = 0;
 
-    while (i <= opts_.jugadores) {
+      pid_t exit = 0;
+
+    while (exit == 0) {
+      int resultado = semaforoEntradaJugadores.p();
+
+      if (resultado == -1) {
+        perror("[Principal] Posible error: ");
+        break;
+      }
+
       milisleep(this->opts_.sleepJugadores);
       Logger::getInstance()->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
       kill(pidTorneo, SIGUSR1);
       i++;
+
+        resultado = semaforoEntradaJugadores.v();
+
+        if (resultado == -1) {
+            perror("[Principal] Posible error: ");
+            break;
+        }
+
+        int stat;
+
+        exit = waitpid(-1, &stat,WNOHANG);
+
     }
 
-    int status = 0;
+      this->pidTorneo = 0;
 
-    wait(&status);
-
-    this->pidTorneo = 0;
   }
+    Logger::getInstance()->info("[Principal] Elimiando semaforo");
+
+    int resultado = semaforoEntradaJugadores.eliminar();
+
+    if (resultado == -1 ) perror("Error eliminadno semaforo en principal ");
 
   this->matarProcesosHijos();
 
@@ -122,4 +150,6 @@ int Terminador::handleSignal (int signum) {
     m_.matarProcesosHijosPorInterrupcion();
   exit(SIGINT);
 }
+
+
 

@@ -7,6 +7,7 @@
 #include <EventHandler.h>
 #include "../utils/Opciones.h"
 #include "Logger.h"
+#include "../Semaforo/Semaforo.h"
 
 class MainProcess {
 
@@ -16,6 +17,7 @@ private:
     pid_t pidPublicador;
     pid_t pidMarea;
     pid_t pidTorneo;
+    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt", 1);
 
 public:
     MainProcess(Opciones opts);

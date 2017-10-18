@@ -24,9 +24,13 @@ class Torneo {
   std::map<pid_t, Partido> partidos_;
   ConexionPubEstad conexion_;
   LockMemoriaCompartidaCanchas memoriaCanchas_;
-    Semaforo semaforo = Semaforo("principal.cpp",0);
+    Semaforo semaforo = Semaforo("Makefile",0);
+    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt");
 
-  bool sePuedeArmarPartido();
+    bool semaforoBloqueado = false;
+    bool torneoEmpezado = false;
+
+    bool sePuedeArmarPartido();
   bool partidosCorriendo();
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
@@ -39,12 +43,17 @@ class Torneo {
   void checkearEntradaJugadores();
     void esperarParticipantes() const;
 
+    int cantidadDeJugadoresEnElPredio();
+    int cantidadDeJugadoresAfueraDelPredio();
+
 public:
   Torneo(Opciones opts);
   void agregarJugador();
 
   void run();
-  //~Torneo();
+  ~Torneo();
+
+    void bloquearProcesoPrincipalSiEstaElPredioLleno();
 };
 
 

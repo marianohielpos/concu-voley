@@ -11,12 +11,17 @@
 #include <sstream>
 #include <algorithm>
 #include <../Semaforo/Semaforo.h>
+#include <Opciones.h>
 
 
 Torneo::Torneo(Opciones opts)
   : opts_(opts),
     conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
     memoriaCanchas_(opts_) {
+  if (semaforoEntradaJugadores.getId() == -1){
+    Logger::getInstance()->error("[Principal] Error creando semaforo ");
+    exit(1);
+  }
 }
 
 void Torneo::run() {
@@ -26,6 +31,7 @@ void Torneo::run() {
   srand(getpid());
 
   ReceptorDeJugadores sigusr_handler(*this);
+
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
   SIGINT_Handler sigint_handler;
@@ -36,7 +42,10 @@ void Torneo::run() {
 
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
-      if (lanzarPartido()) {
+
+    bloquearProcesoPrincipalSiEstaElPredioLleno();
+
+    if (lanzarPartido()) {
         continue;
       }
       int status = 0;
@@ -69,13 +78,32 @@ void Torneo::run() {
   }
 }
 
+void Torneo::bloquearProcesoPrincipalSiEstaElPredioLleno() {
+  if(this->cantidadDeJugadoresEnElPredio() >= opts_.jugadores) {
+
+    std::cout << semaforoEntradaJugadores.obtenerValor() << std::endl;
+
+    int resultado = semaforoEntradaJugadores.p();
+
+    std::cout << semaforoEntradaJugadores.obtenerValor() << std::endl;
+
+
+      if (resultado == -1) perror("Error bloqueando al proceso principal");
+
+      Logger::getInstance()->info("[Torneo] Bloqueo entrada de participantes.");
+
+      semaforoBloqueado = true;
+    }
+}
+
 void Torneo::esperarParticipantes() const {
 
   Logger::getInstance()->info("[Torneo] Esperando jugadores");
 
-  int resultado = semaforo.p();
+  int resultado = this->semaforo.p();
 
   if( resultado == -1 ){
+    perror("Hubo un error esperando los participantes");
     return esperarParticipantes();
   }
 
@@ -106,6 +134,8 @@ void Torneo::liberarCancha(pid_t pidPartido) {
     Jugador& j = jugadores_.at(parts[i]);
     if (j.getPartidosJugados() <= opts_.partidos) {
       j.setDisponible(true);
+    } else {
+      j.salirPredio();
     }
   }
 
@@ -154,7 +184,9 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
 void Torneo::checkearEntradaJugadores() {
   for (Jugador& j1 : jugadores_) {
-    if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
+    if (!j1.estaEnPredio()
+        && j1.getPartidosJugados() == opts_.partidos
+        && rand() % 100 < opts_.chanceEntrarPredio) {
       j1.entrarPredio();
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está volviendo al predio!";
@@ -170,6 +202,15 @@ void Torneo::checkearSalidaJugadores() {
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       Logger::getInstance()->info(ss.str());
+      if (this->semaforoBloqueado) {
+        Logger::getInstance()->info("Desbloqueando proceso principal");
+
+        int resultado = this->semaforoEntradaJugadores.v();
+
+        if (resultado == -1) perror("Error desbloqueando al proceso principal");
+
+        this->semaforoBloqueado = false;
+      }
     }
   }
 };
@@ -284,11 +325,26 @@ void Torneo::finalizarTorneo() {
 };
 
 void Torneo::agregarJugador() {
+
+  if (this->cantidadDeJugadoresEnElPredio() >= opts_.jugadores) {
+    return;
+  }
+
+  for (Jugador &jugador : this->jugadores_) {
+    if (!jugador.estaEnPredio()) {
+      jugador.entrarPredio();
+      return;
+    }
+  }
+
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
 
-  if( jugadores_.size() == 10)
+  if( this->cantidadDeJugadoresEnElPredio() == 10 && !this->torneoEmpezado) {
     this->semaforo.v();
+    this->torneoEmpezado = true;
+  }
+
 };
 
 void Torneo::liberarRecursos() {
@@ -304,6 +360,37 @@ void Torneo::liberarRecursos() {
   conexion_.liberarRecursos();
 }
 
+int Torneo::cantidadDeJugadoresEnElPredio() {
+  int jugadoresEnElPredio = 0;
+
+  for (Jugador &jugador : this->jugadores_) {
+    if (jugador.estaEnPredio())
+      jugadoresEnElPredio++;
+  }
+
+  return jugadoresEnElPredio;
+}
+
+int Torneo::cantidadDeJugadoresAfueraDelPredio() {
+  int jugadoresAfueraDelPredio = 0;
+
+  for (Jugador &jugador : this->jugadores_) {
+    if (!jugador.estaEnPredio())
+      jugadoresAfueraDelPredio++;
+  }
+
+  return jugadoresAfueraDelPredio;
+}
+
+Torneo::~Torneo() {
+
+  Logger::getInstance()->info("[Torneo] Elimiando semaforo");
+
+  int resultado = semaforoEntradaJugadores.eliminar();
+
+  if (resultado == -1 ) perror("Error eliminadno semaforo en torneo ");
+
+}
 
 ReceptorDeJugadores::ReceptorDeJugadores(Torneo& t) : t_(t) {
 };
