@@ -43,8 +43,6 @@ void Torneo::run() {
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
 
-    bloquearProcesoPrincipalSiEstaElPredioLleno();
-
     if (lanzarPartido()) {
         continue;
       }
@@ -76,24 +74,6 @@ void Torneo::run() {
     Logger::getInstance()->info("[Torneo] Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
-}
-
-void Torneo::bloquearProcesoPrincipalSiEstaElPredioLleno() {
-  if(this->cantidadDeJugadoresEnElPredio() >= opts_.jugadores) {
-
-    std::cout << semaforoEntradaJugadores.obtenerValor() << std::endl;
-
-    int resultado = semaforoEntradaJugadores.p();
-
-    std::cout << semaforoEntradaJugadores.obtenerValor() << std::endl;
-
-
-      if (resultado == -1) perror("Error bloqueando al proceso principal");
-
-      Logger::getInstance()->info("[Torneo] Bloqueo entrada de participantes.");
-
-      semaforoBloqueado = true;
-    }
 }
 
 void Torneo::esperarParticipantes() const {
@@ -202,18 +182,14 @@ void Torneo::checkearSalidaJugadores() {
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       Logger::getInstance()->info(ss.str());
-      if (this->semaforoBloqueado) {
-        Logger::getInstance()->info("Desbloqueando proceso principal");
 
         int resultado = this->semaforoEntradaJugadores.v();
 
-        if (resultado == -1) perror("Error desbloqueando al proceso principal");
+        if (resultado == -1) perror("[Torneo] Error sumando al semaforo");
 
-        this->semaforoBloqueado = false;
       }
     }
   }
-};
 
 
 bool Torneo::siguientesParticipantes(participantes& p) {

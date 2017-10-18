@@ -5,6 +5,7 @@
 
 #include <MemoriaCompartidaCanchas.h>
 #include <EventHandler.h>
+#include <Opciones.h>
 #include "../utils/Opciones.h"
 #include "Logger.h"
 #include "../Semaforo/Semaforo.h"
@@ -17,7 +18,8 @@ private:
     pid_t pidPublicador;
     pid_t pidMarea;
     pid_t pidTorneo;
-    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt", 1);
+    pid_t agregadorDeJugadores;
+    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt", opts_.jugadores);
 
 public:
     MainProcess(Opciones opts);
