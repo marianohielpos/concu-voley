@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "signal.h"
 #include <Logger.h>
 #include "torneo.h"
 #include "../ipc/SignalHandler.h"
@@ -347,7 +348,11 @@ void Torneo::agregarJugador() {
 };
 
 void Torneo::liberarRecursos() {
-  for (auto const& pair : partidos_) {
+    sigset_t mask;
+    sigfillset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
+
+    for (auto const& pair : partidos_) {
     kill(pair.first, SIGINT);
   }
 
