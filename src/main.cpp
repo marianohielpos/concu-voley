@@ -95,5 +95,7 @@ int main(int argc, char *argv[]) {
 
     mp.run();
 
+    Logger::deleteInstance();
+
     return 0;
 }
