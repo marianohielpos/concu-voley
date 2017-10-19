@@ -67,7 +67,9 @@ int Semaforo::obtenerValor() {
 
     int val;
     if ((val = semctl(this->id, 0, GETVAL, arg)) == -1) {
-        perror("Error obteniendo el valor del semaforo");
+        char buffer[256];
+        strerror_r(errno, buffer, 256);
+        Logger::getInstance()->error(buffer);
     }
 
     return val;

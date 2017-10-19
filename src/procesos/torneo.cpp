@@ -86,7 +86,9 @@ void Torneo::esperarParticipantes(SIGINT_Handler* sigint_handler) const {
         return;
 
   if( resultado == -1){
-    perror("Hubo un error esperando los participantes");
+      char buffer[256];
+      strerror_r(errno, buffer, 256);
+      Logger::getInstance()->error(buffer);
     return esperarParticipantes(sigint_handler);
   }
 

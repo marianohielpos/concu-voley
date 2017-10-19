@@ -13,6 +13,7 @@
 #include "../utils/sleep.h"
 #include "Marea.h"
 #include "Publicador.h"
+#include <errno.h>
 
 
 MainProcess::MainProcess(Opciones opts)
@@ -63,18 +64,21 @@ void MainProcess::run() {
         SIGINT_Handler sigint_handler;
         SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
+        int i = 0;
+
         while (sigint_handler.getGracefulQuit() != 1) {
             int resultado = semaforoEntradaJugadores.p();
 
+            i++;
             if (resultado == -1) {
-                perror("[Principal] Posible error: ");
+                char buffer[256];
+                strerror_r(errno, buffer, 256);
+                Logger::getInstance()->error(buffer);
                 break;
             }
-            int i = 0;
-
 
             milisleep(this->opts_.sleepJugadores);
-            Logger::getInstance()->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
+            Logger::getInstance()->info("[Enviador de jugadores] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
             kill(pidTorneo, SIGUSR1);
 
         }
@@ -94,7 +98,11 @@ void MainProcess::run() {
 
     int resultado = semaforoEntradaJugadores.eliminar();
 
-    if (resultado == -1 ) perror("Error eliminadno semaforo en principal ");
+    if (resultado == -1 ) {
+        char buffer[256];
+        strerror_r(errno, buffer, 256);
+        Logger::getInstance()->error(buffer);
+    };
 
   this->matarProcesosHijos();
 
