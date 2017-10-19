@@ -13,7 +13,7 @@ class Semaforo {
 
 private:
 
-    int id;
+    int id = -1;
 
     int valorInicial;
 

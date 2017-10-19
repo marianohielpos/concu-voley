@@ -97,14 +97,6 @@ void MainProcess::run() {
 
     Logger::getInstance()->info("[Principal] Elimiando semaforo");
 
-    int resultado = semaforoEntradaJugadores.eliminar();
-
-    if (resultado == -1 ) {
-        char buffer[256];
-        strerror_r(errno, buffer, 256);
-        Logger::getInstance()->error(buffer);
-    };
-
   this->matarProcesosHijos();
 
 }
@@ -138,6 +130,19 @@ void MainProcess::matarProcesosHijos() {
         procesosMatados++;
     }
 
+
+    if (semaforoEntradaJugadores.getId() != -1 ) {
+
+        int resultado = semaforoEntradaJugadores.eliminar();
+
+        if (resultado == -1) {
+            char buffer[256];
+            strerror_r(errno, buffer, 256);
+            Logger::getInstance()->error(buffer);
+        }
+    };
+
+
     for (int i = 0; i < procesosMatados; ++i) {
       int status = 0;
       wait(&status);
@@ -148,7 +153,9 @@ void MainProcess::matarProcesosHijos() {
 
 void MainProcess::matarProcesosHijosPorInterrupcion() {
 
-  Logger::getInstance()->info("Handle señal");
+  Logger::getInstance()->info("[Principal] Handle señal SIGIN");
+
+    this->matarProcesosHijos();
 
 }
 
@@ -158,4 +165,6 @@ Terminador::~Terminador() {}
 
 int Terminador::handleSignal (int signum) {
     assert(signum == SIGINT);
+    m_.matarProcesosHijosPorInterrupcion();
+    exit(SIGINT);
 }
