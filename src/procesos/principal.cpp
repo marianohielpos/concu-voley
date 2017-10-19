@@ -21,7 +21,7 @@ MainProcess::MainProcess(Opciones opts)
   pidMarea(0),
   pidPublicador(0),
   pidTorneo(0),
-  semaforoEntradaJugadores(Semaforo("CMakeLists.txt", opts_.jugadores))
+  semaforoEntradaJugadores("CMakeLists.txt", opts_.jugadores)
 {
     if (semaforoEntradaJugadores.getId() == -1){
         Logger::getInstance()->error("[Principal] Error creando semaforo ");
