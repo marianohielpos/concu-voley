@@ -65,8 +65,6 @@ void Torneo::run() {
 
   }
 
-  Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
-  finalizarTorneo();
   if (sigint_handler.getGracefulQuit() == 0) {
     Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
     finalizarTorneo();
