@@ -5,7 +5,6 @@
 #include <MemoriaCompartidaCanchas.h>
 #include "procesos/principal.h"
 
-#define CANTIDAD_MINIMA_DE_JUGADORES 10
 
 Opciones parsearParametros (int argc, char *argv[]) {
     Opciones opciones;
@@ -77,7 +76,7 @@ Opciones parsearParametros (int argc, char *argv[]) {
 
         }
 
-        if (opciones.jugadores < CANTIDAD_MINIMA_DE_JUGADORES) {
+        if (opciones.jugadores < opciones.jugadoresParaTorneo) {
             fprintf(stderr, "Número incorrecto de jugadores");
             exit(EXIT_FAILURE);
         }

@@ -57,10 +57,8 @@ void Torneo::run() {
           Logger::getInstance()->info("[Torneo] Partido terminó por una interrupción");
           liberarCancha(pidPartido);
         }
-        checkearEntradaJugadores();
+        // checkearEntradaJugadores();
         checkearSalidaJugadores();
-      } else {
-        Logger::getInstance()->info("[Torneo] Wait terminó sin exit!");
       }
 
   }
@@ -84,9 +82,6 @@ void Torneo::esperarParticipantes(SIGINT_Handler* sigint_handler) const {
         return;
 
   if( resultado == -1){
-      char buffer[256];
-      strerror_r(errno, buffer, 256);
-      Logger::getInstance()->error(buffer);
     return esperarParticipantes(sigint_handler);
   }
 
@@ -118,6 +113,12 @@ void Torneo::liberarCancha(pid_t pidPartido) {
       j.setDisponible(true);
     } else {
       j.salirPredio();
+
+      int resultado = this->semaforoEntradaJugadores.v();
+
+      if (resultado == -1) {
+        Logger::getInstance()->error("[Torneo] Error sumando al semaforo");
+      }
     }
   }
 
@@ -181,17 +182,21 @@ void Torneo::checkearSalidaJugadores() {
   for (Jugador& j1 : jugadores_) {
     if (j1.estaEnPredio() && j1.disponible() && rand() % 100 < opts_.chanceSalirPredio) {
       j1.salirPredio();
+
+      int resultado = this->semaforoEntradaJugadores.v();
+
+      if (resultado == -1) {
+        Logger::getInstance()->error("[Torneo] Error sumando al semaforo");
+      }
+
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       Logger::getInstance()->info(ss.str());
 
-        int resultado = this->semaforoEntradaJugadores.v();
 
-        if (resultado == -1) perror("[Torneo] Error sumando al semaforo");
-
-      }
     }
   }
+}
 
 
 bool Torneo::siguientesParticipantes(participantes& p) {
@@ -313,6 +318,10 @@ void Torneo::agregarJugador() {
   for (Jugador &jugador : this->jugadores_) {
     if (!jugador.estaEnPredio()) {
       jugador.entrarPredio();
+
+      std::stringstream ss;
+      ss << "[Torneo] El jugador " << jugador.getId() << " volvió al predio.";
+      Logger::getInstance()->info(ss.str());
       return;
     }
   }
@@ -320,7 +329,12 @@ void Torneo::agregarJugador() {
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
 
-  if( this->cantidadDeJugadoresEnElPredio() == 10 && !this->torneoEmpezado) {
+  std::stringstream ss;
+  ss << "[Torneo] El jugador " << j.getId() << " entró al predio.";
+  Logger::getInstance()->info(ss.str());
+
+  if( this->cantidadDeJugadoresEnElPredio() == opts_.jugadoresParaTorneo
+      && !this->torneoEmpezado) {
     this->semaforo.v();
     this->torneoEmpezado = true;
   }

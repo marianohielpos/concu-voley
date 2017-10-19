@@ -70,19 +70,17 @@ void MainProcess::run() {
         while (sigint_handler.getGracefulQuit() != 1) {
             int resultado = semaforoEntradaJugadores.p();
 
-            i++;
             if (resultado == -1) {
-                char buffer[256];
-                strerror_r(errno, buffer, 256);
-                Logger::getInstance()->error(buffer);
                 break;
             }
+            i++;
 
             milisleep(this->opts_.sleepJugadores);
             Logger::getInstance()->info("[Enviador de jugadores] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
             kill(pidTorneo, SIGUSR1);
 
         }
+        Logger::getInstance()->info("[Enviador de jugadores] Interrumpido por señal! Terminando.");
 
         exit(0);
     }
@@ -95,7 +93,7 @@ void MainProcess::run() {
         this->pidTorneo = 0;
     }
 
-    Logger::getInstance()->info("[Principal] Elimiando semaforo");
+    Logger::getInstance()->info("[Principal] Eliminando semaforo");
 
   this->matarProcesosHijos();
 

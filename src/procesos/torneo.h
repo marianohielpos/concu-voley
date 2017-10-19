@@ -14,9 +14,6 @@
 #include "partido.h"
 #include "../Semaforo/Semaforo.h"
 
-#define JUGADORES_PARA_TORNEO 10
-
-
 
 class Torneo {
 
