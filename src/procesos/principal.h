@@ -19,7 +19,7 @@ private:
     pid_t pidMarea;
     pid_t pidTorneo;
     pid_t agregadorDeJugadores;
-    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt", opts_.jugadores);
+    Semaforo semaforoEntradaJugadores;
 
 public:
     MainProcess(Opciones opts);
