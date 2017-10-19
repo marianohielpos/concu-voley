@@ -16,7 +16,7 @@
 
 Torneo::Torneo(Opciones opts)
   : opts_(opts),
-    conexion_(opts_.cantidadMaximaParticipantes * opts_.partidos, opts_.jugadores),
+    conexion_(opts_.cantidadMaximaParticipantes * opts_.partidos, opts_.cantidadMaximaParticipantes),
     memoriaCanchas_(opts_) {
   if (semaforoEntradaJugadores.getId() == -1){
     Logger::getInstance()->error("[Principal] Error creando semaforo ");
@@ -338,7 +338,7 @@ void Torneo::agregarJugador() {
      << "Jugadores en el predio: " << cantidadEnPredio;
   Logger::getInstance()->info(ss.str());
 
-  if( this->cantidadDeJugadoresEnElPredio() == opts_.jugadoresParaTorneo
+  if( this->cantidadDeJugadoresEnElPredio() >= opts_.jugadoresParaTorneo
       && !this->torneoEmpezado) {
     this->semaforo.v();
     this->torneoEmpezado = true;
