@@ -5,8 +5,10 @@
 
 #include <MemoriaCompartidaCanchas.h>
 #include <EventHandler.h>
+#include <Opciones.h>
 #include "../utils/Opciones.h"
 #include "Logger.h"
+#include "../Semaforo/Semaforo.h"
 
 class MainProcess {
 
@@ -16,6 +18,8 @@ private:
     pid_t pidPublicador;
     pid_t pidMarea;
     pid_t pidTorneo;
+    pid_t agregadorDeJugadores;
+    Semaforo semaforoEntradaJugadores;
 
 public:
     MainProcess(Opciones opts);

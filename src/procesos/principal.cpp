@@ -7,29 +7,38 @@
 #include <Logger.h>
 #include <assert.h>
 #include <SignalHandler.h>
+#include <SIGINT_Handler.h>
 #include "principal.h"
 #include "torneo.h"
 #include "../utils/sleep.h"
 #include "Marea.h"
 #include "Publicador.h"
+#include <errno.h>
 
 
 MainProcess::MainProcess(Opciones opts)
 : opts_(opts),
   pidMarea(0),
   pidPublicador(0),
-  pidTorneo(0)
-{}
+  pidTorneo(0),
+  semaforoEntradaJugadores("CMakeLists.txt", opts_.jugadores)
+{
+    if (semaforoEntradaJugadores.getId() == -1){
+        Logger::getInstance()->error("[Principal] Error creando semaforo ");
+        exit(1);
+    }
+}
 
 
 void MainProcess::run() {
 
   Logger::getInstance()->info("[Principal] Comienzo del programa");
 
-  Terminador sigint_handler(*this);
-  SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
+    Terminador terminador(*this);
+    SignalHandler :: getInstance()->registrarHandler (SIGINT, &terminador);
 
-  this->pidPublicador = fork();
+
+    this->pidPublicador = fork();
   if (this->pidPublicador == 0) {
     Publicador publicador = Publicador(this->opts_);
     publicador.run();
@@ -44,36 +53,49 @@ void MainProcess::run() {
     exit(0);
   }
 
-
-  std::vector<Jugador> v;
-  for (int i = 0; i < JUGADORES_PARA_TORNEO; ++i) {
-    v.push_back(Jugador(i));
+  this->pidTorneo = fork();
+  if (this->pidTorneo == 0) {
+    Torneo t(opts_);
+    t.run();
+    exit(0);
   }
 
-  // Si hay jugadores suficientes, lanzar torneo
-  // TODO: si no, esperar a que haya suficientes
-  if (v.size() >= JUGADORES_PARA_TORNEO) {
-    this->pidTorneo = fork();
-    if (this->pidTorneo == 0) {
-      Torneo t(v, opts_);
-      t.run();
-      exit(0);
-    } else {
+    this->agregadorDeJugadores = fork();
+    if (this->agregadorDeJugadores == 0) {
+        SIGINT_Handler sigint_handler;
+        SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
-      int i = v.size();
-      while (i <= opts_.jugadores) {
-        milisleep(this->opts_.sleepJugadores);
-        Logger::getInstance()->info("[Principal] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
-        kill(pidTorneo, SIGUSR1);
-        i++;
-      }
-      int status = 0;
+        int i = 0;
 
-      wait(&status);
+        while (sigint_handler.getGracefulQuit() != 1) {
+            int resultado = semaforoEntradaJugadores.p();
 
-      this->pidTorneo = 0;
+            i++;
+            if (resultado == -1) {
+                char buffer[256];
+                strerror_r(errno, buffer, 256);
+                Logger::getInstance()->error(buffer);
+                break;
+            }
+
+            milisleep(this->opts_.sleepJugadores);
+            Logger::getInstance()->info("[Enviador de jugadores] enviando señal SIGUSR1 al torneo: " + std::to_string(i));
+            kill(pidTorneo, SIGUSR1);
+
+        }
+
+        exit(0);
     }
-  }
+
+    int status;
+
+    pid_t pid = wait(&status);
+
+    if (pid != -1)  {
+        this->pidTorneo = 0;
+    }
+
+    Logger::getInstance()->info("[Principal] Elimiando semaforo");
 
   this->matarProcesosHijos();
 
@@ -98,24 +120,42 @@ void MainProcess::matarProcesosHijos() {
     procesosMatados++;
   }
 
-  if (this->pidTorneo != 0) {
-    kill(this->pidTorneo, SIGINT);
-    procesosMatados++;
-  }
+    if (this->agregadorDeJugadores != 0) {
+        kill(this->agregadorDeJugadores, SIGINT);
+        procesosMatados++;
+    }
 
-  for (int i = 0; i < procesosMatados; ++i) {
-    int status = 0;
-    wait(&status);
-  }
+    if (this->pidTorneo != 0) {
+        kill(this->pidTorneo, SIGINT);
+        procesosMatados++;
+    }
+
+
+    if (semaforoEntradaJugadores.getId() != -1 ) {
+
+        int resultado = semaforoEntradaJugadores.eliminar();
+
+        if (resultado == -1) {
+            char buffer[256];
+            strerror_r(errno, buffer, 256);
+            Logger::getInstance()->error(buffer);
+        }
+    };
+
+
+    for (int i = 0; i < procesosMatados; ++i) {
+      int status = 0;
+      wait(&status);
+    }
 
   Logger::getInstance()->info("[Principal] Terminado!");
 }
 
 void MainProcess::matarProcesosHijosPorInterrupcion() {
 
-  Logger::getInstance()->info("[Principal] Enviando SIGINT a los procesos hijos por interrupción!");
+  Logger::getInstance()->info("[Principal] Handle señal SIGIN");
 
-  this->matarProcesosHijos();
+    this->matarProcesosHijos();
 
 }
 
@@ -124,8 +164,7 @@ Terminador::Terminador(MainProcess &mainProcess): m_(mainProcess){}
 Terminador::~Terminador() {}
 
 int Terminador::handleSignal (int signum) {
-  assert(signum == SIGINT);
+    assert(signum == SIGINT);
     m_.matarProcesosHijosPorInterrupcion();
-  exit(SIGINT);
+    exit(SIGINT);
 }
-

@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <SIGINT_Handler.h>
 #include "../utils/Opciones.h"
 #include "../ipc/EventHandler.h"
 #include "../modelo/jugador.h"
@@ -11,6 +12,7 @@
 #include "../MemoriaCompartida/LockMemoriaCompartidaCanchas.h"
 #include "../MemoriaCompartida/Serializados.h"
 #include "partido.h"
+#include "../Semaforo/Semaforo.h"
 
 #define JUGADORES_PARA_TORNEO 10
 
@@ -23,8 +25,13 @@ class Torneo {
   std::map<pid_t, Partido> partidos_;
   ConexionPubEstad conexion_;
   LockMemoriaCompartidaCanchas memoriaCanchas_;
+    Semaforo semaforo = Semaforo("Makefile",0);
+    Semaforo semaforoEntradaJugadores = Semaforo("CMakeLists.txt");
 
-  bool sePuedeArmarPartido();
+    bool semaforoBloqueado = false;
+    bool torneoEmpezado = false;
+
+    bool sePuedeArmarPartido();
   bool partidosCorriendo();
   bool lanzarPartido();
   bool siguientesParticipantes(participantes& p);
@@ -35,14 +42,19 @@ class Torneo {
   void liberarRecursos();
   void checkearSalidaJugadores();
   void checkearEntradaJugadores();
+    void esperarParticipantes(SIGINT_Handler* sigint_handler) const;
+
+    int cantidadDeJugadoresEnElPredio();
+    int cantidadDeJugadoresAfueraDelPredio();
 
 public:
-  Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts);
+  Torneo(Opciones opts);
   void agregarJugador();
 
   void run();
-  //~Torneo();
+  ~Torneo();
 
+    void bloquearProcesoPrincipalSiEstaElPredioLleno();
 };
 
 

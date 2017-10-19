@@ -17,7 +17,7 @@ typedef struct {
     unsigned int filas = 5;
     unsigned int columnas = 5;
 
-    unsigned int chanceSalirPredio = 20;
+    unsigned int chanceSalirPredio = 10;
     unsigned int chanceEntrarPredio = 30;
     string archivoSalida = "/tmp/webvoley.html";
 } Opciones;

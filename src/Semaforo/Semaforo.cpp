@@ -6,11 +6,17 @@
 
 Semaforo::Semaforo(const std::string &nombre, const int valorInicial):valorInicial(valorInicial){
     key_t clave=ftok(nombre.c_str(),'a');
-    this->id = semget(clave,1,0666|IPC_CREAT);
+    this->id = semget( clave, 1, 0666 | IPC_CREAT | IPC_EXCL );
+
     this->inicializar();
 }
 
 Semaforo::~Semaforo(){}
+
+Semaforo::Semaforo(const std::string &nombre) {
+    key_t clave=ftok(nombre.c_str(),'a');
+    this->id = semget( clave, 1, 0666 );
+};
 
 int Semaforo::inicializar() const {
     union semnum{
@@ -42,6 +48,27 @@ int Semaforo::v() const {
     return resultado;
 }
 
-void Semaforo::eliminar() const {
-    semctl(this->id,0,IPC_RMID);
+int Semaforo::eliminar() const {
+    return semctl(this->id,0,IPC_RMID);
+}
+
+int Semaforo::getId() {
+    return this->id;
+}
+
+int Semaforo::obtenerValor() {
+    // Structure used in semctl
+    union semun {
+        int val;					// Value for SETVAL
+        struct semid_ds *buf;		// Buffer por IPC_STAT, IPC_SET
+        unsigned short *array;		// Array for GETALL, SETALL
+        struct seminfo *__buf;		// Buffer for IPC_INFO(Linux specific)
+    } arg;
+
+    int val;
+    if ((val = semctl(this->id, 0, GETVAL, arg)) == -1) {
+        perror("Error obteniendo el valor del semaforo");
+    }
+
+    return val;
 }

@@ -10,12 +10,18 @@
 #include "../MemoriaCompartida/Serializados.h"
 #include <sstream>
 #include <algorithm>
+#include <../Semaforo/Semaforo.h>
+#include <Opciones.h>
 
 
-Torneo::Torneo(std::vector<Jugador> jugadoresIniciales, Opciones opts)
-  : jugadores_(jugadoresIniciales), opts_(opts),
+Torneo::Torneo(Opciones opts)
+  : opts_(opts),
     conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
     memoriaCanchas_(opts_) {
+  if (semaforoEntradaJugadores.getId() == -1){
+    Logger::getInstance()->error("[Principal] Error creando semaforo ");
+    exit(1);
+  }
 }
 
 void Torneo::run() {
@@ -25,14 +31,19 @@ void Torneo::run() {
   srand(getpid());
 
   ReceptorDeJugadores sigusr_handler(*this);
+
   SignalHandler :: getInstance()->registrarHandler (SIGUSR1, &sigusr_handler);
 
   SIGINT_Handler sigint_handler;
   SignalHandler :: getInstance()->registrarHandler (SIGINT, &sigint_handler);
 
+
+  esperarParticipantes(&sigint_handler);
+
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
-      if (lanzarPartido()) {
+
+    if (lanzarPartido()) {
         continue;
       }
       int status = 0;
@@ -54,8 +65,6 @@ void Torneo::run() {
 
   }
 
-  Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
-  finalizarTorneo();
   if (sigint_handler.getGracefulQuit() == 0) {
     Logger::getInstance()->info("[Torneo] Escribiendo los resultados!");
     finalizarTorneo();
@@ -63,6 +72,24 @@ void Torneo::run() {
     Logger::getInstance()->info("[Torneo] Recibí SIGINT! Liberando recursos.");
     liberarRecursos();
   }
+}
+
+void Torneo::esperarParticipantes(SIGINT_Handler* sigint_handler) const {
+
+  Logger::getInstance()->info("[Torneo] Esperando jugadores");
+
+  int resultado = this->semaforo.p();
+
+    if (sigint_handler->getGracefulQuit() == 1)
+        return;
+
+  if( resultado == -1){
+      char buffer[256];
+      strerror_r(errno, buffer, 256);
+      Logger::getInstance()->error(buffer);
+    return esperarParticipantes(sigint_handler);
+  }
+
 }
 
 
@@ -89,6 +116,8 @@ void Torneo::liberarCancha(pid_t pidPartido) {
     Jugador& j = jugadores_.at(parts[i]);
     if (j.getPartidosJugados() <= opts_.partidos) {
       j.setDisponible(true);
+    } else {
+      j.salirPredio();
     }
   }
 
@@ -137,7 +166,9 @@ void Torneo::guardarResultado(pid_t pidPartido, int status) {
 
 void Torneo::checkearEntradaJugadores() {
   for (Jugador& j1 : jugadores_) {
-    if (!j1.estaEnPredio() && rand() % 100 < opts_.chanceEntrarPredio) {
+    if (!j1.estaEnPredio()
+        && j1.getPartidosJugados() == opts_.partidos
+        && rand() % 100 < opts_.chanceEntrarPredio) {
       j1.entrarPredio();
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está volviendo al predio!";
@@ -153,9 +184,14 @@ void Torneo::checkearSalidaJugadores() {
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       Logger::getInstance()->info(ss.str());
+
+        int resultado = this->semaforoEntradaJugadores.v();
+
+        if (resultado == -1) perror("[Torneo] Error sumando al semaforo");
+
+      }
     }
   }
-};
 
 
 bool Torneo::siguientesParticipantes(participantes& p) {
@@ -269,8 +305,26 @@ void Torneo::finalizarTorneo() {
 };
 
 void Torneo::agregarJugador() {
+
+  if (this->cantidadDeJugadoresEnElPredio() >= opts_.jugadores) {
+    return;
+  }
+
+  for (Jugador &jugador : this->jugadores_) {
+    if (!jugador.estaEnPredio()) {
+      jugador.entrarPredio();
+      return;
+    }
+  }
+
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
+
+  if( this->cantidadDeJugadoresEnElPredio() == 10 && !this->torneoEmpezado) {
+    this->semaforo.v();
+    this->torneoEmpezado = true;
+  }
+
 };
 
 void Torneo::liberarRecursos() {
@@ -284,9 +338,34 @@ void Torneo::liberarRecursos() {
 
   memoriaCanchas_.liberar();
   conexion_.liberarRecursos();
-};
+    this->semaforo.eliminar();
+}
 
+int Torneo::cantidadDeJugadoresEnElPredio() {
+  int jugadoresEnElPredio = 0;
 
+  for (Jugador &jugador : this->jugadores_) {
+    if (jugador.estaEnPredio())
+      jugadoresEnElPredio++;
+  }
+
+  return jugadoresEnElPredio;
+}
+
+int Torneo::cantidadDeJugadoresAfueraDelPredio() {
+  int jugadoresAfueraDelPredio = 0;
+
+  for (Jugador &jugador : this->jugadores_) {
+    if (!jugador.estaEnPredio())
+      jugadoresAfueraDelPredio++;
+  }
+
+  return jugadoresAfueraDelPredio;
+}
+
+Torneo::~Torneo() {
+
+}
 
 ReceptorDeJugadores::ReceptorDeJugadores(Torneo& t) : t_(t) {
 };

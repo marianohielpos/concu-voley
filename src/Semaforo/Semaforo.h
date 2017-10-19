@@ -13,7 +13,7 @@ class Semaforo {
 
 private:
 
-    int id;
+    int id = -1;
 
     int valorInicial;
 
@@ -22,6 +22,7 @@ private:
 public:
 
     Semaforo(const std::string& nombre,const int valorInicial);
+    Semaforo(const std::string &nombre);
 
     ~Semaforo();
 
@@ -29,7 +30,11 @@ public:
 
     int v() const; //incrementa
 
-    void eliminar() const;
+    int obtenerValor();
+
+    int eliminar() const;
+
+    int getId();
 };
 
 
