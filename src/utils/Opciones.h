@@ -22,7 +22,7 @@ typedef struct {
     string archivoSalida = "/tmp/webvoley.html";
 
     unsigned int jugadoresParaTorneo = 10;
-    unsigned int cantidadMaximaParticipantes = 60;
+    unsigned int cantidadMaximaParticipantes = 30;
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H

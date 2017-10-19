@@ -43,9 +43,10 @@ void Torneo::run() {
   while(sigint_handler.getGracefulQuit() == 0 &&
         (sePuedeArmarPartido() || partidosCorriendo())) {
 
-    if (lanzarPartido()) {
+      if (lanzarPartido()) {
         continue;
       }
+
       int status = 0;
       pid_t pidPartido = wait(&status);
 
@@ -192,8 +193,6 @@ void Torneo::checkearSalidaJugadores() {
       std::stringstream ss;
       ss << "[Torneo] Jugador " << j1.getId() << " está saliendo del predio!";
       Logger::getInstance()->info(ss.str());
-
-
     }
   }
 }
