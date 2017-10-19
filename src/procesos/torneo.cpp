@@ -16,7 +16,7 @@
 
 Torneo::Torneo(Opciones opts)
   : opts_(opts),
-    conexion_(opts_.jugadores * opts_.partidos, opts_.jugadores),
+    conexion_(opts_.cantidadMaximaParticipantes * opts_.partidos, opts_.jugadores),
     memoriaCanchas_(opts_) {
   if (semaforoEntradaJugadores.getId() == -1){
     Logger::getInstance()->error("[Principal] Error creando semaforo ");
@@ -311,12 +311,13 @@ void Torneo::finalizarTorneo() {
 
 void Torneo::agregarJugador() {
 
-  if (this->cantidadDeJugadoresEnElPredio() >= opts_.jugadores) {
+  int cantidadEnPredio = this->cantidadDeJugadoresEnElPredio();
+  if (cantidadEnPredio >= opts_.jugadores) {
     return;
   }
 
   for (Jugador &jugador : this->jugadores_) {
-    if (!jugador.estaEnPredio()) {
+    if (!jugador.estaEnPredio() && jugador.getPartidosJugados() == opts_.partidos) {
       jugador.entrarPredio();
 
       std::stringstream ss;
@@ -326,11 +327,16 @@ void Torneo::agregarJugador() {
     }
   }
 
+  if (jugadores_.size() >= opts_.cantidadMaximaParticipantes) {
+    return;
+  }
+
   Jugador j(jugadores_.size());
   jugadores_.push_back(j);
 
   std::stringstream ss;
-  ss << "[Torneo] El jugador " << j.getId() << " entró al predio.";
+  ss << "[Torneo] El jugador " << j.getId() << " entró al predio. "
+     << "Jugadores en el predio: " << cantidadEnPredio;
   Logger::getInstance()->info(ss.str());
 
   if( this->cantidadDeJugadoresEnElPredio() == opts_.jugadoresParaTorneo

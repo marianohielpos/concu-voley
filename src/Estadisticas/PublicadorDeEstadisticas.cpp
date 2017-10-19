@@ -6,8 +6,8 @@
 #include "PublicadorDeEstadisticas.h"
 
 PublicadorDeEstadisticas::PublicadorDeEstadisticas(Opciones opts) throw(std::exception) :
-                        lockResultados(opts.jugadores * opts.partidos),
-                        lockJugadores(opts.jugadores), publicador(opts.archivoSalida) {
+                        lockResultados(opts.cantidadMaximaParticipantes * opts.partidos),
+                        lockJugadores(opts.cantidadMaximaParticipantes), publicador(opts.archivoSalida) {
 }
 
 PublicadorDeEstadisticas::~PublicadorDeEstadisticas() {

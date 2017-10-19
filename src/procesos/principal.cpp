@@ -71,7 +71,7 @@ void MainProcess::run() {
             int resultado = semaforoEntradaJugadores.p();
 
             if (resultado == -1) {
-                break;
+                continue;
             }
             i++;
 
@@ -87,7 +87,7 @@ void MainProcess::run() {
 
     int status;
 
-    pid_t pid = wait(&status);
+    pid_t pid = waitpid(this->pidTorneo, &status, 0);
 
     if (pid != -1)  {
         this->pidTorneo = 0;

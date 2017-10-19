@@ -17,11 +17,12 @@ typedef struct {
     unsigned int filas = 5;
     unsigned int columnas = 5;
 
-    unsigned int chanceSalirPredio = 10;
+    unsigned int chanceSalirPredio = 5;
     unsigned int chanceEntrarPredio = 30;
     string archivoSalida = "/tmp/webvoley.html";
 
     unsigned int jugadoresParaTorneo = 10;
+    unsigned int cantidadMaximaParticipantes = 60;
 } Opciones;
 
 #endif //TP1CONCURRENTES_OPCIONES_H
