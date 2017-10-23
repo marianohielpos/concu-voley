@@ -10,7 +10,7 @@ Opciones parsearParametros (int argc, char *argv[]) {
     Opciones opciones;
 
     int opt;
-    while ((opt = getopt(argc, argv, "hdj:s:p:l:k:a:b:c:e:f:g:")) != -1) {
+    while ((opt = getopt(argc, argv, "hdj:s:p:l:k:a:b:c:e:f:g:m:")) != -1) {
         switch (opt) {
             case 'l':
                 opciones.logName = std::string(optarg);
@@ -23,6 +23,9 @@ Opciones parsearParametros (int argc, char *argv[]) {
                 break;
             case 'j':
                 opciones.jugadores = (unsigned int) std::stoul(optarg);
+                break;
+            case 'm':
+                opciones.cantidadMaximaParticipantes = (unsigned int) std::stoul(optarg);
                 break;
             case 'a':
                 opciones.sleepMarea = (unsigned int) std::stoul(optarg);
